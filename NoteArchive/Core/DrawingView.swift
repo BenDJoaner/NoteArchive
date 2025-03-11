@@ -12,7 +12,8 @@ struct DrawingView: View {
     @State private var selectedBackground: BackgroundType = .blank // 当前背景类型
     @State private var isSwiping = false
     @State private var swipeDirection: SwipeDirection = .none
-
+    var namespace: Namespace.ID // 接收命名空间
+    
     enum SwipeDirection {
         case left
         case right
@@ -23,81 +24,52 @@ struct DrawingView: View {
         ZStack {
             Color.gray.opacity(0.2) // 灰色背景
                 .edgesIgnoringSafeArea(.all)
-
-            VStack {
-                // 顶部栏
-                HStack {
-                    Text("当前页：\(currentPageIndex + 1)/\(pages.count)")
-                        .font(.headline)
-                    Spacer()
-                    // 清空按钮
-                    Button(action: {
-                        clearCurrentPage()
-                    }) {
-                        HStack {
-                        Image(systemName: "trash")
-                            Text("清空板块")
-                        }
-                            .font(.headline)
-                    }
-                    // 选择背景按钮
-                    Menu {
-                        ForEach(BackgroundType.allCases, id: \.self) { background in
-                            Button(action: {
-                                selectedBackground = background
-                                cover.selectedBackground = background.rawValue
-                                updateBackground()
-                                saveBackground()
-                            }) {
-                                HStack {
-                                    Text(background.rawValue)
-                                    if selectedBackground == background {
-                                        Image(systemName: "checkmark")
-                                    }
+            
+            // 画板区域
+            ZStack {
+                ForEach(0..<pages.count, id: \.self) { index in
+                    if index == currentPageIndex {
+                        CanvasView(canvasView: $canvasView, toolPicker: toolPicker, onDrawingChange: saveCurrentPage, background: selectedBackground)
+//                                        .matchedGeometryEffect(id: cover.id, in: namespace) // 添加 matchedGeometryEffect
+                            .cornerRadius(20) // 画板圆角
+                            .shadow(radius: 5) // 添加阴影
                                 }
                             }
-                        }
-                    } label: {
-                        HStack {
-                        Image(systemName: "paintbrush")
-                            Text("背景样式")
-                        }
-                            .font(.headline)
-                    }
+                            
+                // 按钮区域
+                VStack {
+                    ButtonBarView(
+                        onClear: clearCurrentPage,
+                        onBackgroundChange: { background in
+                            selectedBackground = background
+                            cover.selectedBackground = background.rawValue
+                            updateBackground()
+                            saveBackground()
+                        },
+                        selectedBackground: $selectedBackground
+                    )
+                    Spacer()
                 }
-                .padding(.horizontal)
-
-                // 画板区域
-                ZStack {
-                    ForEach(0..<pages.count, id: \.self) { index in
-                        if index == currentPageIndex {
-                CanvasView(canvasView: $canvasView, toolPicker: toolPicker, onDrawingChange: saveCurrentPage, background: selectedBackground)
-                    .padding(5)
-                                .transition(.asymmetric(
-                                    insertion: .move(edge: swipeDirection == .left ? .trailing : .leading),
-                                    removal: .move(edge: swipeDirection == .left ? .leading : .trailing)
-                                ))
-                                .animation(.easeInOut(duration: 0.3), value: currentPageIndex)
-                        }
-                    }
-                }
-                .gesture(
-                    DragGesture()
-                    .onEnded { gesture in
-                        if gesture.translation.width > 50 {
-                            previousPage()
-                        } else if gesture.translation.width < -50 {
-                            nextPage()
-                        } else if gesture.translation.height < -50 {
-                            showToolPicker()
-                        } else if gesture.translation.height > 50 {
-                            hideToolPicker()
-                        }
-                    }
-                )
+                .padding(.top)
             }
+            .gesture(
+                DragGesture()
+                .onEnded { gesture in
+                    if gesture.translation.width > 50 {
+                        previousPage()
+                    } else if gesture.translation.width < -50 {
+                        nextPage()
+                    } else if gesture.translation.height < -50 {
+                        showToolPicker()
+                    } else if gesture.translation.height > 50 {
+                        hideToolPicker()
+                    }
+                }
+            )
+            .padding(10)
+//            BookPageView(cover: cover)
         }
-        .navigationBarTitle(cover.title ?? "空", displayMode: .inline)
+        .navigationBarTitle("\(cover.title ?? "空")(\(currentPageIndex + 1)/\(pages.count))", displayMode: .inline)
         .onAppear {
             setupToolPicker()
             loadPages()
@@ -269,6 +241,58 @@ struct CanvasView: UIViewRepresentable {
     }
 }
 
+struct ButtonBarView: View {
+    var onClear: () -> Void // 清空按钮的回调
+    var onBackgroundChange: (BackgroundType) -> Void // 背景选择按钮的回调
+    @Binding var selectedBackground: BackgroundType // 当前选中的背景类型
+
+    var body: some View {
+        HStack {
+            Spacer()
+            
+            // 清空按钮
+            Button(action: onClear) {
+                HStack {
+                    Image(systemName: "trash")
+                    Text("清空板块")
+                }
+                .font(.headline)
+                .padding(8)
+                .background(Color.gray.opacity(0.7))
+                .foregroundColor(.white)
+                .cornerRadius(10)
+            }
+            
+            // 选择背景按钮
+            Menu {
+                ForEach(BackgroundType.allCases, id: \.self) { background in
+                    Button(action: {
+                        onBackgroundChange(background)
+                    }) {
+                        HStack {
+                            Text(background.rawValue)
+                            if selectedBackground == background {
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                    }
+                }
+            } label: {
+                HStack {
+                    Image(systemName: "paintbrush")
+                    Text("背景样式")
+                }
+                .font(.headline)
+                .padding(8)
+                .background(Color.gray.opacity(0.7))
+                .foregroundColor(.white)
+                .cornerRadius(10)
+            }
+        }
+        .padding(.horizontal)
+    }
+}
+
 enum BackgroundType: String, CaseIterable {
     case blank = "Blank"
     case horizontalLines = "Horizontal Lines"
@@ -347,3 +371,4 @@ enum BackgroundType: String, CaseIterable {
         }
     }
 }
+

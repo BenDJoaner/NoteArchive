@@ -25,6 +25,7 @@ struct FolderView: View {
     @State private var editedColor = ""
     @State public var folderState: FolderState = .e_normal // 默认状态
     @State private var isPrivacy = false
+    @Namespace private var namespace // 命名空间
 
     var body: some View {
         GeometryReader { geometry in
@@ -58,12 +59,16 @@ struct FolderView: View {
                                 })
                                 .frame(width: 180, height: 280)
                             } else {
-                                NavigationLink(destination: DrawingView(cover: cover)) {
-                                    CoverView(cover: cover, onLongPress: {
+                                NavigationLink(destination: DrawingView(cover: cover, namespace: namespace)) {
+                                    CoverView(cover: cover, isPrivacy: isPrivacy, onLongPress: {
                                         folderState = .e_editing // 长按时进入编辑模式
                                     })
-                                        .frame(width: 180, height: 280)
+//                                    .matchedGeometryEffect(id: cover.id, in: namespace) // 添加 matchedGeometryEffect
+                                    .frame(width: 180, height: 280)
+//                                    .transition(.scale(scale: 1.5).combined(with: .opacity)) // 添加过渡动画
+//                                    .zIndex(1) // 确保封面视图在过渡时位于最上层
                                 }
+
                             }
                         }
                         if folderState == .e_normal || folderState == .e_privacy {
@@ -75,33 +80,21 @@ struct FolderView: View {
                     }
                     .padding()
                 }
-                // 封面网格
-//                CoverGrid(
-//                    note: note,
-//                    folderState: $folderState,
-//                    editingCover: $editingCover,
-//                    editedTitle: $editedTitle,
-//                    editedColor: $editedColor,
-//                    addCover: addCover,
-//                    moveToTrash: moveToTrash,
-//                    restoreCover: restoreCover,
-//                    deleteCover: deleteCover,
-//                    saveCoverChanges: saveCoverChanges
-//                )
             }
         }
         .onAppear {
             newTitle = note.title ?? ""
             isPrivacy = folderState == .e_privacy
         }
-        .sheet(item: $editingCover) { cover in
-            EditCoverSheet(cover: cover, editedTitle: $editedTitle, editedColor: $editedColor, onSave: {
-                saveCoverChanges(cover: cover)
-            }, onCancel: {
-                editingCover = nil
-            })
-            .background(BackgroundCleanerView())
-        }
+//        .sheet(item: $editingCover) { cover in
+//            EditCoverSheet(cover: cover, editedTitle: $editedTitle, editedColor: $editedColor, onSave: {
+//                saveCoverChanges(cover: cover)
+//            }, onCancel: {
+//                editingCover = nil
+//            })
+//            .background(BackgroundCleanerView())
+//        }
+        
     }
 
     private func titleForState() -> String {
@@ -235,6 +228,7 @@ struct FolderView: View {
 // 封面视图
 struct CoverView: View {
     var cover: Cover
+    var isPrivacy: Bool
     var onLongPress: () -> Void // 添加长按回调
 
     var body: some View {
@@ -243,6 +237,15 @@ struct CoverView: View {
             Color(hex: cover.color ?? "#FF5733")
                 .cornerRadius(10)
 
+            if isPrivacy {
+                // 图片
+                Image("jimi") // 使用图片名称
+                    .frame(width: 100, height: 100) // 设置图片大小
+                    .offset(x: 50, y: -80)
+                    .opacity(0.5) // 设置透明度为 50%
+            }
+
+            
             // 标题文本
             VStack {
                 Text(cover.title ?? "Untitled")
@@ -259,7 +262,7 @@ struct CoverView: View {
                let firstPage = drawingPages.allObjects[0] as? DrawingPage,
                let pageData = firstPage.data,
                let drawing = try? PKDrawing(data: pageData) {
-                let image = drawing.image(from: drawing.bounds, scale: 1) // 缩小版本
+                let image = drawing.image(from: drawing.bounds, scale: 0.5) // 缩小版本
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
@@ -342,36 +345,10 @@ struct CoverEditView: View {
             // 按钮区域（2x2 网格布局）
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
                 // 颜色按钮
-//                Button(action: {
-//                    showColorPicker.toggle()
-//                }) {
-//                    VStack {
-//                        ZStack {
-//                            RoundedRectangle(cornerRadius: 10)
-//                                .fill(Color.orange) // 橘色背景
-//                                .frame(width: 50, height: 50)
-//                            Image(systemName: "paintbrush.fill")
-//                                .font(.title)
-//                                .foregroundColor(.white)
-//                        }
-//                        Text("颜色")
-//                            .font(.caption)
-//                    }
-//                }
-//                .sheet(isPresented: $showColorPicker) {
-//                    ColorPicker("选择颜色", selection: Binding(
-//                        get: { Color(hex: cover.color ?? "#FF5733") },
-//                        set: { newColor in
-//                            cover.color = newColor.toHex()
-//                            saveChanges()
-//                        }
-//                    ))
-//                    .padding()
-//                }
                 VStack {
                     ZStack {
                         // 黑色背景
-                        Color.black
+                        Color.gray
                             .frame(width: 50, height: 50) // 设置背景大小为 50x50
                             .cornerRadius(10) // 设置背景的圆角为 10
 
@@ -424,7 +401,7 @@ struct CoverEditView: View {
                     VStack {
                         ZStack {
                             RoundedRectangle(cornerRadius: 10)
-                                .fill(Color.red) // 红色背景
+                                .fill(Color.gray) // 红色背景
                                 .frame(width: 50, height: 50)
                             Image(systemName: "trash.fill")
                                 .font(.title)
@@ -444,7 +421,7 @@ struct CoverEditView: View {
                     VStack {
                         ZStack {
                             RoundedRectangle(cornerRadius: 10)
-                                .fill(Color.blue) // 蓝色背景
+                                .fill(Color.gray) // 蓝色背景
                                 .frame(width: 50, height: 50)
                             Image(systemName: "arrow.right.circle.fill")
                                 .font(.title)
@@ -504,48 +481,13 @@ struct CoverEditView: View {
     // 移动 Cover 到回收站 Note
     private func moveCoverToTrash() {
         if let trashNote = appConfigs.first?.trashNote {
-            moveCover(to: trashNote)
-        }
-    }
-}
-struct ColorPickerView: View {
-    @Binding var selectedColor: Color
-    let colors: [Color] = [
-        .red, .orange, .yellow, .green, .blue, .purple, .pink, .gray
-    ]
-
-    var body: some View {
-        VStack {
-            Text("选择颜色")
-                .font(.title)
-                .padding()
-
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 50))], spacing: 10) {
-                ForEach(colors, id: \.self) { color in
-                    Button(action: {
-                        selectedColor = color
-                    }) {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(color)
-                            .frame(width: 50, height: 50)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.white, lineWidth: selectedColor == color ? 3 : 0)
-                            )
-                    }
-                }
+            if cover.drawingPages!.count > 0 {
+                moveCover(to: trashNote)
+            }else{
+                cover.note?.removeFromCovers(cover)
             }
-            .padding()
-
-            Button("完成") {
-                // 关闭颜色选择器
-            }
-            .padding()
+            
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(15)
-        .shadow(radius: 10)
     }
 }
 
@@ -577,7 +519,16 @@ struct TrashCoverView: View {
             // 背景颜色
             Color(hex: cover.color ?? "#FF5733")
                 .cornerRadius(10)
+                .opacity(0.5)
 
+            // 图片
+            Image("xiaohui") // 使用图片名称
+                .resizable() // 使图片可调整大小
+                .scaledToFit() // 保持图片比例
+                .frame(width: 180, height: 180) // 设置图片大小
+                .offset(x: -50, y: 80)
+                .shadow(radius: 1,x:2,y:2)
+                .opacity(0.8) // 设置透明度为 50%
             // 标题文本
             VStack {
                 Text(cover.title ?? "Untitled")
@@ -614,6 +565,7 @@ struct TrashCoverView: View {
                     .frame(maxWidth: .infinity)
                     .background(Color.green)
                     .cornerRadius(10)
+                    .shadow(radius: 5)
                 }
 
                 Button(action: {
@@ -629,6 +581,7 @@ struct TrashCoverView: View {
                     .frame(maxWidth: .infinity)
                     .background(Color.red)
                     .cornerRadius(10)
+                    .shadow(radius: 5)
                 }
                 .alert(isPresented: $showDeleteConfirmation) {
                     Alert(
@@ -709,98 +662,51 @@ struct TitleBarView: View {
     }
 }
 
-//struct CoverGrid: View {
-//    var note: Note
-//    @Binding var folderState: FolderView.FolderState
-//    @Binding var editingCover: Cover?
+// 编辑封面弹窗
+//struct EditCoverSheet: View {
+//    var cover: Cover
 //    @Binding var editedTitle: String
 //    @Binding var editedColor: String
-//    var addCover: () -> Void
-//    var moveToTrash: (Cover) -> Void
-//    var restoreCover: (Cover) -> Void
-//    var deleteCover: (Cover) -> Void
-//    var saveCoverChanges: (Cover) -> Void
+//    var onSave: () -> Void
+//    var onCancel: () -> Void
 //
 //    var body: some View {
-//        ScrollView(.horizontal, showsIndicators: false) {
-//            LazyHGrid(rows: [GridItem(.adaptive(minimum: 290))], spacing: 20) {
-//                ForEach(note.coversArray.sorted { $0.createdAt ?? Date() < $1.createdAt ?? Date() }, id: \.self) { cover in
-//                    if folderState == .e_editing {
-//                        CoverEditView(cover: cover, deleteAction: {
-//                            moveToTrash(cover)
-//                        })
-//                        .frame(width: 180, height: 280)
-//                    } else if folderState == .e_trash {
-//                        TrashCoverView(cover: cover, restoreAction: {
-//                            restoreCover(cover)
-//                        }, deleteAction: {
-//                            deleteCover(cover)
-//                        })
-//                        .frame(width: 180, height: 280)
-//                    } else {
-//                        NavigationLink(destination: DrawingView(cover: cover)) {
-//                            CoverView(cover: cover)
-//                                .frame(width: 180, height: 280)
-//                        }
-//                    }
+//        VStack(spacing: 20) {
+//            Text("Edit Cover")
+//                .font(.title)
+//                .bold()
+//                .padding(.top)
+//
+//            TextField("Title", text: $editedTitle)
+//                .textFieldStyle(RoundedBorderTextFieldStyle())
+//                .padding(.horizontal)
+//
+//            ColorPicker("Color", selection: Binding(
+//                get: { Color(hex: editedColor) },
+//                set: { editedColor = $0.toHex() }
+//            ))
+//            .padding(.horizontal)
+//
+//            HStack(spacing: 20) {
+//                Button("Cancel") {
+//                    onCancel()
 //                }
-//                if folderState == .e_normal || folderState == .e_privacy {
-//                    AddCoverButton {
-//                        addCover()
-//                    }
-//                    .frame(width: 180, height: 280)
+//                .foregroundColor(.red)
+//
+//                Button("Save") {
+//                    onSave()
 //                }
+//                .foregroundColor(.blue)
 //            }
-//            .padding()
+//            .padding(.bottom)
 //        }
+//        .padding()
+//        .background(Color(.systemBackground))
+//        .cornerRadius(15)
+//        .shadow(radius: 10)
+//        .frame(width: 180, height: 280)
 //    }
 //}
-
-// 编辑封面弹窗
-struct EditCoverSheet: View {
-    var cover: Cover
-    @Binding var editedTitle: String
-    @Binding var editedColor: String
-    var onSave: () -> Void
-    var onCancel: () -> Void
-
-    var body: some View {
-        VStack(spacing: 20) {
-            Text("Edit Cover")
-                .font(.title)
-                .bold()
-                .padding(.top)
-
-            TextField("Title", text: $editedTitle)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
-
-            ColorPicker("Color", selection: Binding(
-                get: { Color(hex: editedColor) },
-                set: { editedColor = $0.toHex() }
-            ))
-            .padding(.horizontal)
-
-            HStack(spacing: 20) {
-                Button("Cancel") {
-                    onCancel()
-                }
-                .foregroundColor(.red)
-
-                Button("Save") {
-                    onSave()
-                }
-                .foregroundColor(.blue)
-            }
-            .padding(.bottom)
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(15)
-        .shadow(radius: 10)
-        .frame(width: 180, height: 280)
-    }
-}
 
 // 移除弹窗背景
 struct BackgroundCleanerView: UIViewRepresentable {

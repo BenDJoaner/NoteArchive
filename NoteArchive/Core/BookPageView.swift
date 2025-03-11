@@ -10,7 +10,7 @@ import PencilKit
 import Pages
 
 struct BookPageView: View {
-    let pages = bookToPages(charsInPage: 1400)
+    @ObservedObject var cover: Cover
     @State private var index: Int = 0
     @State private var canvasView = PKCanvasView()
     @State private var toolPicker = PKToolPicker()
@@ -18,65 +18,13 @@ struct BookPageView: View {
     @State private var drawingPages: [DrawingPage] = []
 
     var body: some View {
-        ZStack {
-            Color.gray.opacity(0.2) // 灰色背景
-                .edgesIgnoringSafeArea(.all)
-            
-            // 画板区域
-            ModelPages(pages, currentPage: $index, transitionStyle: .pageCurl) { i, page in
-                GeometryReader { geometry in
-                    VStack {
-                        if i == 0 {
-                            Text("How I Did It")
-                                .font(.system(size: 65, weight: .bold))
-                                .bold()
-                            Text("By Victor Frankenstein")
-                                .font(.title)
-                                .bold()
-                                .padding(.bottom)
-                        }
-                        
-                        // 画板
-                        CanvasView(canvasView: $canvasView, toolPicker: toolPicker, onDrawingChange: saveCurrentPage, background: selectedBackground)
-                        
-                        Spacer()
-                        
-                        HStack {
-                            Spacer()
-                            Text("Page \(i + 1)")
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                    .padding()
-                }
+        var pages = canvasToPage(cover: cover)
+        ModelPages(pages, currentPage: $index, transitionStyle: .scroll) { i, page in
+            GeometryReader { geometry in
+                            CanvasView(canvasView: $canvasView, toolPicker: toolPicker, onDrawingChange: saveCurrentPage, background: selectedBackground)
             }
-//            .onPageChanged { index in
-//                if index == pages.count - 1 {
-//                    addNewPage()
-//                }
-//                loadCanvasData()
-//            }
-            
-            // 按钮区域
-//            VStack {
-//                ButtonBarView(
-//                    onClear: clearCurrentPage,
-//                    onBackgroundChange: { background in
-//                        selectedBackground = background
-//                        saveBackground()
-//                    },
-//                    selectedBackground: $selectedBackground
-//                )
-//                Spacer()
-//            }
-//            .padding(.top)
-        }
-        .onAppear {
-            setupToolPicker()
+        }.onAppear{
             loadPages()
-        }
-        .onDisappear {
-            saveCurrentPage()
         }
     }
 
@@ -123,4 +71,35 @@ struct BookPageView: View {
     private func saveBackground() {
         // 保存背景逻辑
     }
+}
+
+struct BookCanvasView {
+    var canvaPage: DrawingPage
+}
+
+
+func canvasToPage(cover: Cover) -> [BookCanvasView] {
+    var drawingPages = cover.drawingPages?.allObjects as? [DrawingPage]
+    var canvasView = PKCanvasView()
+    if ((drawingPages?.isEmpty) != nil) {
+        let newPage = DrawingPage()
+        newPage.data = PKCanvasView().drawing.dataRepresentation()
+        newPage.page = Int32(drawingPages!.count + 1)
+//        drawingPages.append(newPage)
+    } else {
+        drawingPages!.sort { $0.page < $1.page }
+        if let pageData = drawingPages![0].data,
+           let drawing = try? PKDrawing(data: pageData) {
+            canvasView.drawing = drawing
+        }
+    }
+    var pages = [BookCanvasView]()
+    print("传入Canvas Page >>> \(drawingPages!.count)")
+    for i in 0..<drawingPages!.count {
+        print("添加Canvas Page >>> \(i)/\(drawingPages!.count)")
+        pages.append(BookCanvasView(canvaPage: drawingPages![i]))
+    }
+
+    return pages
+
 }
