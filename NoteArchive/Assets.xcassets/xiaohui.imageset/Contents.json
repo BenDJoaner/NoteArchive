@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "xiaohui.PNG",
+      "filename" : "xiaohui.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "xiaohui 1.PNG",
+      "filename" : "xiaohui 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "xiaohui 2.PNG",
+      "filename" : "xiaohui 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

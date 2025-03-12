@@ -26,7 +26,7 @@ public struct ContributionChartView: View {
         self.heatMapRectangleRadius = RectangleRadius
     }
     
-    public init(data: [Double], rows: Int, columns: Int, targetValue: Double, blockColor: Color = Color.green, RectangleWidth: Double = 10.0, RectangleSpacing: Double = 1.0, RectangleRadius: Double = 1.0){
+    public init(data: [Double], rows: Int, columns: Int, targetValue: Double, blockColor: Color = Color.green, RectangleWidth: Double = 12.0, RectangleSpacing: Double = 2.0, RectangleRadius: Double = 1.0){
         self.data = data
         self.rows = rows
         self.columns = columns
@@ -65,7 +65,7 @@ public struct ContributionChartView: View {
                 }
                 .frame(width: geo.size.width, height: geo.size.height, alignment: .center)
                 .onAppear {
-                    print(geo.size.width, geo.size.height)
+//                    print(geo.size.width, geo.size.height)
                 }
             }
         }
@@ -102,7 +102,7 @@ struct ContributionChartRowView: View {
             }
         }
         .onAppear() {
-            print(rowData)
+//            print(rowData)
         }
     }
     

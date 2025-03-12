@@ -30,10 +30,6 @@ struct ContentView: View {
             .navigationTitle("档案柜")
             .onAppear {
                 setupAppConfig()
-                // 设置默认选中的书架
-//                if selectedNote == nil, let firstNote = notes.first {
-//                    selectedNote = firstNote
-//                }
             }
         }
 //        .navigationViewStyle(DoubleColumnNavigationViewStyle()) // 设置双栏样式
@@ -72,51 +68,8 @@ struct ContentView: View {
             }
         }
     }
-    
-//    private func setupTrashNote() {
-//        let fetchRequest: NSFetchRequest<Note> = Note.fetchRequest()
-//        fetchRequest.predicate = NSPredicate(format: "title == %@", "回收站")
-//        if let trashNote = try? viewContext.fetch(fetchRequest).first {
-//            self.trashNote = trashNote
-//        } else {
-//            let newTrashNote = Note(context: viewContext)
-//            newTrashNote.id = UUID()
-//            newTrashNote.title = "回收站"
-//            newTrashNote.isPinned = false
-//            self.trashNote = newTrashNote
-//            do {
-//                try viewContext.save()
-//            } catch {
-//                let nsError = error as NSError
-//                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-//            }
-//        }
-//    }
-//
-//    private func setupPrivacyNote() {
-//        let fetchRequest: NSFetchRequest<Note> = Note.fetchRequest()
-//        fetchRequest.predicate = NSPredicate(format: "title == %@", "隐私")
-//        if let privacyNote = try? viewContext.fetch(fetchRequest).first {
-//            self.privacyNote = privacyNote
-//        } else {
-//            let newPrivacyNote = Note(context: viewContext)
-//            newPrivacyNote.id = UUID()
-//            newPrivacyNote.title = "隐私"
-//            newPrivacyNote.isPinned = false
-//            self.privacyNote = newPrivacyNote
-//            do {
-//                try viewContext.save()
-//            } catch {
-//                let nsError = error as NSError
-//                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-//            }
-//        }
-//    }
 
     private func moveToTrash(note: Note) {
-//        if let allNots = appConfig?.notes?.allObjects, allNots.count <= 1 {
-//            return
-//        }
         withAnimation {
             if let covers = note.covers?.allObjects as? [Cover] {
                 for cover in covers {

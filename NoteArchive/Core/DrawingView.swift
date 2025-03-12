@@ -1,17 +1,19 @@
 import SwiftUI
 import PencilKit
 import CoreData
+import Pages
 
 struct DrawingView: View {
     @ObservedObject var cover: Cover
     @Environment(\.managedObjectContext) private var viewContext
     @State private var canvasView = PKCanvasView()
-    @State private var pages: [DrawingPage] = []
+    @State private var pageDatas: [DrawingPage] = []
     @State private var currentPageIndex = 0
     @State private var toolPicker = PKToolPicker()
     @State private var selectedBackground: BackgroundType = .blank // 当前背景类型
     @State private var isSwiping = false
     @State private var swipeDirection: SwipeDirection = .none
+    @State private var bookPages: [BookCanvasView] = []
     var namespace: Namespace.ID // 接收命名空间
     
     enum SwipeDirection {
@@ -22,54 +24,57 @@ struct DrawingView: View {
 
     var body: some View {
         ZStack {
-            Color.gray.opacity(0.2) // 灰色背景
+            Color.gray.opacity(0.5) // 灰色背景
                 .edgesIgnoringSafeArea(.all)
             
             // 画板区域
-            ZStack {
-                ForEach(0..<pages.count, id: \.self) { index in
-                    if index == currentPageIndex {
-                        CanvasView(canvasView: $canvasView, toolPicker: toolPicker, onDrawingChange: saveCurrentPage, background: selectedBackground)
-//                                        .matchedGeometryEffect(id: cover.id, in: namespace) // 添加 matchedGeometryEffect
-                            .cornerRadius(20) // 画板圆角
-                            .shadow(radius: 5) // 添加阴影
-                                }
-                            }
-                            
-                // 按钮区域
-                VStack {
-                    ButtonBarView(
-                        onClear: clearCurrentPage,
-                        onBackgroundChange: { background in
-                            selectedBackground = background
-                            cover.selectedBackground = background.rawValue
-                            updateBackground()
-                            saveBackground()
-                        },
-                        selectedBackground: $selectedBackground
-                    )
-                    Spacer()
-                }
-                .padding(.top)
+//            ZStack {
+//                ForEach(0..<pages.count, id: \.self) { index in
+//                    if index == currentPageIndex {
+//                        CanvasView(canvasView: $canvasView, toolPicker: toolPicker, onDrawingChange: saveCurrentPage, background: selectedBackground)
+////                            .matchedGeometryEffect(id: cover.id, in: namespace) // 添加 matchedGeometryEffect
+//                            .cornerRadius(20) // 画板圆角
+//                            .shadow(radius: 5) // 添加阴影
+//                        }
+//                }
+//
+//                            
+//                // 按钮区域
+//                VStack {
+//                    ButtonBarView(
+//                        onClear: clearCurrentPage,
+//                        onBackgroundChange: { background in
+//                            selectedBackground = background
+//                            cover.selectedBackground = background.rawValue
+//                            updateBackground()
+//                            saveBackground()
+//                        },
+//                        selectedBackground: $selectedBackground
+//                    )
+//                    Spacer()
+//                }
+//                .padding(.top)
+//            }
+//            .gesture(
+//                DragGesture()
+//                .onEnded { gesture in
+//                    if gesture.translation.width > 50 {
+//                        previousPage()
+//                    } else if gesture.translation.width < -50 {
+//                        nextPage()
+//                    } else if gesture.translation.height < -50 {
+//                        showToolPicker()
+//                    } else if gesture.translation.height > 50 {
+//                        hideToolPicker()
+//                    }
+//                }
+//            )
+//            .padding(10)
+            if !pageDatas.isEmpty { // 确保 pageDatas 被赋值后才渲染 BookPageView
+                BookPageView(cover: cover, bookPages: bookPages, saveCurrentPage: saveCurrentPage)
             }
-            .gesture(
-                DragGesture()
-                .onEnded { gesture in
-                    if gesture.translation.width > 50 {
-                        previousPage()
-                    } else if gesture.translation.width < -50 {
-                        nextPage()
-                    } else if gesture.translation.height < -50 {
-                        showToolPicker()
-                    } else if gesture.translation.height > 50 {
-                        hideToolPicker()
-                    }
-                }
-            )
-            .padding(10)
-//            BookPageView(cover: cover)
         }
-        .navigationBarTitle("\(cover.title ?? "空")(\(currentPageIndex + 1)/\(pages.count))", displayMode: .inline)
+        .navigationBarTitle("\(cover.title ?? "空")(\(currentPageIndex + 1)/\(pageDatas.count))", displayMode: .inline)
         .onAppear {
             setupToolPicker()
             loadPages()
@@ -82,34 +87,42 @@ struct DrawingView: View {
 
     private func nextPage() {
         saveCurrentPage()
-        if currentPageIndex < pages.count - 1 {
-            swipeDirection = .left
-            currentPageIndex += 1
-        } else {
-            addNewPage()
-            swipeDirection = .left
-            currentPageIndex += 1
-        }
-        loadCanvasData()
+//        DispatchQueue.main.async {
+            if currentPageIndex < pageDatas.count - 1 {
+                swipeDirection = .left
+                currentPageIndex += 1
+            } else {
+                addNewPage()
+                swipeDirection = .left
+                currentPageIndex += 1
+            }
+            loadCanvasData()
+//        }
     }
 
     private func previousPage() {
         saveCurrentPage()
-        if currentPageIndex > 0 {
-            swipeDirection = .right
-            currentPageIndex -= 1
-        }
-        loadCanvasData()
+//        DispatchQueue.main.async {
+            if currentPageIndex > 0 {
+                swipeDirection = .right
+                currentPageIndex -= 1
+            }
+            loadCanvasData()
+//        }
     }
 
     private func showToolPicker() {
-        toolPicker.setVisible(true, forFirstResponder: canvasView)
-        canvasView.becomeFirstResponder()
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            toolPicker.setVisible(true, forFirstResponder: canvasView)
+            canvasView.becomeFirstResponder()
+        }
     }
 
     private func hideToolPicker() {
-        toolPicker.setVisible(false, forFirstResponder: canvasView)
-        canvasView.resignFirstResponder()
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            toolPicker.setVisible(false, forFirstResponder: canvasView)
+            canvasView.resignFirstResponder()
+        }
     }
 
     private func setupToolPicker() {
@@ -123,21 +136,28 @@ struct DrawingView: View {
             if drawingPages.isEmpty {
                 addNewPage()
             } else {
-                pages = drawingPages.sorted { $0.page < $1.page }
+                pageDatas = drawingPages.sorted { $0.page < $1.page }
                 loadCanvasData()
             }
         } else {
             addNewPage()
         }
+        if pageDatas.count < 2 {
+            addNewPage(isEmpty: true)
+        }
+        
+        for pageData in pageDatas {
+            bookPages.append(BookCanvasView(index: Int(pageData.page), isEmpty: false))
+        }
     }
-
-    private func addNewPage() {
+    
+    private func addNewPage(isEmpty: Bool = false) {
         let newPage = DrawingPage(context: viewContext)
         newPage.data = PKCanvasView().drawing.dataRepresentation()
         newPage.createdAt = Date()
         newPage.cover = cover
-        newPage.page = Int32(pages.count + 1)
-        pages.append(newPage)
+        newPage.page = Int32(pageDatas.count + 1)
+        pageDatas.append(newPage)
         
         do {
             try viewContext.save()
@@ -148,16 +168,17 @@ struct DrawingView: View {
     }
 
     private func loadCanvasData() {
-        if let pageData = pages[currentPageIndex].data,
+        if let pageData = pageDatas[currentPageIndex].data,
            let drawing = try? PKDrawing(data: pageData) {
             canvasView.drawing = drawing
         }
+        print("生成背景loadCanvasData")
     }
 
     private func saveCurrentPage() {
-        pages[currentPageIndex].data = canvasView.drawing.dataRepresentation()
-        pages[currentPageIndex].createdAt = Date() // 更新最后编辑日期
-        
+        pageDatas[currentPageIndex].data = canvasView.drawing.dataRepresentation()
+        pageDatas[currentPageIndex].createdAt = Date() // 更新最后编辑日期
+        print("生成背景saveCurrentPage")
         do {
             try viewContext.save()
         } catch {
@@ -192,6 +213,7 @@ struct DrawingView: View {
     private func updateBackground() {
         // 更新画板背景
         // 背景逻辑在 CanvasView 中实现
+        
     }
 }
 
@@ -203,9 +225,16 @@ struct CanvasView: UIViewRepresentable {
     @Environment(\.colorScheme) var colorScheme
 
     func makeUIView(context: Context) -> PKCanvasView {
-        canvasView.drawingPolicy = .pencilOnly // Only allow Apple Pencil
-        toolPicker.addObserver(canvasView)
-        toolPicker.setVisible(true, forFirstResponder: canvasView)
+        // 根据设备类型设置 drawingPolicy
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            canvasView.drawingPolicy = .anyInput // iPhone 允许任何输入
+            toolPicker.setVisible(false, forFirstResponder: canvasView)
+        } else {
+            canvasView.drawingPolicy = .pencilOnly // iPad 仅允许 Apple Pencil
+            toolPicker.addObserver(canvasView)
+            toolPicker.setVisible(true, forFirstResponder: canvasView)
+        }
+
         canvasView.becomeFirstResponder()
         canvasView.delegate = context.coordinator
         updateBackground(uiView: canvasView)
@@ -214,6 +243,7 @@ struct CanvasView: UIViewRepresentable {
 
     func updateUIView(_ uiView: PKCanvasView, context: Context) {
         updateBackground(uiView: uiView)
+        
     }
 
     func makeCoordinator() -> Coordinator {
@@ -226,6 +256,7 @@ struct CanvasView: UIViewRepresentable {
         // 生成背景图片
         let backgroundImage = background.image(for: uiView.bounds.size, colorScheme: currentColorScheme)
         uiView.backgroundColor = UIColor(patternImage: backgroundImage)
+        print("生成背景样式")
     }
 
     class Coordinator: NSObject, PKCanvasViewDelegate {
@@ -293,6 +324,50 @@ struct ButtonBarView: View {
     }
 }
 
+
+struct BookCanvasView {
+//    var canvaPage: DrawingPage
+    var index: Int
+    var isEmpty: Bool
+}
+
+struct BookPageView: View {
+    @ObservedObject var cover: Cover
+    @State private var index: Int = 0
+    @State private var canvasView = PKCanvasView()
+    @State private var toolPicker = PKToolPicker()
+    @State private var selectedBackground: BackgroundType = .blank
+    @State private var drawingPages: [DrawingPage] = []
+    @State var bookPages:[BookCanvasView]
+    var saveCurrentPage: () -> Void
+    var body: some View {
+        ModelPages(
+            bookPages,
+            currentPage: $index,
+            navigationOrientation: .horizontal,
+            transitionStyle: .pageCurl,
+            bounce: false,
+            wrap: true,
+            controlAlignment: .topLeading
+        ) { i, page in
+            GeometryReader { geometry in
+//                CanvasView(canvasView: $canvasView, toolPicker: toolPicker, onDrawingChange: saveCurrentPage, background: selectedBackground)
+                Text("Book Page >>>> \(i) -> \(page) \n hhaosdhoaishjdoajsoi jaoisjdaiosjdaisjda\nhaiosjdoiajsiodasjdaosjdoajsodijaisodjaosjdiasjodaihsdoansdihaosdajsdioajsdiojaosidjaonsobnwoadasdadasdasdasdasdasdadasadasd\n asdasd asdawd awd asd asd \n asda sdwd asd asda sda sd asdawf \nawdawf asfafawdqweadsd asdasdasdasd asda \n asdawdasdasdfawdawdasdasdagsfgasdas \n asdawqweqwr asdasdasdasd ").font(.title)
+            }
+            .background(Color.white)
+        }
+    }
+}
+
+struct SheetView: View {
+    var body: some View {
+        Text("这是一个Sheet视图")
+            .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.white)
+    }
+}
+
 enum BackgroundType: String, CaseIterable {
     case blank = "Blank"
     case horizontalLines = "Horizontal Lines"
@@ -322,6 +397,7 @@ enum BackgroundType: String, CaseIterable {
                     y += spacing
                 }
                 path.stroke()
+                print("case .blank")
             case .horizontalLines:
                 lineColor.setStroke()
                 let path = UIBezierPath()
@@ -334,6 +410,7 @@ enum BackgroundType: String, CaseIterable {
                     y += spacing
                 }
                 path.stroke()
+                print("case .horizontalLines")
             case .grid:
                 lineColor.setStroke()
                 let path = UIBezierPath()
@@ -352,6 +429,7 @@ enum BackgroundType: String, CaseIterable {
                     y += spacing
                 }
                 path.stroke()
+                print("case .grid")
             case .dots:
                 lineColor.setFill()
                 let spacing: CGFloat = 50
@@ -367,6 +445,7 @@ enum BackgroundType: String, CaseIterable {
                     }
                     x += spacing
                 }
+                print("case .dots")
             }
         }
     }

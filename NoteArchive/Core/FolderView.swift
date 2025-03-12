@@ -59,16 +59,16 @@ struct FolderView: View {
                                 })
                                 .frame(width: 180, height: 280)
                             } else {
+                                // 在 `FolderView` 中添加 `matchedGeometryEffect`
                                 NavigationLink(destination: DrawingView(cover: cover, namespace: namespace)) {
                                     CoverView(cover: cover, isPrivacy: isPrivacy, onLongPress: {
                                         folderState = .e_editing // 长按时进入编辑模式
                                     })
 //                                    .matchedGeometryEffect(id: cover.id, in: namespace) // 添加 matchedGeometryEffect
                                     .frame(width: 180, height: 280)
-//                                    .transition(.scale(scale: 1.5).combined(with: .opacity)) // 添加过渡动画
-//                                    .zIndex(1) // 确保封面视图在过渡时位于最上层
                                 }
-
+//                                .transition(.scale(scale: 1.5).combined(with: .opacity)) // 添加过渡动画
+//                                .zIndex(1) // 确保封面视图在过渡时位于最上层
                             }
                         }
                         if folderState == .e_normal || folderState == .e_privacy {
@@ -480,13 +480,30 @@ struct CoverEditView: View {
 
     // 移动 Cover 到回收站 Note
     private func moveCoverToTrash() {
-        if let trashNote = appConfigs.first?.trashNote {
-            if cover.drawingPages!.count > 0 {
-                moveCover(to: trashNote)
-            }else{
-                cover.note?.removeFromCovers(cover)
+//        if let trashNote = appConfigs.first?.trashNote {
+//            if cover.drawingPages!.count > 0 {
+//                moveCover(to: trashNote)
+//            }else{
+//                cover.note?.removeFromCovers(cover)
+//            }
+//            
+//        }
+        withAnimation {
+            if let trashNote = appConfigs.first?.trashNote {
+                if cover.drawingPages!.count > 0 {
+                    cover.note?.removeFromCovers(cover)
+                    trashNote.addToCovers(cover)
+                } else {
+                    cover.note?.removeFromCovers(cover)
+                }
             }
             
+            do {
+                try viewContext.save()
+            } catch {
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
         }
     }
 }
@@ -661,52 +678,6 @@ struct TitleBarView: View {
         }
     }
 }
-
-// 编辑封面弹窗
-//struct EditCoverSheet: View {
-//    var cover: Cover
-//    @Binding var editedTitle: String
-//    @Binding var editedColor: String
-//    var onSave: () -> Void
-//    var onCancel: () -> Void
-//
-//    var body: some View {
-//        VStack(spacing: 20) {
-//            Text("Edit Cover")
-//                .font(.title)
-//                .bold()
-//                .padding(.top)
-//
-//            TextField("Title", text: $editedTitle)
-//                .textFieldStyle(RoundedBorderTextFieldStyle())
-//                .padding(.horizontal)
-//
-//            ColorPicker("Color", selection: Binding(
-//                get: { Color(hex: editedColor) },
-//                set: { editedColor = $0.toHex() }
-//            ))
-//            .padding(.horizontal)
-//
-//            HStack(spacing: 20) {
-//                Button("Cancel") {
-//                    onCancel()
-//                }
-//                .foregroundColor(.red)
-//
-//                Button("Save") {
-//                    onSave()
-//                }
-//                .foregroundColor(.blue)
-//            }
-//            .padding(.bottom)
-//        }
-//        .padding()
-//        .background(Color(.systemBackground))
-//        .cornerRadius(15)
-//        .shadow(radius: 10)
-//        .frame(width: 180, height: 280)
-//    }
-//}
 
 // 移除弹窗背景
 struct BackgroundCleanerView: UIViewRepresentable {

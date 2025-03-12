@@ -38,10 +38,11 @@ struct BottomSectionView: View {
                             .foregroundColor(.gray)
                     }
                     .padding()
-                    .background(Color(.systemGray5))
+                    .background(Color(.systemBackground))
                     .cornerRadius(10)
                     .padding(.horizontal)
-                    .padding(.all, 10)
+                    .padding(.all, 5)
+                    .shadow(radius: 5)
                 }
                 .background(
                     // 使用 NavigationLink 控制跳转
@@ -74,10 +75,11 @@ struct BottomSectionView: View {
                             .foregroundColor(.gray)
                     }
                     .padding()
-                    .background(Color(.systemGray5))
+                    .background(Color(.systemBackground))
                     .cornerRadius(10)
                     .padding(.horizontal)
-                    .padding(.all, 10)
+                    .padding(.all, 5)
+                    .shadow(radius: 5)
                 }
                 .background(
                     // 使用 NavigationLink 控制跳转
@@ -90,13 +92,13 @@ struct BottomSectionView: View {
                 )
             }
         }
-        .alert(isPresented: $showAuthenticationFailedAlert) {
-            Alert(
-                title: Text("验证失败"),
-                message: Text("无法验证您的身份，请检查设备是否支持验证或是否设置了设备密码。"),
-                dismissButton: .default(Text("确定"))
-            )
-        }
+//        .alert(isPresented: $showAuthenticationFailedAlert) {
+//            Alert(
+//                title: Text("权限获取失败"),
+//                message: Text("高级档案权限验证失败"),
+//                dismissButton: .default(Text("确定"))
+//            )
+//        }
     }
 
     private func authenticate(completion: @escaping (Bool) -> Void) {
@@ -105,7 +107,7 @@ struct BottomSectionView: View {
 
         // 检查设备是否支持生物识别或设备密码
         if context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) {
-            let reason = "请验证以访问隐私内容"
+            let reason = "档案高级权限验证"
 
             // 使用 .deviceOwnerAuthentication 策略
             context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, authenticationError in

@@ -7,7 +7,7 @@
 
 import SwiftUI
 import SwiftUICore
-
+//import ContributionChart
 
 struct NoteListView: View {
     var notes: FetchedResults<Note>
@@ -15,20 +15,19 @@ struct NoteListView: View {
     var moveToTrash: (Note) -> Void
     var addNote: () -> Void
     var parentConfig: AppConfig? // 添加 appConfig 参数
-    
 
     var body: some View {
         List {
             // 过滤掉“隐私”和“回收站”书架
             ForEach(notes.filter { $0.title != "隐私" && $0.title != "回收站" }, id: \.self) { note in
                 NoteRowView(note: note, selectedNote: $selectedNote, moveToTrash: moveToTrash)
+
             }
-            .onDelete(perform: deleteNotes)
-            
             // 添加档案夹按钮
             AddNoteButtonView(addNote: addNote)
         }
-        .listStyle(PlainListStyle())
+        .listStyle(DefaultListStyle())
+
     }
 
     private func togglePin(note: Note) {
@@ -36,24 +35,6 @@ struct NoteListView: View {
             note.isPinned.toggle()
             do {
                 try note.managedObjectContext?.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    private func deleteNotes(offsets: IndexSet) {
-//        if let allNots = appConfig?.notes?.allObjects, allNots.count <= 1 {
-//            return
-//        }
-        withAnimation {
-            for index in offsets {
-                let note = notes[index]
-                note.managedObjectContext?.delete(note)
-            }
-            do {
-                try notes.first?.managedObjectContext?.save()
             } catch {
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
@@ -80,20 +61,34 @@ struct NoteRowView: View {
     var note: Note
     @Binding var selectedNote: Note?
     var moveToTrash: (Note) -> Void
-
+    @State private var data = []
     var body: some View {
+        let data = getCoverData(note: selectedNote ?? note)
         NavigationLink(destination: FolderView(note: note, folderState: FolderView.FolderState.e_normal), tag: note, selection: $selectedNote) {
-            HStack {
-                Text(note.title ?? "Untitled")
-                Spacer()
-                if note.isPinned {
-                    Image(systemName: "pin.fill")
-                        .foregroundColor(.yellow)
+            VStack {
+                HStack{
+                    if note.isPinned {
+                        Image(systemName: "pin.fill")
+                            .foregroundColor(.yellow)
+                    }
+                    Text(note.title ?? "Untitled")
+                    Text("\(note.covers?.count ?? 0)")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                    Spacer()
+
                 }
-                Text("\(note.covers?.count ?? 0)")
-                    .font(.caption)
-                    .foregroundColor(.gray)
+                .padding(.bottom)
+                HStack{
+                    ContributionChartView(data: data, rows: 6, columns: 30, targetValue: 1.0,blockColor: .blue)
+                        .frame(width: 320, height: 50)
+                    Spacer()
+                
+                }
             }
+            .padding()
+//            .background(Color(.systemGray5))
+//            .cornerRadius(10)
         }
         .swipeActions(edge: .leading, allowsFullSwipe: true) {
             Button {
@@ -125,5 +120,18 @@ struct NoteRowView: View {
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
         }
+    }
+    
+    private func getCoverData(note: Note) -> [Double] {
+        var result: [Double] = []
+        for cover in note.coversArray {
+            // 使用 nil 合并运算符 (??) 提供默认值，以防 drawingPages 为 nil
+            let pageCount = cover.drawingPages?.count ?? 0
+            if pageCount > 10 {
+                _ = 10
+            }
+            result.append(Double(pageCount) / 10.0)
+        }
+        return result
     }
 }

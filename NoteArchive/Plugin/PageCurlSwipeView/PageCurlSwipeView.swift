@@ -25,6 +25,8 @@ struct PageCurlSwipeView: View {
                                 items.remove(at: index)
                             }
                         }
+                    } onExpanded: {
+
                     }
 
                 }

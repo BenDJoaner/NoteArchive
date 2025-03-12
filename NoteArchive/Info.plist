@@ -16,6 +16,8 @@
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>档案高级权限验证</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 </dict>

@@ -11,10 +11,12 @@ import SwiftUI
 struct PeelEffect<Content: View>: View {
     var content: Content
     var onDelete: () -> ()
+    var onExpanded: () -> ()
     
-    init(content: @escaping () -> Content, onDelete: @escaping () -> ()) {
+    init(content: @escaping () -> Content, onDelete: @escaping () -> (), onExpanded: @escaping () -> ()) {
         self.content = content()
         self.onDelete = onDelete
+        self.onExpanded = onExpanded
     }
     @State private var dragProgress: CGFloat = 0
     @State private var isExpanded: Bool = false
@@ -62,6 +64,7 @@ struct PeelEffect<Content: View>: View {
                                         if dragProgress > 0.25 {
                                             dragProgress = 0.6
                                             isExpanded = true
+                                            onExpanded()
                                         } else {
                                             dragProgress = .zero
                                             isExpanded = false

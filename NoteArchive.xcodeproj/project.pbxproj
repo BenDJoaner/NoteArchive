@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4A608A882D7F4416007299A5 /* Pages in Frameworks */ = {isa = PBXBuildFile; productRef = 4A608A872D7F4416007299A5 /* Pages */; };
+		4110260A2D800440001936A2 /* Pages in Frameworks */ = {isa = PBXBuildFile; productRef = 411026092D800440001936A2 /* Pages */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,7 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4A608A882D7F4416007299A5 /* Pages in Frameworks */,
+				4110260A2D800440001936A2 /* Pages in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,7 +138,7 @@
 			);
 			name = NoteArchive;
 			packageProductDependencies = (
-				4A608A872D7F4416007299A5 /* Pages */,
+				411026092D800440001936A2 /* Pages */,
 			);
 			productName = NoteArchive;
 			productReference = 4A5EA8782D7C72F2008144F8 /* NoteArchive.app */;
@@ -229,7 +229,7 @@
 			mainGroup = 4A5EA86F2D7C72F2008144F8;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				4A608A7C2D7F3FC6007299A5 /* XCLocalSwiftPackageReference "../Pages-master" */,
+				411026082D800432001936A2 /* XCLocalSwiftPackageReference "../Pages-master" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4A5EA8792D7C72F2008144F8 /* Products */;
@@ -340,7 +340,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -379,7 +379,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -616,16 +616,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		4A608A7C2D7F3FC6007299A5 /* XCLocalSwiftPackageReference "../Pages-master" */ = {
+		411026082D800432001936A2 /* XCLocalSwiftPackageReference "../Pages-master" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = "../Pages-master";
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		4A608A872D7F4416007299A5 /* Pages */ = {
+		411026092D800440001936A2 /* Pages */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4A608A7C2D7F3FC6007299A5 /* XCLocalSwiftPackageReference "../Pages-master" */;
+			package = 411026082D800432001936A2 /* XCLocalSwiftPackageReference "../Pages-master" */;
 			productName = Pages;
 		};
 /* End XCSwiftPackageProductDependency section */
