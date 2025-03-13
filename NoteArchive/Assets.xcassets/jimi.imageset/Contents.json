@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "jimi.png",
+      "filename" : "jimi.jpeg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "jimi 1.png",
+      "filename" : "jimi 1.jpeg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "jimi 2.png",
+      "filename" : "jimi 2.jpeg",
       "idiom" : "universal",
       "scale" : "3x"
     }
