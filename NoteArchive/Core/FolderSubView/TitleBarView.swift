@@ -19,6 +19,7 @@ struct TitleBarView: View {
         HStack {
             // 添加 ColorPicker
             if folderState == .e_editing && !isPrivacy {
+//                Image(systemName: "square.and.pencil")
                 ColorPicker("", selection: Binding(
                     get: { Color(hex: note.colorStr ?? "#FFFFFF") },
                     set: { newColor in
@@ -32,9 +33,16 @@ struct TitleBarView: View {
             }
 
             if folderState == .e_editing && !isPrivacy {
-                TextField("Enter new title", text: $newTitle)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.horizontal)
+                HStack(spacing: 10) {
+                    TextField("editTitle", text: $newTitle)
+                }
+                .padding(.vertical, 10)
+                .padding(.horizontal, 15)
+                .background(.primary.opacity(0.06), in: .rect(cornerRadius: 10))
+                
+//                TextField("Enter new title", text: $newTitle)
+//                    .textFieldStyle(RoundedBorderTextFieldStyle())
+//                    .padding(.horizontal)
             } else {
                 Text(titleForState())
                     .font(.largeTitle)
@@ -48,7 +56,7 @@ struct TitleBarView: View {
                     folderState = .e_editing
                 }) {
                     HStack {
-                        Image(systemName: "pencil")
+                        Image(systemName: "rectangle.and.pencil.and.ellipsis")
                         Text("编辑")
                     }
                     .font(.headline)

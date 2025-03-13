@@ -19,15 +19,6 @@ var mockChips: [Chip] = [
     .init(name: "Amazon"),
     .init(name: "Facebook"),
     .init(name: "Twitter"),
-    .init(name: "Netflix"),
-    .init(name: "Youtube"),
-    .init(name: "Instagram"),
-    .init(name: "Snapchat"),
-    .init(name: "Pinterest"),
-    .init(name: "Reddit"),
-    .init(name: "TikTok"),
-    .init(name: "Uber"),
-    .init(name: "Spotify")
 ]
 
 

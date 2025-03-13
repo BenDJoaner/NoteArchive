@@ -17,7 +17,7 @@ struct TrashCoverView: View {
     var body: some View {
         ZStack {
             // 背景颜色
-            Color(hex: cover.color ?? "#FF5733")
+            Color(hex: cover.color ?? "#7D177D")
                 .cornerRadius(10)
                 .opacity(0.5)
 
@@ -72,7 +72,7 @@ struct TrashCoverView: View {
                     showDeleteConfirmation = true
                 }) {
                     HStack {
-                        Image(systemName: "trash")
+                        Image(systemName: "text.page.slash.fill")
                         Text("销毁")
                     }
                     .font(.headline)

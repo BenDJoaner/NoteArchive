@@ -28,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		415AC55E2D828BA50059A7E7 /* NoteArchive.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = NoteArchive.xcodeproj; sourceTree = SOURCE_ROOT; };
 		4A5EA8782D7C72F2008144F8 /* NoteArchive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NoteArchive.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A5EA88F2D7C72F3008144F8 /* NoteArchiveTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NoteArchiveTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A5EA8992D7C72F3008144F8 /* NoteArchiveUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NoteArchiveUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,9 +91,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		415AC5B62D8290EE0059A7E7 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4A5EA86F2D7C72F2008144F8 = {
 			isa = PBXGroup;
 			children = (
+				415AC55E2D828BA50059A7E7 /* NoteArchive.xcodeproj */,
 				4A5EA87A2D7C72F2008144F8 /* NoteArchive */,
 				4A5EA8922D7C72F3008144F8 /* NoteArchiveTests */,
 				4A5EA89C2D7C72F3008144F8 /* NoteArchiveUITests */,
@@ -234,6 +241,12 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4A5EA8792D7C72F2008144F8 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 415AC5B62D8290EE0059A7E7 /* Products */;
+					ProjectRef = 415AC55E2D828BA50059A7E7 /* NoteArchive.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				4A5EA8772D7C72F2008144F8 /* NoteArchive */,
@@ -326,7 +339,7 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -365,7 +378,7 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

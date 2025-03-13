@@ -49,7 +49,7 @@ struct AddNoteButtonView: View {
     var body: some View {
         Button(action: addNote) {
             HStack {
-                Image(systemName: "plus.circle.fill")
+                Image(systemName: "folder.fill.badge.plus")
                 Text("添加档案夹")
             }
             .foregroundColor(.blue)
@@ -64,49 +64,56 @@ struct NoteRowView: View {
     @State private var data = []
     var body: some View {
         let data = getCoverData(note: selectedNote ?? note)
-        NavigationLink(destination: FolderView(note: note, folderState: FolderView.FolderState.e_normal), tag: note, selection: $selectedNote) {
-            VStack {
-                HStack{
-                    if note.isPinned {
-                        Image(systemName: "pin.fill")
-                            .foregroundColor(.yellow)
+        NavigationLink(destination: FolderView(note: note, folderState: FolderView.FolderState.e_normal, systemImageType: .badgeclock), tag: note, selection: $selectedNote) {
+//            ZStack(alignment: .topTrailing) { // 使用 ZStack 将图片作为背景
+                // 主要内容
+                VStack {
+                    HStack {
+                        if note.isPinned {
+                            Image(systemName: "bookmark.fill")
+                                .foregroundColor(.orange)
+                        }
+                        Text(note.title ?? "Untitled")
+                        Text("\(note.covers?.count ?? 0)")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                        Spacer()
                     }
-                    Text(note.title ?? "Untitled")
-                    Text("\(note.covers?.count ?? 0)")
-                        .font(.caption)
-                        .foregroundColor(.gray)
-                    Spacer()
+                    HStack {
+                        ContributionChartView(data: data, rows: 5, columns: 20, targetValue: 1.0, blockColor: Color(hex: note.colorStr ?? "#7D177D"))
+                            .frame(width: 285, height: 75)
+//                            .background(Color(.systemGray6))
+                            .background(Color(hex: note.colorStr ?? "#7D177D").opacity(0.2))
+                            .cornerRadius(5)
 
+                        Spacer()
+                    }
                 }
-                .padding(.bottom)
-                HStack{
-                    ContributionChartView(data: data, rows: 6, columns: 30, targetValue: 1.0,blockColor: .blue)
-                        .frame(width: 320, height: 50)
-                    Spacer()
-                
-                }
-            }
-            .padding()
-//            .background(Color(.systemGray5))
-//            .cornerRadius(10)
+                .padding(2)
+            // 背景图片
+//            Image(systemName: note.iconStr ?? "aqi.medium" ) // 使用 heartdoc 图片
+//                .resizable()
+//                .scaledToFit()
+//                .frame(width: 120, height: 120) // 调整图片大小
+//                .opacity(0.3) // 设置透明度
+//                .foregroundColor(Color(hex: note.colorStr ?? "#555555"))
+////                    .offset(x: 50, y: -50)
+//            }
         }
         .swipeActions(edge: .leading, allowsFullSwipe: true) {
             Button {
                 togglePin(note: note)
             } label: {
-                Label(note.isPinned ? "Unpin" : "Pin", systemImage: note.isPinned ? "pin.slash" : "pin.fill")
+                Label(note.isPinned ? "Unpin" : "Pin", systemImage: note.isPinned ? "bookmark.slash" : "bookmark.fill")
             }
-            .tint(note.isPinned ? .gray : .yellow)
+            .tint(note.isPinned ? .gray : .orange)
         }
-        // 根据 appConfig 的 notes 数量决定是否启用滑动删除
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-//            if let appconfig = parentConfig, appconfig.notes?.count ?? 0 > 1 {
-                Button(role: .destructive) {
-                    moveToTrash(note)
-                } label: {
-                    Label("删除", systemImage: "trash")
-                }
-//            }
+            Button(role: .destructive) {
+                moveToTrash(note)
+            } label: {
+                Label("删除", systemImage: "trash")
+            }
         }
     }
 

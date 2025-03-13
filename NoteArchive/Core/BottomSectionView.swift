@@ -13,11 +13,44 @@ struct BottomSectionView: View {
     var trashNote: Note?
     @Binding var selectedNote: Note?
     var appConfig: AppConfig? // 添加 appConfig 参数
-    
+    @State private var viewWidth: CGFloat = 300
     @State private var showAuthenticationFailedAlert = false
-
     var body: some View {
         VStack(spacing: 2) {
+            
+//            ChipsView(width: viewWidth) {
+//                ForEach(mockChips) { chip in
+//                    let horizontalSpace: CGFloat = 10
+//                    let viewWidth = chip.name.size(.preferredFont(forTextStyle: .body)).width + horizontalSpace * 2
+//                    
+//                    Text(chip.name)
+//                        .font(.body)
+//                        .foregroundStyle(.white)
+//                        .padding(.vertical, 6)
+//                        .padding(.horizontal, horizontalSpace)
+//                        .background(.red.gradient, in: .capsule)
+//                        .containerValue(\.viewWidth, viewWidth)
+//                }
+//            }
+//            .frame(width: viewWidth)
+//            .padding()
+//            .background(Color.primary.opacity(0.08), in: .rect(cornerRadius: 10))
+            
+//            HoldDownButton(
+//                text: "Hold To Increase",
+//                paddingHorizontal: 25,
+//                paddingVertical: 15,
+//                duration: CGFloat(0.5),
+//                scale: CGFloat(0.8),
+//                background: .black,
+//                loadingTint: .white.opacity(0.3)
+////                shape: shapeStyle.shape
+//            ) {
+////                count += 1
+//            }
+//            .foregroundStyle(.white)
+//            .padding(.vertical, 60)
+            
             if let privacyNote = privacyNote {
                 Button(action: {
                     authenticate { success in
@@ -30,7 +63,7 @@ struct BottomSectionView: View {
                     }
                 }) {
                     HStack {
-                        Image(systemName: "lock.fill")
+                        Image(systemName: "lock.rectangle.stack.fill")
                         Text("机密档案")
                         Spacer()
                         Text("\(privacyNote.covers?.count ?? 0)")
@@ -38,7 +71,7 @@ struct BottomSectionView: View {
                             .foregroundColor(.gray)
                     }
                     .padding()
-                    .background(Color(.systemBackground))
+                    .background(Color(.systemGray6))
                     .cornerRadius(10)
                     .padding(.horizontal)
                     .padding(.all, 5)
@@ -75,7 +108,7 @@ struct BottomSectionView: View {
                             .foregroundColor(.gray)
                     }
                     .padding()
-                    .background(Color(.systemBackground))
+                    .background(Color(.systemGray6))
                     .cornerRadius(10)
                     .padding(.horizontal)
                     .padding(.all, 5)
