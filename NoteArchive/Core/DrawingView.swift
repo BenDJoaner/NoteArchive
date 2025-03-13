@@ -14,7 +14,8 @@ struct DrawingView: View {
     @State private var isSwiping = false
     @State private var swipeDirection: SwipeDirection = .none
     @State private var bookPages: [BookCanvasView] = []
-    @State private var canUseHand: Bool = false
+    @State private var useAI: Bool = false
+    @State private var usePencil: Bool = true
     @State private var changeTheme: Bool = false
     @Environment(\.colorScheme) private var scheme: ColorScheme
     @AppStorage("userScheme") private var userTheme: Theme = .systemDefault
@@ -31,12 +32,11 @@ struct DrawingView: View {
         ZStack {
             Color.gray.opacity(0.2) // 灰色背景
                 .edgesIgnoringSafeArea(.all)
-            
             // 画板区域
             ZStack {
                 ForEach(0..<pageDatas.count, id: \.self) { index in
                     if index == currentPageIndex {
-                        CanvasView(canvasView: $canvasView, toolPicker: toolPicker, onDrawingChange: saveCurrentPage, background: selectedBackground, canUseHand: canUseHand)
+                        CanvasView(canvasView: $canvasView, toolPicker: toolPicker, onDrawingChange: saveCurrentPage, background: selectedBackground, canUseHand: useAI)
 //                            .matchedGeometryEffect(id: cover.id, in: namespace) // 添加 matchedGeometryEffect
                             .cornerRadius(8) // 画板圆角
                             .shadow(radius: 5) // 添加阴影
@@ -60,9 +60,10 @@ struct DrawingView: View {
                 }
             )
             .padding(10)
-//            if !pageDatas.isEmpty { // 确保 pageDatas 被赋值后才渲染 BookPageView
-//                BookPageView(cover: cover, currentPageIndex: currentPageIndex, bookPages: bookPages , canUseHand: canUseHand, saveCurrentPage: saveCurrentPage)
-//            }
+            if !pageDatas.isEmpty { // 确保 pageDatas 被赋值后才渲染 BookPageView
+//                BookPageView(cover: cover, currentPageIndex: currentPageIndex, bookPages: bookPages , canUseHand: useAI, saveCurrentPage: saveCurrentPage)
+//                SwipeCardView(pageDatas: pageDatas)
+            }
         }
         .navigationBarTitle("\(cover.title ?? "空")(\(currentPageIndex + 1)/\(pageDatas.count))", displayMode: .inline)
         .onAppear {
@@ -78,8 +79,11 @@ struct DrawingView: View {
 //            ThemeChangeView(scheme: scheme)
 //                .presentationDetents([.height(410)])
 //                .presentationBackground(.clear)
+//            SwipeCardView(pageDatas: pageDatas)
             ButtonBarView(
                 onClear: clearCurrentPage,
+                onAddPhoto: loadImage,
+                onAddPDF: loadPDF,
                 onBackgroundChange: { background in
                     selectedBackground = background
                     cover.selectedBackground = background.rawValue
@@ -87,7 +91,9 @@ struct DrawingView: View {
                     saveBackground()
                 },
                 selectedBackground: $selectedBackground,
-                isToggleOn: $canUseHand
+                isAIOn: $useAI,
+                usePencil: $usePencil
+                
                 )
                 .presentationDetents([.height(410)])
                 .presentationBackground(.clear)
@@ -110,6 +116,9 @@ struct DrawingView: View {
     }
 
     private func previousPage() {
+        if currentPageIndex == 0 {
+            return
+        }
         saveCurrentPage()
 //        DispatchQueue.main.async {
             if currentPageIndex > 0 {
@@ -219,6 +228,14 @@ struct DrawingView: View {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
+    }
+    
+    private func loadImage(){
+        
+    }
+    
+    private func loadPDF(){
+        
     }
 
     private func updateBackground() {

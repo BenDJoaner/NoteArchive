@@ -30,12 +30,7 @@ struct ContentView: View {
                 VStack(spacing: 0) {
                     // 笔记列表
                     NoteListView(notes: notes, selectedNote: $selectedNote, moveToTrash: moveToTrash, addNote: addNote, parentConfig: appConfig)
-                        .background(
-                            // 为 NoteListView 的底部添加磨砂玻璃效果
-                            BlurView(style: .systemMaterial)
-                                .mask(LinearGradient(gradient: Gradient(colors: [.clear, .black]), startPoint: .top, endPoint: .bottom))
-                                .edgesIgnoringSafeArea(.bottom)
-                        )
+
                     // 底部区域（隐私书架和回收站）
                     if let appConfig = appConfig {
                         BottomSectionView(privacyNote: appConfig.privacyNote, trashNote: appConfig.trashNote, selectedNote: $selectedNote)
@@ -46,7 +41,6 @@ struct ContentView: View {
                     setupAppConfig()
                 }
             }
-
         }
 //        .navigationViewStyle(DoubleColumnNavigationViewStyle()) // 设置双栏样式
         .navigationViewStyle(StackNavigationViewStyle()) // 设置堆栈样式

@@ -18,36 +18,6 @@
             endingLineNumber = "22"
             landmarkName = "body"
             landmarkType = "24">
-            <Locations>
-               <Location
-                  uuid = "19618D2A-72C4-42E4-8E3E-72D00BBA6617 - 3cdd7352d725cfd4"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "NoteArchive.BookPageView.body.getter : some"
-                  moduleName = "NoteArchive.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liangqixian/Project/XCode/NoteArchive/NoteArchive/Core/BookPageView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "22"
-                  endingLineNumber = "22">
-               </Location>
-               <Location
-                  uuid = "19618D2A-72C4-42E4-8E3E-72D00BBA6617 - 89020b5d2c856e01"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Int, NoteArchive.BookCanvasView) -&gt; SwiftUI.GeometryReader&lt;SwiftUI.Text&gt; in NoteArchive.BookPageView.body.getter : some"
-                  moduleName = "NoteArchive.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liangqixian/Project/XCode/NoteArchive/NoteArchive/Core/BookPageView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "22"
-                  endingLineNumber = "22">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -76,8 +46,8 @@
             filePath = "NoteArchive/Core/DrawingView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -128,36 +98,6 @@
             endingLineNumber = "44"
             landmarkName = "loadPages()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "B2038035-A986-4FE6-9950-7805568ECD29 - 293370d7ca6ddb43"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "NoteArchive.BookPageView.loadPages() -&gt; ()"
-                  moduleName = "NoteArchive.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liangqixian/Project/XCode/NoteArchive/NoteArchive/Core/BookPageView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "44"
-                  endingLineNumber = "44">
-               </Location>
-               <Location
-                  uuid = "B2038035-A986-4FE6-9950-7805568ECD29 - a5b2a538dc7272ee"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (NoteArchive.DrawingPage, NoteArchive.DrawingPage) -&gt; Swift.Bool in NoteArchive.BookPageView.loadPages() -&gt; ()"
-                  moduleName = "NoteArchive.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liangqixian/Project/XCode/NoteArchive/NoteArchive/Core/BookPageView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "44"
-                  endingLineNumber = "44">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -190,6 +130,22 @@
             endingLineNumber = "86"
             landmarkName = "canvasToPage(cover:)"
             landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "91412B1A-C3AE-4F20-A1BF-1575849A5795"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "NoteArchive/Core/DrawingView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "82"
+            endingLineNumber = "82"
+            landmarkName = "body"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

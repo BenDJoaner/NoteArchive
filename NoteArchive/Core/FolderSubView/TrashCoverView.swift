@@ -19,16 +19,16 @@ struct TrashCoverView: View {
             // 背景颜色
             Color(hex: cover.color ?? "#7D177D")
                 .cornerRadius(10)
-                .opacity(0.5)
+                .opacity(0.8)
 
             // 图片
-            Image("xiaohui") // 使用图片名称
+            Image(systemName: "trash") // 使用图片名称
                 .resizable() // 使图片可调整大小
                 .scaledToFit() // 保持图片比例
                 .frame(width: 180, height: 180) // 设置图片大小
                 .offset(x: -50, y: 80)
-                .shadow(radius: 1,x:2,y:2)
-                .opacity(0.8) // 设置透明度为 50%
+                .opacity(0.5) // 设置透明度为 50%
+                .foregroundColor(.white)
             // 标题文本
             VStack {
                 Text(cover.title ?? "Untitled")

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SwipeCardMessage: Identifiable, Equatable {
     var id: String = UUID().uuidString
-    var imageFile: String
+//    var imageFile: String
+    var pageData: DrawingPage
 }
 

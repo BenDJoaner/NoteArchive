@@ -27,17 +27,20 @@ struct CoverView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 120, height: 120)
-                    .offset(x: 50, y: -80)
+                    .offset(x: 20, y: -50)
                     .foregroundColor(.white)
                     .opacity(0.2) // 设置透明度为 50%
             }
             
             if isPrivacy {
                 // 图片
-                Image("jimi") // 使用图片名称
-                    .frame(width: 100, height: 100) // 设置图片大小
-                    .offset(x: 50, y: -80)
+                Image(systemName: "person.badge.shield.checkmark") // 使用图片名称
+                    .resizable() // 使图片可调整大小
+                    .scaledToFit() // 保持图片比例
+                    .frame(width: 180, height: 180) // 设置图片大小
+                    .offset(x: -50, y: 80)
                     .opacity(0.5) // 设置透明度为 50%
+                    .foregroundColor(.white)
             }
 
             
@@ -63,7 +66,7 @@ struct CoverView: View {
                     .scaledToFit()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .padding(20)
-            }
+                }
 
             // 左下角显示创建时间
             VStack {
@@ -90,6 +93,7 @@ struct CoverView: View {
         .onLongPressGesture {
             onLongPress() // 触发长按回调
         }
+        
     }
 
     // 格式化日期
