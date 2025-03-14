@@ -1,0 +1,34 @@
+/* 
+  Localizable.strings
+  NoteArchive
+
+  Created by BC on 2025/3/14.
+  
+*/
+"NoteArchive"="筆記檔案"
+"ArchiveBox"="檔案櫃"
+"Confidential"="機密檔案"
+"DestructionSite"="銷毀處"
+"Folder"="檔案夾"
+"AddFolder"="添加檔案夾"
+"Delete"="删除"
+"PendingDestruction"="待銷毀"
+"AuthAdvanced"="檔案高級許可權驗證"
+"Retrieved"="已取出"
+"NewArchive"="新檔案"
+"ArchiveColor"="檔案顏色"
+"Color"="顏色"
+"Confidentiality"="保密"
+"Discard"="丟棄"
+"Transfer"="轉移"
+"TransferTo"="轉移到"
+"Page"="頁"
+"Edit"="編輯"
+"Save"="保存"
+"Editing"="編輯中"
+"ClearSection"="清空板塊"
+"BackgroundStyle"="背景樣式"
+"PenOnly"="只能用筆"
+"EnableAI"="開啟智慧"
+"ImportImage"="導入圖片"
+"ImportPDF"="導入PDF"

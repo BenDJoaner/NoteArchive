@@ -1,0 +1,34 @@
+/* 
+  Localizable.strings
+  NoteArchive
+
+  Created by BC on 2025/3/14.
+  
+*/
+"NoteArchive"="ノートアーカイブ"
+"ArchiveBox"="アーカイブボックス"
+"Confidential"="機密"
+"DestructionSite"="処分場"
+"Folder"="フォルダ"
+"AddFolder"="フォルダを追加"
+"Delete"="削除"
+"PendingDestruction"="処分待ち"
+"AuthAdvanced"="高度な認証"
+"Retrieved"="取り出し済み"
+"NewArchive"="新しいアーカイブ"
+"ArchiveColor"="アーカイブの色"
+"Color"="色"
+"Confidentiality"="機密性"
+"Discard"="破棄"
+"Transfer"="転送"
+"TransferTo"="転送先"
+"Page"="ページ"
+"Edit"="編集"
+"Save"="保存"
+"Editing"="編集中"
+"ClearSection"="セクションをクリア"
+"BackgroundStyle"="背景スタイル"
+"PenOnly"="ペンのみ"
+"EnableAI"="AIを有効にする"
+"ImportImage"="画像をインポート"
+"ImportPDF"="PDFをインポート"
