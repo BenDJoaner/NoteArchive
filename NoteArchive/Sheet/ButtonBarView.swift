@@ -16,11 +16,8 @@ struct ButtonBarView: View {
     @Binding var selectedBackground: BackgroundType // 当前选中的背景类型
     @Binding var isAIOn: Bool // Toggle 的状态
     @Binding var usePencil: Bool // Toggle 的状态
+    @State private var selection2: String?
     var body: some View {
-//        VStack(spacing: 15) {
-//            Text("编辑方式")
-//                .multilineTextAlignment(.center)
-            
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
                 // 清空按钮
                 Button(action: onClear) {
@@ -55,9 +52,7 @@ struct ButtonBarView: View {
                     VStack {
                         Image(systemName: "paintbrush")
                         Text("背景样式")
-                        Text(selectedBackground.rawValue) // 显示当前选择的背景类型
-                            .font(.caption)
-                            .foregroundColor(.white)
+                        Text("[\(selectedBackground.rawValue)]") // 显示当前选择的背景类型
                     }
                     .font(.headline)
                     .padding()
@@ -175,21 +170,9 @@ struct ButtonBarView: View {
                     }
                 }
             }
-//            .padding(20) // 设置 LazyVGrid 与 view 边框的间距
-//            .padding(3)
-//            .background(.primary.opacity(0.06), in: .capsule)
-//            .padding(.top, 20)
-//        }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .frame(height: 410)
-//        .background(.themeBG)
-//        .clipShape(.rect(cornerRadius: 30))
         .padding(.horizontal, 20)
-//        .background(
-//            // 为 NoteListView 的底部添加磨砂玻璃效果
-//            BlurView(style: .systemThinMaterial)
-//                .mask(LinearGradient(gradient: Gradient(colors: [.white, .black]), startPoint: .top, endPoint: .bottom))
-//                .edgesIgnoringSafeArea(.bottom)
-//        )
     }
 }
+

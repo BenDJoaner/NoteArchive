@@ -29,7 +29,8 @@ struct NoteListView: View {
             // 添加档案夹按钮
             AddNoteButtonView(addNote: addNote)
         }
-        .listStyle(DefaultListStyle())
+//        .listStyle(DefaultListStyle())
+        .listStyle(PlainListStyle())
 
     }
 
@@ -54,7 +55,8 @@ struct NoteListView: View {
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 15)
-        .background(.primary.opacity(0.06), in: .rect(cornerRadius: 10))
+//        .background(.primary.opacity(0.06), in: .rect(cornerRadius: 10))
+        .shadow(radius: 1)
     }
 }
 

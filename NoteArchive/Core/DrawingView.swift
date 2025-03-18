@@ -33,35 +33,35 @@ struct DrawingView: View {
             Color.gray.opacity(0.2) // 灰色背景
                 .edgesIgnoringSafeArea(.all)
             // 画板区域
-            ZStack {
-                ForEach(0..<pageDatas.count, id: \.self) { index in
-                    if index == currentPageIndex {
-                        CanvasView(canvasView: $canvasView, toolPicker: toolPicker, onDrawingChange: saveCurrentPage, background: selectedBackground, canUseHand: useAI)
-//                            .matchedGeometryEffect(id: cover.id, in: namespace) // 添加 matchedGeometryEffect
-                            .cornerRadius(8) // 画板圆角
-                            .shadow(radius: 5) // 添加阴影
-                        
-                        
-                        }
-                }
-            }
-            .gesture(
-                DragGesture()
-                .onEnded { gesture in
-                    if gesture.translation.width > 50 {
-                        previousPage()
-                    } else if gesture.translation.width < -50 {
-                        nextPage()
-                    } else if gesture.translation.height < -50 {
-                        showToolPicker()
-                    } else if gesture.translation.height > 50 {
-                        hideToolPicker()
-                    }
-                }
-            )
-            .padding(10)
+//            ZStack {
+//                ForEach(0..<pageDatas.count, id: \.self) { index in
+//                    if index == currentPageIndex {
+//                        CanvasView(canvasView: $canvasView, toolPicker: toolPicker, onDrawingChange: saveCurrentPage, background: selectedBackground, canUseHand: useAI)
+////                            .matchedGeometryEffect(id: cover.id, in: namespace) // 添加 matchedGeometryEffect
+//                            .cornerRadius(8) // 画板圆角
+//                            .shadow(radius: 5) // 添加阴影
+//                        
+//                        
+//                        }
+//                }
+//            }
+//            .gesture(
+//                DragGesture()
+//                .onEnded { gesture in
+//                    if gesture.translation.width > 50 {
+//                        previousPage()
+//                    } else if gesture.translation.width < -50 {
+//                        nextPage()
+//                    } else if gesture.translation.height < -50 {
+//                        showToolPicker()
+//                    } else if gesture.translation.height > 50 {
+//                        hideToolPicker()
+//                    }
+//                }
+//            )
+//            .padding(10)
             if !pageDatas.isEmpty { // 确保 pageDatas 被赋值后才渲染 BookPageView
-//                BookPageView(cover: cover, currentPageIndex: currentPageIndex, bookPages: bookPages , canUseHand: useAI, saveCurrentPage: saveCurrentPage)
+                BookPageView(cover: cover, currentPageIndex: currentPageIndex, selectedBackground: selectedBackground, bookPages: bookPages , canUseHand: useAI, saveCurrentPage: saveCurrentPage, showToolPicker: showToolPicker)
 //                SwipeCardView(pageDatas: pageDatas)
             }
         }
@@ -291,7 +291,7 @@ struct CanvasView: UIViewRepresentable {
 
         init(onDrawingChange: @escaping () -> Void) {
             self.onDrawingChange = onDrawingChange
-            print("onDrawingChange >>> \(background)")
+//            print("onDrawingChange >>> \(background)")
         }
 
         func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
@@ -313,21 +313,23 @@ struct BookPageView: View {
     @State private var index: Int = 0
     @State private var canvasView = PKCanvasView()
     @State private var toolPicker = PKToolPicker()
-    @State private var selectedBackground: BackgroundType = .blank
+    var selectedBackground: BackgroundType = .blank
     @State private var drawingPages: [DrawingPage] = []
     @State var bookPages:[BookCanvasView]
     var canUseHand: Bool
     var saveCurrentPage: () -> Void
+    var showToolPicker: () -> Void
     var body: some View {
         ModelPages(
             bookPages,
             currentPage: $index,
 //            navigationOrientation: .horizontal,
 //            currentPage: currentPageIndex,
-            transitionStyle: .pageCurl
-//            bounce: true
+            transitionStyle: .pageCurl,
+//            bounce: false
 //            wrap: true
-//            controlAlignment: .topLeading
+//            controlAlignment: .trailingFirstTextBaseline
+            hasControl: false
         ) { i, page in
             GeometryReader { geometry in
                 CanvasView(
@@ -337,10 +339,21 @@ struct BookPageView: View {
                     background: selectedBackground,
                     canUseHand: canUseHand
                 )
-//                Text("Book Page >>>> \(i) -> \(page)").font(.title)
+                Text("Book Page >>>> \(i) -> \(page)").font(.title).padding()
                 
             }
             .background(Color.white)
+
         }
+        .gesture(
+            DragGesture()
+            .onEnded { gesture in
+                if gesture.translation.height < -50 {
+                    showToolPicker()
+                }
+            }
+        )
+        .padding()
+        .shadow(radius: 5)
     }
 }
