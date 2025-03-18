@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24D60" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24D81" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
     <entity name="AppConfig" representedClassName=".AppConfig" syncable="YES" codeGenerationType="class">
         <relationship name="notes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Note" inverseName="config" inverseEntity="Note"/>
         <relationship name="privacyNote" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Note" inverseName="privateconfig" inverseEntity="Note"/>
@@ -35,5 +35,10 @@
         <relationship name="covers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Cover" inverseName="note" inverseEntity="Cover"/>
         <relationship name="privateconfig" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AppConfig" inverseName="privacyNote" inverseEntity="AppConfig"/>
         <relationship name="trashconfig" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AppConfig" inverseName="trashNote" inverseEntity="AppConfig"/>
+    </entity>
+    <entity name="TextPageData" representedClassName="TextPageData" syncable="YES" codeGenerationType="class">
+        <attribute name="content" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
 </model>

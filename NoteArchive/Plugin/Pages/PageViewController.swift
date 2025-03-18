@@ -38,7 +38,7 @@ struct PageViewController: UIViewControllerRepresentable {
     var wrap: Bool
     var controllers: [UIViewController]
     
-    // 新增回调
+    // 更新回调，增加 Bool 值表示翻页方向
     var onPageChangeSuccess: ((Int, Bool) -> Void)?
     var onPageChangeCancel: ((Int) -> Void)?
     var onLastPageReached: ((Int) -> Void)?

@@ -44,10 +44,11 @@ public struct ModelPages<Data, Content>: View where Data: RandomAccessCollection
     private var currentTintColor: UIColor
     private var tintColor: UIColor
 
-    // 新增回调
+    // 更新回调，增加 Bool 值表示翻页方向
     private var onPageChangeSuccess: ((Int, Bool) -> Void)?
     private var onPageChangeCancel: ((Int) -> Void)?
     private var onLastPageReached: ((Int) -> Void)?
+
     /**
     Creates the paging view that generates pages dynamically based on some user-defined data.
 
@@ -95,10 +96,9 @@ public struct ModelPages<Data, Content>: View where Data: RandomAccessCollection
         currentTintColor: UIColor = .white,
         tintColor: UIColor = .gray,
         template: @escaping (Int, Data.Element) -> Content,
-        onPageChangeSuccess: ((Int) -> Void)? = nil,
+        onPageChangeSuccess: ((Int, Bool) -> Void)? = nil,
         onPageChangeCancel: ((Int) -> Void)? = nil,
         onLastPageReached: ((Int) -> Void)? = nil
-        
     ) {
         self._currentPage = currentPage
         self.navigationOrientation = navigationOrientation

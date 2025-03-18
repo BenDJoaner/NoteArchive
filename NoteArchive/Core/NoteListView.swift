@@ -19,7 +19,8 @@ struct NoteListView: View {
     
     @State private var searchText: String = ""
     var body: some View {
-        SearchBar().padding(.horizontal)
+        SearchBar()
+            .padding(.horizontal)
         List {
             // 过滤掉“隐私”和“回收站”书架
             ForEach(notes.filter { $0.title != "隐私" && $0.title != "回收站" }, id: \.self) { note in
@@ -55,8 +56,8 @@ struct NoteListView: View {
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 15)
-//        .background(.primary.opacity(0.06), in: .rect(cornerRadius: 10))
-        .shadow(radius: 1)
+        .background(.primary.opacity(0.06), in: .rect(cornerRadius: 10))
+
     }
 }
 

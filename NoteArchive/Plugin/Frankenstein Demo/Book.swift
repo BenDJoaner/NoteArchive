@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import Pages
 
 struct Book: View {
 

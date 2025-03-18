@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		4110260A2D800440001936A2 /* Pages in Frameworks */ = {isa = PBXBuildFile; productRef = 411026092D800440001936A2 /* Pages */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		4A5EA8902D7C72F3008144F8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -70,7 +66,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4110260A2D800440001936A2 /* Pages in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,7 +140,6 @@
 			);
 			name = NoteArchive;
 			packageProductDependencies = (
-				411026092D800440001936A2 /* Pages */,
 			);
 			productName = NoteArchive;
 			productReference = 4A5EA8782D7C72F2008144F8 /* NoteArchive.app */;
@@ -235,7 +229,6 @@
 			mainGroup = 4A5EA86F2D7C72F2008144F8;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				411026082D800432001936A2 /* XCLocalSwiftPackageReference "../Pages-master" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4A5EA8792D7C72F2008144F8 /* Products */;
@@ -626,21 +619,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCLocalSwiftPackageReference section */
-		411026082D800432001936A2 /* XCLocalSwiftPackageReference "../Pages-master" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../Pages-master";
-		};
-/* End XCLocalSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		411026092D800440001936A2 /* Pages */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 411026082D800432001936A2 /* XCLocalSwiftPackageReference "../Pages-master" */;
-			productName = Pages;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4A5EA8702D7C72F2008144F8 /* Project object */;
 }

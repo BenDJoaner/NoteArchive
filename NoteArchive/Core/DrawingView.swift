@@ -1,12 +1,13 @@
 import SwiftUI
 import PencilKit
 import CoreData
-import Pages
+
 
 struct DrawingView: View {
     @ObservedObject var cover: Cover
     @Environment(\.managedObjectContext) private var viewContext
-    @State private var canvasView = PKCanvasView()
+    @State private var currentCanvasView = PKCanvasView()
+    @State private var nextCanvasView = PKCanvasView()
     @State private var pageDatas: [DrawingPage] = []
     @State private var currentPageIndex = 0
     @State private var toolPicker = PKToolPicker()
@@ -19,6 +20,8 @@ struct DrawingView: View {
     @State private var changeTheme: Bool = false
     @Environment(\.colorScheme) private var scheme: ColorScheme
     @AppStorage("userScheme") private var userTheme: Theme = .systemDefault
+    @State private var selectedImage: UIImage? // 存储选中的图片
+    @State private var showImagePicker = false // 控制图片选择器的显示
     
     var namespace: Namespace.ID // 接收命名空间
     
@@ -33,37 +36,40 @@ struct DrawingView: View {
             Color.gray.opacity(0.2) // 灰色背景
                 .edgesIgnoringSafeArea(.all)
             // 画板区域
-//            ZStack {
-//                ForEach(0..<pageDatas.count, id: \.self) { index in
-//                    if index == currentPageIndex {
-//                        CanvasView(canvasView: $canvasView, toolPicker: toolPicker, onDrawingChange: saveCurrentPage, background: selectedBackground, canUseHand: useAI)
-////                            .matchedGeometryEffect(id: cover.id, in: namespace) // 添加 matchedGeometryEffect
-//                            .cornerRadius(8) // 画板圆角
-//                            .shadow(radius: 5) // 添加阴影
-//                        
-//                        
-//                        }
-//                }
-//            }
-//            .gesture(
-//                DragGesture()
-//                .onEnded { gesture in
-//                    if gesture.translation.width > 50 {
-//                        previousPage()
-//                    } else if gesture.translation.width < -50 {
-//                        nextPage()
-//                    } else if gesture.translation.height < -50 {
-//                        showToolPicker()
-//                    } else if gesture.translation.height > 50 {
+            ZStack {
+                ForEach(0..<pageDatas.count, id: \.self) { index in
+                    if index == currentPageIndex {
+                        CanvasView(canvasView: $currentCanvasView, toolPicker: toolPicker, onDrawingChange: saveCurrentPage, background: selectedBackground, usePencil: usePencil)
+//                            .matchedGeometryEffect(id: cover.id, in: namespace) // 添加 matchedGeometryEffect
+                            .cornerRadius(8) // 画板圆角
+                            .shadow(radius: 5) // 添加阴影
+                        
+                        
+                        }
+                }
+            }
+            .gesture(
+                DragGesture()
+                .onEnded { gesture in
+                    if gesture.translation.width > 50 {
+                        previousPage()
+                    }
+                    else if gesture.translation.width < -50 {
+                        nextPage()
+                    }
+                    else if gesture.translation.height < -50 {
+                        showToolPicker()
+                    }
+//                    else if gesture.translation.height > 50 {
 //                        hideToolPicker()
 //                    }
-//                }
-//            )
-//            .padding(10)
-            if !pageDatas.isEmpty { // 确保 pageDatas 被赋值后才渲染 BookPageView
-                BookPageView(cover: cover, currentPageIndex: currentPageIndex, selectedBackground: selectedBackground, bookPages: bookPages , canUseHand: useAI, saveCurrentPage: saveCurrentPage, showToolPicker: showToolPicker)
-//                SwipeCardView(pageDatas: pageDatas)
-            }
+                }
+            )
+            .padding(10)
+//            if !pageDatas.isEmpty { // 确保 pageDatas 被赋值后才渲染 BookPageView
+//                BookPageView(cover: cover, currentPageIndex: currentPageIndex, selectedBackground: selectedBackground, bookPages: bookPages , canUseHand: useAI, saveCurrentPage: saveCurrentPage, showToolPicker: showToolPicker,nextPage:nextPage,previousPage:previousPage,addNewPage:addNewPage)
+////                SwipeCardView(pageDatas: pageDatas)
+//            }
         }
         .navigationBarTitle("\(cover.title ?? "空")(\(currentPageIndex + 1)/\(pageDatas.count))", displayMode: .inline)
         .onAppear {
@@ -76,10 +82,6 @@ struct DrawingView: View {
             saveCurrentPage()
         }
         .sheet(isPresented: $changeTheme, content: {
-//            ThemeChangeView(scheme: scheme)
-//                .presentationDetents([.height(410)])
-//                .presentationBackground(.clear)
-//            SwipeCardView(pageDatas: pageDatas)
             ButtonBarView(
                 onClear: clearCurrentPage,
                 onAddPhoto: loadImage,
@@ -130,26 +132,14 @@ struct DrawingView: View {
     }
 
     private func showToolPicker() {
-//        if UIDevice.current.userInterfaceIdiom == .pad {
-//            toolPicker.setVisible(true, forFirstResponder: canvasView)
-//            canvasView.becomeFirstResponder()
-//        }
         changeTheme = true
     }
 
-    private func hideToolPicker() {
-//        if UIDevice.current.userInterfaceIdiom == .pad {
-//            toolPicker.setVisible(false, forFirstResponder: canvasView)
-//            canvasView.resignFirstResponder()
-//        }
-//        changeTheme = false
-        
-    }
 
     private func setupToolPicker() {
-        toolPicker.setVisible(true, forFirstResponder: canvasView)
-        toolPicker.addObserver(canvasView)
-        canvasView.becomeFirstResponder()
+        toolPicker.setVisible(true, forFirstResponder: currentCanvasView)
+        toolPicker.addObserver(currentCanvasView)
+        currentCanvasView.becomeFirstResponder()
     }
 
     private func loadPages() {
@@ -163,7 +153,7 @@ struct DrawingView: View {
             addNewPage()
         }
         if pageDatas.count < 2 {
-            addNewPage(isEmpty: true)
+            addNewPage()
         }
         
         for pageData in pageDatas {
@@ -171,7 +161,7 @@ struct DrawingView: View {
         }
     }
     
-    private func addNewPage(isEmpty: Bool = false) {
+    private func addNewPage() {
         let newPage = DrawingPage(context: viewContext)
         newPage.data = PKCanvasView().drawing.dataRepresentation()
         newPage.createdAt = Date()
@@ -190,12 +180,12 @@ struct DrawingView: View {
     private func loadCanvasData() {
         if let pageData = pageDatas[currentPageIndex].data,
            let drawing = try? PKDrawing(data: pageData) {
-            canvasView.drawing = drawing
+            currentCanvasView.drawing = drawing
         }
     }
 
     private func saveCurrentPage() {
-        pageDatas[currentPageIndex].data = canvasView.drawing.dataRepresentation()
+        pageDatas[currentPageIndex].data = currentCanvasView.drawing.dataRepresentation()
         pageDatas[currentPageIndex].createdAt = Date() // 更新最后编辑日期
         
         print("saveCurrentPage")
@@ -208,7 +198,7 @@ struct DrawingView: View {
     }
 
     private func clearCurrentPage() {
-        canvasView.drawing = PKDrawing()
+        currentCanvasView.drawing = PKDrawing()
         saveCurrentPage()
     }
 
@@ -250,7 +240,7 @@ struct CanvasView: UIViewRepresentable {
     var toolPicker: PKToolPicker
     var onDrawingChange: () -> Void
     var background: BackgroundType
-    var canUseHand: Bool
+    var usePencil: Bool
     @Environment(\.colorScheme) var colorScheme
 
     func makeUIView(context: Context) -> PKCanvasView {
@@ -310,7 +300,7 @@ struct BookCanvasView {
 struct BookPageView: View {
     @ObservedObject var cover: Cover
     @State var currentPageIndex: Int
-    @State private var index: Int = 0
+//    @State private var index: Int = 0
     @State private var canvasView = PKCanvasView()
     @State private var toolPicker = PKToolPicker()
     var selectedBackground: BackgroundType = .blank
@@ -319,10 +309,13 @@ struct BookPageView: View {
     var canUseHand: Bool
     var saveCurrentPage: () -> Void
     var showToolPicker: () -> Void
+    var nextPage: () -> Void
+    var previousPage: () -> Void
+    var addNewPage: () -> Void
     var body: some View {
         ModelPages(
             bookPages,
-            currentPage: $index,
+            currentPage: $currentPageIndex,
 //            navigationOrientation: .horizontal,
 //            currentPage: currentPageIndex,
             transitionStyle: .pageCurl,
@@ -337,13 +330,29 @@ struct BookPageView: View {
                     toolPicker: toolPicker,
                     onDrawingChange: saveCurrentPage,
                     background: selectedBackground,
-                    canUseHand: canUseHand
+                    usePencil: canUseHand
                 )
-                Text("Book Page >>>> \(i) -> \(page)").font(.title).padding()
+                Text("Book Page >>>> \(i) -> \n currentPageIndex=\(currentPageIndex)\n\(page)").font(.title).padding()
                 
             }
             .background(Color.white)
 
+        }
+//        onPageChangeSuccess: { index, isForward in
+//            if isForward {
+//                print("Page change success: \(index) (forward)")
+//                nextPage()
+//            } else {
+//                print("Page change success: \(index) (backward)")
+//                previousPage()
+//            }
+//        }
+        onPageChangeCancel: { index in
+            print("Page change canceled: \(index)")
+        }
+        onLastPageReached: { index in
+            print("Last page reached: \(index)")
+            addNewPage()
         }
         .gesture(
             DragGesture()
