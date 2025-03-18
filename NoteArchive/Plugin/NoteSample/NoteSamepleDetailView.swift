@@ -71,7 +71,3 @@ struct NoteSamepleDetailView: View {
         return (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.keyWindow?.safeAreaInsets ?? .zero
     }
 }
-
-#Preview {
-    ContentView()
-}

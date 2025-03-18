@@ -21,7 +21,3 @@ struct NoteSampleTitleNoteView: View {
             .frame(width: size.width, height: size.height)
     }
 }
-
-#Preview {
-    ContentView()
-}

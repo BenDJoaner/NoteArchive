@@ -25,7 +25,3 @@ struct NoteSampleSearchQueryView<Content: View>: View {
         content(notes)
     }
 }
-
-#Preview {
-    ContentView()
-}

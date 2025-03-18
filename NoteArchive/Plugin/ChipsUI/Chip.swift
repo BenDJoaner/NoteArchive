@@ -13,12 +13,9 @@ struct Chip: Identifiable {
 }
 
 var mockChips: [Chip] = [
-    .init(name: "Apple"),
-    .init(name: "Google"),
-    .init(name: "Microsoft"),
-    .init(name: "Amazon"),
-    .init(name: "Facebook"),
-    .init(name: "Twitter"),
+    .init(name: "电脑"),
+    .init(name: "Deepseek"),
+    .init(name: "宇宙"),
 ]
 
 

@@ -212,13 +212,3 @@ struct NoteSampleHomeView: View {
         }
     }
 }
-
-extension View {
-    var noteAnimation: Animation {
-        .smooth(duration: 0.3)
-    }
-}
-
-#Preview {
-    ContentView()
-}

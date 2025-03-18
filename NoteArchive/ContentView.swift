@@ -19,14 +19,6 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             ZStack{
-                Image(systemName: "tray.2.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 100, height: 100)
-                    .position(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2)
-                    .foregroundColor(Color(.systemPurple))
-                    .opacity(0.2) // 设置透明度为 50%
-                
                 VStack(spacing: 0) {
                     // 笔记列表
                     NoteListView(notes: notes, selectedNote: $selectedNote, moveToTrash: moveToTrash, addNote: addNote, parentConfig: appConfig)

@@ -15,8 +15,11 @@ struct NoteListView: View {
     var moveToTrash: (Note) -> Void
     var addNote: () -> Void
     var parentConfig: AppConfig? // 添加 appConfig 参数
-
+    @FocusState private var isKeyboardActive: Bool
+    
+    @State private var searchText: String = ""
     var body: some View {
+        SearchBar().padding(.horizontal)
         List {
             // 过滤掉“隐私”和“回收站”书架
             ForEach(notes.filter { $0.title != "隐私" && $0.title != "回收站" }, id: \.self) { note in
@@ -40,6 +43,18 @@ struct NoteListView: View {
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
         }
+    }
+    
+    @ViewBuilder
+    func SearchBar() -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: "magnifyingglass")
+            
+            TextField("Search", text: $searchText)
+        }
+        .padding(.vertical, 10)
+        .padding(.horizontal, 15)
+        .background(.primary.opacity(0.06), in: .rect(cornerRadius: 10))
     }
 }
 
