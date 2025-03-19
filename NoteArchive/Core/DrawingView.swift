@@ -72,11 +72,12 @@ struct DrawingView: View {
                 },
                 selectedBackground: $selectedBackground,
                 isAIOn: $useAI,
-                usePencil: $usePencil
+                usePencil: $usePencil,
+                currentCanvasView: currentCanvasView
                 
                 )
-                .presentationDetents([.height(410)])
-                .presentationBackground(Color(.systemGray))
+                .presentationDetents([.height(650)])
+                .presentationBackground(.clear)
         })
     }
     
@@ -174,27 +175,5 @@ struct DrawingView: View {
         // 更新画板背景
         // 背景逻辑在 CanvasView 中实现
         
-    }
-    
-    func recognizeText(from image: UIImage, completion: @escaping (String) -> Void) {
-        guard let cgImage = image.cgImage else { return }
-        
-        let request = VNRecognizeTextRequest { (request, error) in
-            guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
-            
-            var recognizedText = ""
-            for observation in observations {
-                if let topCandidate = observation.topCandidates(1).first {
-                    recognizedText += topCandidate.string + "\n"
-                }
-            }
-            
-            completion(recognizedText)
-        }
-        
-        request.recognitionLevel = .accurate
-        
-        let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-        try? requestHandler.perform([request])
     }
 }

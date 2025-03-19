@@ -91,7 +91,6 @@ struct FolderView: View {
                                     CoverView(cover: cover, isPrivacy: isPrivacy,systemImageType: systemImageType, onLongPress: {
                                         folderState = .e_editing // 长按时进入编辑模式
                                     })
-//                                    .matchedGeometryEffect(id: cover.id, in: namespace) // 添加 matchedGeometryEffect
                                     .frame(width: 180, height: 280)
                                 }
                             }

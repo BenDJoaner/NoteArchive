@@ -49,9 +49,9 @@ struct BookPageView: View {
                     onDrawingChange: saveCurrentPage,
                     background: selectedBackground
                 )
-                let _count = addFrameCount()
+//                let _count = addFrameCount()
                 
-                Text("Book Page >>>> \(i) -> \n currentPageIndex=\(currentPageIndex)/\(bookPages.count)\nCount=\(_count)")
+                Text("Book Page >>>> \(i) -> \n currentPageIndex=\(currentPageIndex + 1)/\(bookPages.count)")
                     .font(.title)
                     .padding()
                 
@@ -62,10 +62,8 @@ struct BookPageView: View {
         onPageChangeSuccess: { index, isForward in
             if isForward {
                 print("Page change success: \(index) (forward)")
-                nextPage()
             } else {
                 print("Page change success: \(index) (backward)")
-                previousPage()
             }
             DrawPageCanvas(pageIndex: currentPageIndex)
         }
@@ -74,7 +72,7 @@ struct BookPageView: View {
         }
         onLastPageReached: { index in
             print("Last page reached: \(index)")
-            addNewPage()
+//            addNewPage()
         }
         .padding()
         .shadow(radius: 5)
@@ -95,31 +93,44 @@ struct BookPageView: View {
         currentCanvasView.becomeFirstResponder()
     }
     
-    private func DrawPageCanvas(pageIndex: Int){
-        if let pageData = pageDatas[currentPageIndex].data,
-           let drawing = try? PKDrawing(data: pageData) {
-            currentCanvasView.drawing = drawing
+    private func DrawPageCanvas(pageIndex: Int) {
+        guard currentPageIndex >= 0 && currentPageIndex < pageDatas.count else {
+            print("Error: currentPageIndex is out of bounds")
+            return
+        }
+
+        if let pageData = pageDatas[currentPageIndex].data {
+            do {
+                let drawing = try PKDrawing(data: pageData)
+                currentCanvasView.drawing = drawing
+            } catch {
+                print("Error: PKDrawing initialization failed with error: \(error)")
+                currentCanvasView.drawing = PKDrawing()
+            }
+        } else {
+            print("Error: pageData is nil")
+            currentCanvasView.drawing = PKDrawing()
         }
     }
     
-    private func nextPage() {
-        saveCurrentPage()
-        if currentPageIndex < pageDatas.count - 1 {
-            currentPageIndex += 1
-        } else {
-            addNewPage()
-            currentPageIndex += 1
-        }
-    }
-
-    private func previousPage() {
-        if currentPageIndex == 0 {
-            return
-        }
-        saveCurrentPage()
-        if currentPageIndex > 0 {
-            currentPageIndex -= 1
-        }
-    }
+//    private func nextPage() {
+//        saveCurrentPage()
+//        if currentPageIndex < pageDatas.count - 1 {
+//            currentPageIndex += 1
+//        } else {
+//            addNewPage()
+//            currentPageIndex += 1
+//        }
+//    }
+//
+//    private func previousPage() {
+//        if currentPageIndex == 0 {
+//            return
+//        }
+//        saveCurrentPage()
+//        if currentPageIndex > 0 {
+//            currentPageIndex -= 1
+//        }
+//    }
 
 }

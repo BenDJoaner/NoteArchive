@@ -7,6 +7,8 @@
 
 import SwiftUICore
 import SwiftUI
+import PencilKit
+import Vision
 
 struct ButtonBarView: View {
     var onClear: () -> Void // 清空按钮的回调
@@ -17,6 +19,10 @@ struct ButtonBarView: View {
     @Binding var isAIOn: Bool // Toggle 的状态
     @Binding var usePencil: Bool // Toggle 的状态
     @State private var selection2: String?
+    
+    var currentCanvasView: PKCanvasView
+    
+    @State private var recognizedText: String = ""
     var body: some View {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
                 // 清空按钮
@@ -172,11 +178,52 @@ struct ButtonBarView: View {
                         
                     }
                 }
+                // 清空按钮
+                Button("识别文字") {
+                    let image = currentCanvasView.toImage()
+                    recognizeText(from: image) { text in
+                        recognizedText = text
+                    }
+                }
+                .font(.headline)
+                .padding()
+                .frame(maxWidth: 150, maxHeight: 200)
+                .background(.white)
+                .foregroundColor(.black)
+                .cornerRadius(10)
+                .shadow(radius: 3)
+                Text(recognizedText)
+                    .font(.headline)
+                    .padding()
+                    .background(.white)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-//        .frame(height: 410)
+        .frame(height: 650)
         .padding(.horizontal, 20)
-
     }
+    
+    func recognizeText(from image: UIImage, completion: @escaping (String) -> Void) {
+        guard let cgImage = image.cgImage else { return }
+        
+        let request = VNRecognizeTextRequest { (request, error) in
+            guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
+            
+            var recognizedText = ""
+            for observation in observations {
+                if let topCandidate = observation.topCandidates(1).first {
+                    recognizedText += topCandidate.string + "\n"
+                }
+            }
+            
+            completion(recognizedText)
+        }
+        
+        request.recognitionLevel = .accurate
+        
+        let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        try? requestHandler.perform([request])
+    }
+    
 }
 
