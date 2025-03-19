@@ -9,14 +9,14 @@ import SwiftUI
 import CoreData
 
 struct TextEditView: View {
+    @ObservedObject var cover: Cover
     @Environment(\.managedObjectContext) private var viewContext
     @State private var currentPage: Int = 0
-    @State private var textPages: [TextPageData] = []
-
+    @State private var pageDatas: [DrawingPage] = []
     var body: some View {
-        if !textPages.isEmpty { // 确保 pageDatas 被赋值后才渲染 BookPageView
+        if !pageDatas.isEmpty { // 确保 pageDatas 被赋值后才渲染 BookPageView
             ModelPages(
-                textPages,
+                pageDatas,
                 currentPage: $currentPage,
                 navigationOrientation: .horizontal,
                 transitionStyle: .scroll,
@@ -36,8 +36,8 @@ struct TextEditView: View {
                         .padding(.horizontal)
                         Divider()
                         TextEditor(text: Binding(
-                            get: { page.content ?? "" },
-                            set: { page.content = $0 }
+                            get: { page.textData ?? "" },
+                            set: { page.textData = $0 }
                         ))
                         .font(.body)
                         .padding(.horizontal)
@@ -46,7 +46,7 @@ struct TextEditView: View {
                     .padding()
                 },
                 onPageChangeSuccess: { index, isForward in
-                    if index == textPages.count - 1 {
+                    if index == pageDatas.count - 1 {
                         addNewPage()
                     }
                 },
@@ -54,26 +54,52 @@ struct TextEditView: View {
                 onLastPageReached: { _ in }
             )
             .onAppear {
-                if textPages.isEmpty {
-                    addNewPage()
-                    addNewPage()
-                }
+                loadPages()
             }
-            
+            .onDisappear {
+                saveCurrentPage()
+            }
         }
 
     }
-
+    
+    private func loadPages() {
+        if let drawingPages = cover.drawingPages?.allObjects as? [DrawingPage] {
+            if drawingPages.isEmpty {
+                addNewPage()
+            } else {
+                pageDatas = drawingPages.sorted { $0.page < $1.page }
+            }
+        } else {
+            addNewPage()
+        }
+        if pageDatas.count < 2 {
+            addNewPage()
+        }
+    }
+    
     private func addNewPage() {
-        let newPage = TextPageData(context: viewContext)
-        newPage.title = "New Page"
-        newPage.content = ""
+        let newPage = DrawingPage(context: viewContext)
         newPage.createdAt = Date()
-        textPages.append(newPage)
-        saveContext()
+        newPage.page = Int32(pageDatas.count + 1)
+        pageDatas.append(newPage)
+        
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
     }
 
-    private func saveContext() {
+    private func loadCanvasData() {
+        if let pageData = pageDatas[currentPage].data{
+
+        }
+    }
+
+    private func saveCurrentPage() {
+        print("saveCurrentPage")
         do {
             try viewContext.save()
         } catch {

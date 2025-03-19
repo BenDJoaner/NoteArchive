@@ -7,6 +7,7 @@
 
 import SwiftUICore
 import UIKit
+import PencilKit
 
 extension ContainerValues {
     @Entry var viewWidth: CGFloat = 0
@@ -64,5 +65,19 @@ extension Color {
 extension View {
     var noteAnimation: Animation {
         .smooth(duration: 0.3)
+    }
+}
+
+extension PKCanvasView {
+    func toImage() -> UIImage {
+        let drawing = self.drawing
+        let bounds = self.bounds
+        
+        let renderer = UIGraphicsImageRenderer(bounds: bounds)
+        return renderer.image { ctx in
+            UIColor.white.setFill()
+            ctx.fill(bounds)
+            drawing.image(from: bounds, scale: UIScreen.main.scale).draw(in: bounds)
+        }
     }
 }

@@ -11,7 +11,7 @@ import PhotosUI
 
 struct ImagePicker: View {
     var title: String
-    var subTitle: String
+    var subTitle: String = ""
     var systemImage: String
     var tint: Color
     var onImageChange: (UIImage) -> ()
@@ -27,41 +27,41 @@ struct ImagePicker: View {
             
             VStack(spacing: 4, content: {
                 Image(systemName: systemImage)
-                    .font(.largeTitle)
-                    .imageScale(.large)
-                    .foregroundStyle(tint)
+//                    .font(.largeTitle)
+//                    .imageScale(.large)
+//                    .foregroundStyle(tint)
                 
                 Text(title)
-                    .font(.callout)
-                    .padding(.top, 15)
+//                    .font(.callout)
+//                    .padding(.top, 15)
                 
-                Text(subTitle)
-                    .font(.caption)
-                    .foregroundStyle(.gray)
+//                Text(subTitle)
+//                    .font(.caption)
+//                    .foregroundStyle(.gray)
             })
             .opacity(previewImage == nil ? 1 : 0)
-            .frame(width: size.width, height: size.height)
-            .overlay(content: {
-                if let previewImage {
-                    Image(uiImage: previewImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .padding(15)
-                }
-            })
-            .overlay(content: {
-                if isLoading {
-                    ProgressView()
-                        .padding(10)
-                        .background(.ultraThinMaterial, in: .rect(cornerRadius: 5))
-                }
-            })
-            .animation(.snappy, value: isLoading)
-            .animation(.snappy, value: previewImage)
-            .contentShape(.rect)
+//            .frame(width: size.width, height: size.height)
+//            .overlay(content: {
+//                if let previewImage {
+//                    Image(uiImage: previewImage)
+//                        .resizable()
+//                        .aspectRatio(contentMode: .fit)
+//                        .padding(15)
+//                }
+//            })
+//            .overlay(content: {
+//                if isLoading {
+//                    ProgressView()
+//                        .padding(10)
+//                        .background(.ultraThinMaterial, in: .rect(cornerRadius: 5))
+//                }
+//            })
+//            .animation(.snappy, value: isLoading)
+//            .animation(.snappy, value: previewImage)
+//            .contentShape(.rect)
             .dropDestination(for: Data.self, action: { items, location in
                 if let firstItem = items.first, let droppedImage = UIImage(data: firstItem) {
-                    generateImageThumbnail(droppedImage, size)
+//                    generateImageThumbnail(droppedImage, size)
                     onImageChange(droppedImage)
                     return true
                 }
@@ -78,16 +78,23 @@ struct ImagePicker: View {
                     extractImage(newValue, size)
                 }
             })
-            .background() {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 15)
-                        .fill(tint.opacity(0.08).gradient)
-                    
-                    RoundedRectangle(cornerRadius: 15, style: .continuous)
-                        .stroke(tint, style: .init(lineWidth: 1, dash: [12]))
-                        .padding(1)
-                }
-            }
+            .font(.headline)
+            .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.white)
+            .foregroundColor(.black)
+            .cornerRadius(10)
+            .shadow(radius: 3)
+//            .background() {
+//                ZStack {
+//                    RoundedRectangle(cornerRadius: 15)
+//                        .fill(tint.opacity(0.08).gradient)
+//                    
+//                    RoundedRectangle(cornerRadius: 15, style: .continuous)
+//                        .stroke(tint, style: .init(lineWidth: 1, dash: [12]))
+//                        .padding(1)
+//                }
+//            }
         })
     }
     
@@ -96,20 +103,20 @@ struct ImagePicker: View {
             guard let imageData = try? await photoItem.loadTransferable(type: Data.self) else { return }
             await MainActor.run {
                 if let selectedImage = UIImage(data: imageData) {
-                    generateImageThumbnail(selectedImage, size)
+//                    generateImageThumbnail(selectedImage, size)
                     onImageChange(selectedImage)
                 }
                 self.photoItem = nil
             }
         }
     }
-    
-    func generateImageThumbnail(_ image: UIImage, _ size: CGSize) {
-        Task.detached {
-            let thumbnailImage = await image.byPreparingThumbnail(ofSize: size)
-            await MainActor.run {
-                previewImage = thumbnailImage
-            }
-        }
-    }
+//    
+//    func generateImageThumbnail(_ image: UIImage, _ size: CGSize) {
+//        Task.detached {
+//            let thumbnailImage = await image.byPreparingThumbnail(ofSize: size)
+//            await MainActor.run {
+//                previewImage = thumbnailImage
+//            }
+//        }
+//    }
 }

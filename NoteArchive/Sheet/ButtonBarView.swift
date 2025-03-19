@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ButtonBarView: View {
     var onClear: () -> Void // 清空按钮的回调
-    var onAddPhoto: () -> Void
+    var onAddPhoto: (UIImage) -> Void
     var onAddPDF: () -> Void
     var onBackgroundChange: (BackgroundType) -> Void // 背景选择按钮的回调
     @Binding var selectedBackground: BackgroundType // 当前选中的背景类型
@@ -101,25 +101,28 @@ struct ButtonBarView: View {
                 
                 HStack{
                     //PDF
-                    Button(action: onAddPhoto) {
-                        VStack {
-                            Image(systemName: "photo.badge.plus.fill")
-                            Text("导入图片")
-                        }
-                        .font(.headline)
-                        .padding()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(.white)
-                        .foregroundColor(.black)
-                        .cornerRadius(10)
-                        .shadow(radius: 3)
+//                    Button(action: onAddPhoto) {
+//                        VStack {
+//                            Image(systemName: "photo.badge.plus.fill")
+//                            Text("导入图片")
+//                        }
+//                        .font(.headline)
+//                        .padding()
+//                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+//                        .background(.white)
+//                        .foregroundColor(.black)
+//                        .cornerRadius(10)
+//                        .shadow(radius: 3)
+//                    }
+                    ImagePicker(title: "导入\n图片", systemImage: "photo.badge.plus.fill", tint: .blue) { image in
+                        onAddPhoto(image)
                     }
                     Spacer()
                     Button(action: onAddPDF) {
                         HStack{
                             VStack {
                                 Image(systemName: "document.badge.plus.fill")
-                                Text("导入PDF")
+                                Text("导入\nPDF")
                             }
                         }
                         .font(.headline)
@@ -171,8 +174,9 @@ struct ButtonBarView: View {
                 }
             }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .frame(height: 410)
+//        .frame(height: 410)
         .padding(.horizontal, 20)
+
     }
 }
 

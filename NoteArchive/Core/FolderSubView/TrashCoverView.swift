@@ -94,7 +94,7 @@ struct TrashCoverView: View {
             }
             .padding(20)
         }
-        .cornerRadius(10)
+        .cornerRadius(20)
         .shadow(radius: 5)
     }
 }

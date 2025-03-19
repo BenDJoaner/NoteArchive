@@ -88,7 +88,7 @@ struct CoverView: View {
                 }
             }
         }
-        .cornerRadius(10)
+        .cornerRadius(5)
         .shadow(radius: 5)
         .onLongPressGesture {
             onLongPress() // 触发长按回调

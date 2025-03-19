@@ -67,7 +67,7 @@ struct BookPageView: View {
                 print("Page change success: \(index) (backward)")
                 previousPage()
             }
-//            DrawPageCanvas(pageIndex: currentPageIndex)
+            DrawPageCanvas(pageIndex: currentPageIndex)
         }
         onPageChangeCancel: { index in
             print("Page change canceled: \(index)")
@@ -79,7 +79,7 @@ struct BookPageView: View {
         .padding()
         .shadow(radius: 5)
         .onAppear() {
-            setupToolPicker()
+//            setupToolPicker()
             DrawPageCanvas(pageIndex: currentPageIndex)
         }
     }

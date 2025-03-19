@@ -154,7 +154,7 @@ struct CoverEditView: View {
             .padding(.bottom, 20)
         }
         .background(Color(hex: cover.color ?? "#7D177D"))
-        .cornerRadius(10)
+        .cornerRadius(5)
         .shadow(radius: 5)
     }
 

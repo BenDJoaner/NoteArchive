@@ -21,7 +21,8 @@ enum BackgroundType: String, CaseIterable {
         print("BackgroundType.image >>> \(self)")
         return renderer.image { context in
             // 背景颜色为白色（浅色主题）或黑色（深色主题）
-            let backgroundColor = colorScheme == .light ? UIColor.white : UIColor.black
+//            let backgroundColor = colorScheme == .light ? UIColor.white : UIColor.black
+            let backgroundColor = UIColor.white
             backgroundColor.setFill()
             context.fill(CGRect(origin: .zero, size: size))
 
