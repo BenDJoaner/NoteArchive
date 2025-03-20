@@ -12,23 +12,21 @@ import PencilKit
 struct BookCanvasView {
     var pageData: DrawingPage
     var index: Int
-//    var canvasView: PKCanvasView
+    var canvasView: PKCanvasView
 }
 
 struct BookPageView: View {
     @ObservedObject var cover: Cover
     @State var currentPageIndex: Int
-    
-    @Binding var currentCanvasView: PKCanvasView
-    @State var nextCanvasView = PKCanvasView()
-    
+
     @State var toolPicker = PKToolPicker()
     @State var selectedBackground: BackgroundType = .blank
     @State var bookPages:[BookCanvasView]
-    @State var pageDatas: [DrawingPage]
     
     var saveCurrentPage: () -> Void
     var addNewPage: () -> Void
+    var saveContext: () -> Void
+    
     @State var frameCount: Int = 0
     var body: some View {
         ModelPages(
@@ -44,16 +42,26 @@ struct BookPageView: View {
         ) { i, page in
             GeometryReader { geometry in
                 CanvasView(
-                    canvasView: $currentCanvasView,
+                    canvasView: page.canvasView,
                     toolPicker: toolPicker,
                     onDrawingChange: saveCurrentPage,
                     background: selectedBackground
                 )
-//                let _count = addFrameCount()
                 
-                Text("Book Page >>>> \(i) -> \n currentPageIndex=\(currentPageIndex + 1)/\(bookPages.count)")
-                    .font(.title)
-                    .padding()
+                // 页码显示 - 添加在底部右侧
+                Text("-\(i)-")
+                    .font(.system(size: 14, weight: .regular))
+                    .foregroundColor(Color(white: 0.4))
+                    .padding(10)
+                    .background(Color.white.opacity(0.8))
+                    .cornerRadius(5)
+                    .frame(
+                        maxWidth: .infinity,
+                        maxHeight: .infinity,
+                        alignment: .bottom // 右下对齐
+                    )
+                    .padding(.trailing, 20)
+                    .padding(.bottom, 15)
                 
             }
             .background(Color.white)
@@ -65,72 +73,50 @@ struct BookPageView: View {
             } else {
                 print("Page change success: \(index) (backward)")
             }
-            DrawPageCanvas(pageIndex: currentPageIndex)
         }
         onPageChangeCancel: { index in
             print("Page change canceled: \(index)")
         }
         onLastPageReached: { index in
             print("Last page reached: \(index)")
-//            addNewPage()
+            addNewPage()
         }
         .padding()
         .shadow(radius: 5)
         .onAppear() {
-//            setupToolPicker()
-            DrawPageCanvas(pageIndex: currentPageIndex)
+            for i in 0..<bookPages.count {
+                DrawPageCanvas(pageIndex: i)
+            }
         }
     }
-    
-    private func addFrameCount() -> Int {
-        frameCount = frameCount + 1
-        return frameCount
-    }
-    
-    private func setupToolPicker() {
-        toolPicker.setVisible(true, forFirstResponder: currentCanvasView)
-        toolPicker.addObserver(currentCanvasView)
-        currentCanvasView.becomeFirstResponder()
-    }
-    
+
     private func DrawPageCanvas(pageIndex: Int) {
-        guard currentPageIndex >= 0 && currentPageIndex < pageDatas.count else {
+        guard currentPageIndex >= 0 && currentPageIndex < bookPages.count else {
             print("Error: currentPageIndex is out of bounds")
             return
         }
 
-        if let pageData = pageDatas[currentPageIndex].data {
+        if let pageData = bookPages[currentPageIndex].pageData.data {
             do {
                 let drawing = try PKDrawing(data: pageData)
-                currentCanvasView.drawing = drawing
+                bookPages[currentPageIndex].canvasView.drawing = drawing
             } catch {
                 print("Error: PKDrawing initialization failed with error: \(error)")
-                currentCanvasView.drawing = PKDrawing()
+                bookPages[currentPageIndex].canvasView.drawing = PKDrawing()
             }
         } else {
             print("Error: pageData is nil")
-            currentCanvasView.drawing = PKDrawing()
+            bookPages[currentPageIndex].canvasView.drawing = PKDrawing()
         }
     }
     
-//    private func nextPage() {
-//        saveCurrentPage()
-//        if currentPageIndex < pageDatas.count - 1 {
-//            currentPageIndex += 1
-//        } else {
-//            addNewPage()
-//            currentPageIndex += 1
-//        }
-//    }
-//
-//    private func previousPage() {
-//        if currentPageIndex == 0 {
-//            return
-//        }
-//        saveCurrentPage()
-//        if currentPageIndex > 0 {
-//            currentPageIndex -= 1
-//        }
-//    }
-
+    private func saveImageTransform() {
+        guard let transform = bookPages[currentPageIndex].canvasView.subviews.first?.transform else { return }
+        let currentPage = bookPages[currentPageIndex].pageData
+        currentPage.imageTransform = try? NSKeyedArchiver.archivedData(
+            withRootObject: transform,
+            requiringSecureCoding: false
+        )
+        saveContext()
+    }
 }

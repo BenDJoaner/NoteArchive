@@ -14,6 +14,7 @@ struct ButtonBarView: View {
     var onClear: () -> Void // 清空按钮的回调
     var onAddPhoto: (UIImage) -> Void
     var onAddPDF: () -> Void
+    var onDeletePage: () -> Void
     var onBackgroundChange: (BackgroundType) -> Void // 背景选择按钮的回调
     @Binding var selectedBackground: BackgroundType // 当前选中的背景类型
     @Binding var isAIOn: Bool // Toggle 的状态
@@ -26,18 +27,38 @@ struct ButtonBarView: View {
     var body: some View {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
                 // 清空按钮
-                Button(action: onClear) {
-                    VStack {
-                        Image(systemName: "eraser.line.dashed.fill")
-                        Text("清空板块")
+                HStack{
+                    //PDF
+                    Button(action: onClear) {
+                        VStack {
+                            Image(systemName: "eraser.line.dashed.fill")
+                            Text("清空板块")
+                        }
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(.white)
+                        .foregroundColor(.black)
+                        .cornerRadius(10)
+                        .shadow(radius: 3)
                     }
-                    .font(.headline)
-                    .padding()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(.white)
-                    .foregroundColor(.black)
-                    .cornerRadius(10)
-                    .shadow(radius: 3)
+                    Spacer()
+                    Button(action: onDeletePage) {
+                        HStack{
+                            VStack {
+                                Image(systemName: "trash.slash")
+                                Text("删除此页")
+                            }
+                        }
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: 150, maxHeight: 200)
+                        .background(.white)
+                        .foregroundColor(.black)
+                        .cornerRadius(10)
+                        .shadow(radius: 3)
+                        
+                    }
                 }
                 
                 // 选择背景按钮
@@ -106,20 +127,6 @@ struct ButtonBarView: View {
 
                 
                 HStack{
-                    //PDF
-//                    Button(action: onAddPhoto) {
-//                        VStack {
-//                            Image(systemName: "photo.badge.plus.fill")
-//                            Text("导入图片")
-//                        }
-//                        .font(.headline)
-//                        .padding()
-//                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-//                        .background(.white)
-//                        .foregroundColor(.black)
-//                        .cornerRadius(10)
-//                        .shadow(radius: 3)
-//                    }
                     ImagePicker(title: "导入\n图片", systemImage: "photo.badge.plus.fill", tint: .blue) { image in
                         onAddPhoto(image)
                     }

@@ -17,6 +17,8 @@
     <entity name="DrawingPage" representedClassName="DrawingPage" syncable="YES" codeGenerationType="class">
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="data" optional="YES" attributeType="Binary"/>
+        <attribute name="imageData" optional="YES" attributeType="Binary"/>
+        <attribute name="imageTransform" optional="YES" attributeType="Binary"/>
         <attribute name="page" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="textData" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>

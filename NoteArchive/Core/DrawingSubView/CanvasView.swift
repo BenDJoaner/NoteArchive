@@ -10,7 +10,7 @@ import PencilKit
 import Vision
 
 struct CanvasView: UIViewRepresentable {
-    @Binding var canvasView: PKCanvasView
+    var canvasView: PKCanvasView
     var toolPicker: PKToolPicker
     var onDrawingChange: () -> Void
     var background: BackgroundType
@@ -22,7 +22,11 @@ struct CanvasView: UIViewRepresentable {
         toolPicker.setVisible(true, forFirstResponder: canvasView)
         canvasView.becomeFirstResponder()
         canvasView.delegate = context.coordinator
-        canvasView.tool = PKInkingTool(.pen, color: .black, width: 5)
+//        canvasView.tool = PKInkingTool(.pen, color: .black, width: 5)
+        // 添加手势穿透
+        canvasView.subviews.forEach {
+            $0.isUserInteractionEnabled = false
+        }
         updateBackground(uiView: canvasView)
         return canvasView
     }
