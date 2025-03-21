@@ -51,6 +51,7 @@ struct ContentView: View {
             privacyNote.id = UUID()
             privacyNote.title = "机密档案"
             privacyNote.isPinned = false
+            privacyNote.isShowen = false
             newConfig.privacyNote = privacyNote
 
             // 创建回收站书架
@@ -58,6 +59,7 @@ struct ContentView: View {
             trashNote.id = UUID()
             trashNote.title = "销毁处"
             trashNote.isPinned = false
+            trashNote.isShowen = false
             newConfig.trashNote = trashNote
 
             // 保存
@@ -97,7 +99,7 @@ struct ContentView: View {
             newNote.title = "档案夹 \(newNote.id?.uuidString.prefix(8) ?? "")" // 使用 id 的前 8 位
             newNote.isPinned = false
             newNote.createdAt = Date()
-            
+            newNote.isShowen = true
             do {
                 try viewContext.save()
             } catch {

@@ -10,15 +10,29 @@ import SwiftUI
 import PencilKit
 import Vision
 
+// 在ButtonBarView结构体中添加背景类型枚举和绑定状态
+enum BackgroundStyle: String, CaseIterable {
+    case blank
+    case horizontalLines
+    case verticalLines
+    case grid
+    case dots
+    
+    static func from(string: String?) -> BackgroundStyle {
+        guard let str = string else { return .blank }
+        return BackgroundStyle(rawValue: str) ?? .blank
+    }
+}
+
 struct ButtonBarView: View {
     var onClear: () -> Void // 清空按钮的回调
     var onAddPhoto: (UIImage) -> Void
     var onAddPDF: () -> Void
     var onDeletePage: () -> Void
-    var onBackgroundChange: (BackgroundType) -> Void // 背景选择按钮的回调
-    @Binding var selectedBackground: BackgroundType // 当前选中的背景类型
     @Binding var isAIOn: Bool // Toggle 的状态
     @Binding var usePencil: Bool // Toggle 的状态
+//    @Binding var backgroundStyle: BackgroundStyle    // 添加背景样式绑定
+    @State private var backgroundStyle: BackgroundStyle = .blank    // 添加背景样式绑定
     @State private var selection2: String?
     
     var currentCanvasView: PKCanvasView
@@ -63,13 +77,14 @@ struct ButtonBarView: View {
                 
                 // 选择背景按钮
                 Menu {
-                    ForEach(BackgroundType.allCases, id: \.self) { background in
-                        Button(action: {
-                            onBackgroundChange(background)
-                        }) {
+                    ForEach(BackgroundStyle.allCases, id: \.self) { style in
+                        Button {
+                            backgroundStyle = style
+                        } label: {
                             HStack {
-                                Text(background.rawValue)
-                                if selectedBackground == background {
+                                Text(style.localizedName)
+                                Spacer()
+                                if style == backgroundStyle {
                                     Image(systemName: "checkmark")
                                 }
                             }
@@ -79,7 +94,6 @@ struct ButtonBarView: View {
                     VStack {
                         Image(systemName: "paintbrush")
                         Text("背景样式")
-                        Text("[\(selectedBackground.rawValue)]") // 显示当前选择的背景类型
                     }
                     .font(.headline)
                     .padding()
@@ -95,7 +109,7 @@ struct ButtonBarView: View {
                     Toggle(isOn: $usePencil) {
                         HStack {
                             Image(systemName: "pencil.and.scribble")
-                            Text("Only Pencil")
+                            Text("画笔工具")
                         }
                     }
                     .toggleStyle(SwitchToggleStyle(tint: .blue)) // 自定义 Toggle 样式
@@ -113,7 +127,7 @@ struct ButtonBarView: View {
                     Toggle(isOn: $isAIOn) {
                         HStack {
                             Image(systemName: "aqi.medium")
-                            Text("AI")
+                            Text("AI识别")
                         }
                     }
                     .toggleStyle(SwitchToggleStyle(tint: .blue)) // 自定义 Toggle 样式
@@ -127,7 +141,7 @@ struct ButtonBarView: View {
 
                 
                 HStack{
-                    ImagePicker(title: "导入\n图片", systemImage: "photo.badge.plus.fill", tint: .blue) { image in
+                    ImagePicker(title: "图片", systemImage: "photo.badge.plus.fill", tint: .blue) { image in
                         onAddPhoto(image)
                     }
                     Spacer()
@@ -135,7 +149,7 @@ struct ButtonBarView: View {
                         HStack{
                             VStack {
                                 Image(systemName: "document.badge.plus.fill")
-                                Text("导入\nPDF")
+                                Text("PDF")
                             }
                         }
                         .font(.headline)
@@ -155,7 +169,7 @@ struct ButtonBarView: View {
                         HStack{
                             VStack {
                                 Image(systemName: "square.and.arrow.up")
-                                Text("分享档案")
+                                Text("分享")
                             }
                         }
                         .font(.headline)
@@ -234,3 +248,14 @@ struct ButtonBarView: View {
     
 }
 
+extension BackgroundStyle {
+    var localizedName: String {
+        switch self {
+        case .blank: return "空白"
+        case .horizontalLines: return "横线"
+        case .verticalLines: return "竖线"
+        case .grid: return "网格"
+        case .dots: return "点阵"
+        }
+    }
+}

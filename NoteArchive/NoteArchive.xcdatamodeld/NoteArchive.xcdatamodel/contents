@@ -11,19 +11,19 @@
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="selectedBackground" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="titleImage" optional="YES" attributeType="Binary"/>
         <relationship name="drawingPages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DrawingPage" inverseName="cover" inverseEntity="DrawingPage"/>
         <relationship name="note" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Note" inverseName="covers" inverseEntity="Note"/>
     </entity>
     <entity name="DrawingPage" representedClassName="DrawingPage" syncable="YES" codeGenerationType="class">
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="data" optional="YES" attributeType="Binary"/>
-        <attribute name="imageData" optional="YES" attributeType="Binary"/>
-        <attribute name="imageTransform" optional="YES" attributeType="Binary"/>
         <attribute name="page" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="textData" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="cover" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Cover" inverseName="drawingPages" inverseEntity="Cover"/>
     </entity>
+    <entity name="ImageData" representedClassName="ImageData" syncable="YES" codeGenerationType="class"/>
     <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
         <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
@@ -33,16 +33,12 @@
         <attribute name="iconStr" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isPinned" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isShowen" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="titleImage" optional="YES" attributeType="Binary"/>
         <relationship name="config" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AppConfig" inverseName="notes" inverseEntity="AppConfig"/>
         <relationship name="covers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Cover" inverseName="note" inverseEntity="Cover"/>
         <relationship name="privateconfig" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AppConfig" inverseName="privacyNote" inverseEntity="AppConfig"/>
         <relationship name="trashconfig" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AppConfig" inverseName="trashNote" inverseEntity="AppConfig"/>
-    </entity>
-    <entity name="TextPageData" representedClassName="TextPageData" syncable="YES" codeGenerationType="class">
-        <attribute name="content" optional="YES" attributeType="String"/>
-        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="page" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
 </model>

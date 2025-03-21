@@ -14,7 +14,17 @@ struct Book: View {
     @State var index: Int = 0
 
     var body: some View {
-        ModelPages(self.pages, currentPage: $index, transitionStyle: .pageCurl) { i, page in
+        ModelPages(
+            self.pages,
+            currentPage: $index,
+            transitionStyle: .pageCurl
+//            navigationOrientation: .horizontal,
+//            currentPage: currentPageIndex,
+//            bounce: false
+//            wrap: true
+//            controlAlignment: .trailingFirstTextBaseline
+//            hasControl: false
+        ) { i, page in
             GeometryReader { geometry in
                 VStack {
                     if i == 0 {

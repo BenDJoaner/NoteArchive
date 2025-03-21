@@ -23,16 +23,14 @@ struct NoteListView: View {
             .padding(.horizontal)
         List {
             // 过滤掉“隐私”和“回收站”书架
-            ForEach(notes.filter { $0.title != "隐私" && $0.title != "回收站" }, id: \.self) { note in
+            ForEach(notes.filter { $0.isShowen }, id: \.self) { note in
                 NoteRowView(note: note, selectedNote: $selectedNote, moveToTrash: moveToTrash)
-
             }
             // 添加档案夹按钮
             AddNoteButtonView(addNote: addNote)
         }
 //        .listStyle(DefaultListStyle())
         .listStyle(PlainListStyle())
-
     }
 
     private func togglePin(note: Note) {
@@ -92,9 +90,9 @@ struct NoteRowView: View {
                                 .foregroundColor(.orange)
                         }
                         Text(note.title ?? "Untitled")
-                        Text("\(note.covers?.count ?? 0)")
-                            .font(.caption)
-                            .foregroundColor(.gray)
+//                        Text("\(note.covers?.count ?? 0)")
+//                            .font(.caption)
+//                            .foregroundColor(.gray)
                         Spacer()
                     }
                     HStack {
@@ -103,6 +101,7 @@ struct NoteRowView: View {
 //                            .background(Color(.systemGray6))
                             .background(Color(hex: note.colorStr ?? "#7D177D").opacity(0.2))
                             .cornerRadius(5)
+                            .shadow(radius: 1)
 
                         Spacer()
                     }

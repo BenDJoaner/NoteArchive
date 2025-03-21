@@ -20,9 +20,10 @@ struct BookPageView: View {
     @State var currentPageIndex: Int
 
     @State var toolPicker = PKToolPicker()
-    @State var selectedBackground: BackgroundType = .blank
     @State var bookPages:[BookCanvasView]
-    
+    // 添加背景样式绑定
+    @Binding var isToolPickerVisible: Bool // 新增绑定
+//    @Binding var backgroundStyle: BackgroundStyle
     var saveCurrentPage: () -> Void
     var addNewPage: () -> Void
     var saveContext: () -> Void
@@ -32,29 +33,27 @@ struct BookPageView: View {
         ModelPages(
             bookPages,
             currentPage: $currentPageIndex,
-//            navigationOrientation: .horizontal,
-//            currentPage: currentPageIndex,
             transitionStyle: .pageCurl,
-//            bounce: false
-//            wrap: true
-//            controlAlignment: .trailingFirstTextBaseline
             hasControl: false
         ) { i, page in
             GeometryReader { geometry in
                 CanvasView(
                     canvasView: page.canvasView,
                     toolPicker: toolPicker,
-                    onDrawingChange: saveCurrentPage,
-                    background: selectedBackground
+//                    backgroundStyle: $backgroundStyle,// 传递背景样式
+                    isToolPickerVisible: $isToolPickerVisible, // 传递绑定
+                    onDrawingChange: saveCurrentPage
                 )
+//                .contentShape(Rectangle()) // ✅ 确保整个区域可触发手势
+//                .allowsHitTesting(true)    // ✅ 允许交互穿透
                 
                 // 页码显示 - 添加在底部右侧
-                Text("-\(i)-")
+                Text("-\(i+1)-")
                     .font(.system(size: 14, weight: .regular))
-                    .foregroundColor(Color(white: 0.4))
+                    .foregroundColor(Color(.systemGray3))
                     .padding(10)
-                    .background(Color.white.opacity(0.8))
-                    .cornerRadius(5)
+//                    .background(Color.white.opacity(0.8))
+//                    .cornerRadius(5)
                     .frame(
                         maxWidth: .infinity,
                         maxHeight: .infinity,
@@ -108,15 +107,5 @@ struct BookPageView: View {
             print("Error: pageData is nil")
             bookPages[currentPageIndex].canvasView.drawing = PKDrawing()
         }
-    }
-    
-    private func saveImageTransform() {
-        guard let transform = bookPages[currentPageIndex].canvasView.subviews.first?.transform else { return }
-        let currentPage = bookPages[currentPageIndex].pageData
-        currentPage.imageTransform = try? NSKeyedArchiver.archivedData(
-            withRootObject: transform,
-            requiringSecureCoding: false
-        )
-        saveContext()
     }
 }

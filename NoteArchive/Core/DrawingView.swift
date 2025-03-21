@@ -8,13 +8,14 @@ struct DrawingView: View {
     @ObservedObject var cover: Cover
     @Environment(\.managedObjectContext) private var viewContext
     @State private var currentPageIndex = 0
-    @State private var selectedBackground: BackgroundType = .blank // 当前背景类型
     @State private var bookPages: [BookCanvasView] = []
     @State private var useAI: Bool = false
     @State private var usePencil: Bool = true
     @State private var changeTheme: Bool = false
     @State private var stickImage: UIImage = UIImage()
-    
+    // 添加背景样式状态
+//    @State private var backgroundStyle: BackgroundStyle = .blank
+    @State private var isToolPickerVisible = false // 新增状态
     var namespace: Namespace.ID // 接收命名空间
     
 
@@ -27,10 +28,11 @@ struct DrawingView: View {
                 BookPageView(
                     cover: cover,
                     currentPageIndex: currentPageIndex,
-                    selectedBackground: selectedBackground,
                     bookPages: bookPages ,
+                    isToolPickerVisible: $isToolPickerVisible,
+//                    backgroundStyle: $backgroundStyle, // 传递绑定
                     saveCurrentPage: saveCurrentPage,
-                    addNewPage:addNewPage,
+                    addNewPage:addNewPage,// 传递背景样式绑定
                     saveContext: saveContext
                 )
             }
@@ -38,8 +40,10 @@ struct DrawingView: View {
         .navigationBarTitle("\(cover.title ?? "空")", displayMode: .inline)
         .onAppear {
             loadPages()
-//            loadCanvasData()
-            loadSelectedBackground() // 加载背景类型
+            // 从CoreData加载背景设置
+//            let saved = BackgroundStyle.from(string: cover.selectedBackground)
+//            print("Loaded background: \(saved.rawValue)") // ✅ 调试输出
+//            self.backgroundStyle = saved
         }
         .onDisappear {
             saveCurrentPage()
@@ -53,6 +57,10 @@ struct DrawingView: View {
                 }
                 .tint(.black)
             }
+            // 新增工具选择器切换按钮
+            ToolbarItem(placement: .navigationBarTrailing) {
+                ToggleButton(isOn: $isToolPickerVisible)
+            }
         }
         .sheet(isPresented: $changeTheme, content: {
             ButtonBarView(
@@ -60,21 +68,21 @@ struct DrawingView: View {
                 onAddPhoto: loadImage,
                 onAddPDF: loadPDF,
                 onDeletePage: onDeletePage,
-                onBackgroundChange: { background in
-                    selectedBackground = background
-                    cover.selectedBackground = background.rawValue
-                    updateBackground()
-                    saveBackground()
-                },
-                selectedBackground: $selectedBackground,
                 isAIOn: $useAI,
                 usePencil: $usePencil,
+//                backgroundStyle: $backgroundStyle,
                 currentCanvasView: bookPages[currentPageIndex].canvasView
                 
                 )
                 .presentationDetents([.height(650)])
                 .presentationBackground(.clear)
         })
+//        .onChange(of: backgroundStyle) { newValue in
+//            // 当背景变化时保存到CoreData
+//            print("Saving background: \(newValue.rawValue)") // ✅ 调试输出
+//            cover.selectedBackground = newValue.rawValue
+//            saveContext()
+//        }
     }
     
 
@@ -201,34 +209,9 @@ struct DrawingView: View {
         saveCurrentPage()
     }
 
-    private func loadSelectedBackground() {
-        if let background = BackgroundType(rawValue: cover.selectedBackground ?? "") {
-            selectedBackground = background
-            print("selectedBackground 加载 >>> \(selectedBackground)")
-        }
-    }
 
-    private func saveBackground() {
-        cover.selectedBackground = selectedBackground.rawValue
-        print("selectedBackground 保存 >>> \(selectedBackground)")
-        saveContext()
-    }
-    
     private func loadImage(selectImage: UIImage) {
-        // 获取当前页
-        let currentPage = bookPages[currentPageIndex].pageData
-        
-        // 计算初始位置（视图中心）
-        let initialTransform = CGAffineTransform(translationX: UIScreen.main.bounds.width/2 - selectImage.size.width/2,
-                                                y: UIScreen.main.bounds.height/2 - selectImage.size.height/2)
-        
-        // 存储数据
-        currentPage.imageData = selectImage.pngData()
-        currentPage.imageTransform = try? NSKeyedArchiver.archivedData(
-            withRootObject: initialTransform,
-            requiringSecureCoding: false
-        )
-        
+
         saveContext()
     }
 
@@ -248,5 +231,18 @@ struct DrawingView: View {
         // 更新画板背景
         // 背景逻辑在 CanvasView 中实现
         
+    }
+}
+// 独立封装的切换按钮组件
+struct ToggleButton: View {
+    @Binding var isOn: Bool
+    
+    var body: some View {
+        Button(action: { isOn.toggle() }) {
+            Image(systemName: isOn ?
+                  "pencil.tip.crop.circle.badge.minus" :
+                    "pencil.tip.crop.circle.badge.plus.fill")
+                .symbolRenderingMode(.multicolor)
+        }
     }
 }
