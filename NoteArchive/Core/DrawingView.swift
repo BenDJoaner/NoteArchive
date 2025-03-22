@@ -14,7 +14,7 @@ struct DrawingView: View {
     @State private var changeTheme: Bool = false
     @State private var stickImage: UIImage = UIImage()
     // 添加背景样式状态
-//    @State private var backgroundStyle: BackgroundStyle = .blank
+    @State private var backgroundStyle: BackgroundStyle = .blank
     @State private var isToolPickerVisible = false // 新增状态
     var namespace: Namespace.ID // 接收命名空间
     
@@ -30,7 +30,7 @@ struct DrawingView: View {
                     currentPageIndex: currentPageIndex,
                     bookPages: bookPages ,
                     isToolPickerVisible: $isToolPickerVisible,
-//                    backgroundStyle: $backgroundStyle, // 传递绑定
+                    backgroundStyle: $backgroundStyle, // 传递绑定
                     saveCurrentPage: saveCurrentPage,
                     addNewPage:addNewPage,// 传递背景样式绑定
                     saveContext: saveContext
@@ -41,9 +41,9 @@ struct DrawingView: View {
         .onAppear {
             loadPages()
             // 从CoreData加载背景设置
-//            let saved = BackgroundStyle.from(string: cover.selectedBackground)
-//            print("Loaded background: \(saved.rawValue)") // ✅ 调试输出
-//            self.backgroundStyle = saved
+            let saved = BackgroundStyle.from(string: cover.selectedBackground)
+            print("Loaded background: \(saved.rawValue)") // ✅ 调试输出
+            self.backgroundStyle = saved
         }
         .onDisappear {
             saveCurrentPage()
@@ -70,7 +70,7 @@ struct DrawingView: View {
                 onDeletePage: onDeletePage,
                 isAIOn: $useAI,
                 usePencil: $usePencil,
-//                backgroundStyle: $backgroundStyle,
+                backgroundStyle: $backgroundStyle,
                 currentCanvasView: bookPages[currentPageIndex].canvasView
                 
                 )
@@ -201,6 +201,10 @@ struct DrawingView: View {
 //        pageDatas[currentPageIndex].createdAt = Date() // 更新最后编辑日期
         
         print("saveCurrentPage")
+        
+        print("Saving background: \(backgroundStyle.rawValue)") // ✅ 调试输出
+        cover.selectedBackground = backgroundStyle.rawValue
+        
         saveContext()
     }
 

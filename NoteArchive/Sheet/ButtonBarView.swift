@@ -31,8 +31,8 @@ struct ButtonBarView: View {
     var onDeletePage: () -> Void
     @Binding var isAIOn: Bool // Toggle 的状态
     @Binding var usePencil: Bool // Toggle 的状态
-//    @Binding var backgroundStyle: BackgroundStyle    // 添加背景样式绑定
-    @State private var backgroundStyle: BackgroundStyle = .blank    // 添加背景样式绑定
+    @Binding var backgroundStyle: BackgroundStyle    // 添加背景样式绑定
+//    @State private var backgroundStyle: BackgroundStyle = .blank    // 添加背景样式绑定
     @State private var selection2: String?
     
     var currentCanvasView: PKCanvasView

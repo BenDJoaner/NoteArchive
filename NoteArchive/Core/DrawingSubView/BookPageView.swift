@@ -23,7 +23,7 @@ struct BookPageView: View {
     @State var bookPages:[BookCanvasView]
     // 添加背景样式绑定
     @Binding var isToolPickerVisible: Bool // 新增绑定
-//    @Binding var backgroundStyle: BackgroundStyle
+    @Binding var backgroundStyle: BackgroundStyle
     var saveCurrentPage: () -> Void
     var addNewPage: () -> Void
     var saveContext: () -> Void
