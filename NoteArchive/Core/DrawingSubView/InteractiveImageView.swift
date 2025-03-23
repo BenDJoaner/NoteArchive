@@ -86,3 +86,24 @@ struct InteractiveImageView: UIViewRepresentable {
         }
     }
 }
+
+struct DraggableImageView: View {
+    @ObservedObject var imageItem: ImageItem
+    @State private var currentPosition: CGSize = .zero
+    
+    var body: some View {
+        Image(uiImage: UIImage(data: imageItem.imageData!)!)
+            .resizable()
+            .frame(width: CGFloat(imageItem.width), height: CGFloat(imageItem.height))
+            .offset(currentPosition)
+            .gesture(
+                DragGesture()
+                    .onChanged { value in
+                        self.currentPosition = value.translation
+                        // 实时更新CoreData
+                        imageItem.x = Double(value.location.x)
+                        imageItem.y = Double(value.location.y)
+                    }
+            )
+    }
+}

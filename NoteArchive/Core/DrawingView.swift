@@ -15,13 +15,13 @@ struct DrawingView: View {
     @State private var stickImage: UIImage = UIImage()
     // 添加背景样式状态
     @State private var backgroundStyle: BackgroundStyle = .blank
-    @State private var isToolPickerVisible = false // 新增状态
+    @State private var isToolPickerVisible = true // 新增状态
     var namespace: Namespace.ID // 接收命名空间
     
 
     var body: some View {
         ZStack {
-            Color.gray.opacity(0.2) // 灰色背景
+            Color(.systemGray6)// 灰色背景
                 .edgesIgnoringSafeArea(.all)
 
             if !bookPages.isEmpty { // 确保 pageDatas 被赋值后才渲染 BookPageView
@@ -49,17 +49,18 @@ struct DrawingView: View {
             saveCurrentPage()
         }
         .toolbar {
+            // 新增工具选择器切换按钮
+            ToolbarItem(placement: .navigationBarTrailing) {
+                ToggleButton(isOn: $isToolPickerVisible)
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     showToolPicker()
                 } label: {
-                    Image(systemName: "book.and.wrench")
+                    Image(systemName: "slider.horizontal.3")
+                        .foregroundColor(Color(.systemBlue))
                 }
                 .tint(.black)
-            }
-            // 新增工具选择器切换按钮
-            ToolbarItem(placement: .navigationBarTrailing) {
-                ToggleButton(isOn: $isToolPickerVisible)
             }
         }
         .sheet(isPresented: $changeTheme, content: {
@@ -71,6 +72,7 @@ struct DrawingView: View {
                 isAIOn: $useAI,
                 usePencil: $usePencil,
                 backgroundStyle: $backgroundStyle,
+                currentPageIndex: $currentPageIndex,
                 currentCanvasView: bookPages[currentPageIndex].canvasView
                 
                 )
@@ -214,8 +216,23 @@ struct DrawingView: View {
     }
 
 
-    private func loadImage(selectImage: UIImage) {
-
+    private func loadImage(selectImage: UIImage, index:Int) {
+        // 获取当前页面的pageData
+        let currentPageData = bookPages[currentPageIndex].pageData
+        
+        // 创建新ImageItem
+        let newImageItem = ImageItem(context: viewContext)
+        newImageItem.imageData = selectImage.pngData()
+        
+        // 设置默认位置（居中显示）
+        let defaultSize = CGSize(width: 200, height: 200)
+        newImageItem.x = Double(UIScreen.main.bounds.width/2 - defaultSize.width/2)
+        newImageItem.y = Double(UIScreen.main.bounds.height/2 - defaultSize.height/2)
+        newImageItem.width = Double(defaultSize.width)
+        newImageItem.height = Double(defaultSize.height)
+        
+        // 关联到当前页面
+        currentPageData.addImage(newImageItem)
         saveContext()
     }
 
@@ -244,9 +261,18 @@ struct ToggleButton: View {
     var body: some View {
         Button(action: { isOn.toggle() }) {
             Image(systemName: isOn ?
-                  "pencil.tip.crop.circle.badge.minus" :
-                    "pencil.tip.crop.circle.badge.plus.fill")
+                  "pencil.tip.crop.circle.fill":"pencil.tip.crop.circle")
                 .symbolRenderingMode(.multicolor)
         }
+    }
+}
+
+extension DrawingPage {
+    var imagesArray: [ImageItem] {
+        return (images?.allObjects as? [ImageItem]) ?? []
+    }
+    
+    func addImage(_ imageItem: ImageItem) {
+        self.addToImages(imageItem)
     }
 }

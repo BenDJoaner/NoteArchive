@@ -26,13 +26,14 @@ enum BackgroundStyle: String, CaseIterable {
 
 struct ButtonBarView: View {
     var onClear: () -> Void // 清空按钮的回调
-    var onAddPhoto: (UIImage) -> Void
+    var onAddPhoto: (UIImage, Int) -> Void// 修改onAddPhoto类型
     var onAddPDF: () -> Void
     var onDeletePage: () -> Void
+
     @Binding var isAIOn: Bool // Toggle 的状态
     @Binding var usePencil: Bool // Toggle 的状态
     @Binding var backgroundStyle: BackgroundStyle    // 添加背景样式绑定
-//    @State private var backgroundStyle: BackgroundStyle = .blank    // 添加背景样式绑定
+    @Binding var currentPageIndex: Int    // 新增当前页面索引绑定
     @State private var selection2: String?
     
     var currentCanvasView: PKCanvasView
@@ -91,9 +92,13 @@ struct ButtonBarView: View {
                         }
                     }
                 } label: {
-                    VStack {
-                        Image(systemName: "paintbrush")
-                        Text("背景样式")
+                    HStack {
+                        Image(systemName: "person.and.background.striped.horizontal")
+                        VStack{
+                            Text("背景样式")
+                            Text("\(backgroundStyle.localizedName)")
+                        }
+
                     }
                     .font(.headline)
                     .padding()
@@ -142,7 +147,7 @@ struct ButtonBarView: View {
                 
                 HStack{
                     ImagePicker(title: "图片", systemImage: "photo.badge.plus.fill", tint: .blue) { image in
-                        onAddPhoto(image)
+                        onAddPhoto(image, currentPageIndex)
                     }
                     Spacer()
                     Button(action: onAddPDF) {
@@ -199,25 +204,30 @@ struct ButtonBarView: View {
                         
                     }
                 }
-                // 清空按钮
-                Button("识别文字") {
-                    let image = currentCanvasView.toImage()
-                    recognizeText(from: image) { text in
-                        recognizedText = text
+                
+                HStack{
+                    // 清空按钮
+                    Button("识别文字") {
+                        let image = currentCanvasView.toImage()
+                        recognizeText(from: image) { text in
+                            recognizedText = text
+                        }
                     }
-                }
-                .font(.headline)
-                .padding()
-                .frame(maxWidth: 150, maxHeight: 200)
-                .background(.white)
-                .foregroundColor(.black)
-                .cornerRadius(10)
-                .shadow(radius: 3)
-                Text(recognizedText)
                     .font(.headline)
                     .padding()
+                    .frame(maxWidth: 150, maxHeight: 200)
                     .background(.white)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .foregroundColor(.black)
+                    .cornerRadius(10)
+                    .shadow(radius: 3)
+                    Spacer()
+                    Text(recognizedText)
+                        .font(.headline)
+                        .padding()
+                        .background(.white)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+
             }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .frame(height: 650)
