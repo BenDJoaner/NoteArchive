@@ -169,7 +169,7 @@ struct CanvasView: UIViewRepresentable {
         }
         
         private func drawHorizontalLines(in context: CGContext, rect: CGRect) {
-            let spacing: CGFloat = 36
+            let spacing: CGFloat = 45
             for y in stride(from: 0, to: rect.height, by: spacing) {
                 context.move(to: CGPoint(x: 0, y: y))
                 context.addLine(to: CGPoint(x: rect.width, y: y))
@@ -179,7 +179,7 @@ struct CanvasView: UIViewRepresentable {
         }
         
         private func drawVerticalLines(in context: CGContext, rect: CGRect) {
-            let spacing: CGFloat = 36
+            let spacing: CGFloat = 45
             for x in stride(from: 0, to: rect.width, by: spacing) {
                 context.move(to: CGPoint(x: x, y: 0))
                 context.addLine(to: CGPoint(x: x, y: rect.height))
@@ -189,7 +189,7 @@ struct CanvasView: UIViewRepresentable {
         }
         
         private func drawDots(in context: CGContext, rect: CGRect) {
-            let spacing: CGFloat = 36
+            let spacing: CGFloat = 50
             context.setFillColor(UIColor.lightGray.cgColor)
             
             for x in stride(from: 0, to: rect.width, by: spacing) {

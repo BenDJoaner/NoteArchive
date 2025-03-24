@@ -109,124 +109,138 @@ struct ButtonBarView: View {
                     .shadow(radius: 3)
                 }
                 
+                VStack {
+                    HStack {
+                        Image(systemName: "ellipsis.curlybraces")
+                        Text("Coming more ...")
+                    }
+                    .toggleStyle(SwitchToggleStyle(tint: .blue)) // 自定义 Toggle 样式
+                    .padding()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(.white)
+                    .foregroundColor(.black)
+                    .cornerRadius(10)
+                    .shadow(radius: 3)
+                }
+
                 // Toggle
-                VStack {
-                    Toggle(isOn: $usePencil) {
-                        HStack {
-                            Image(systemName: "pencil.and.scribble")
-                            Text("画笔工具")
-                        }
-                    }
-                    .toggleStyle(SwitchToggleStyle(tint: .blue)) // 自定义 Toggle 样式
-                    .padding()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(.white)
-                    .foregroundColor(.black)
-                    .cornerRadius(10)
-                    .shadow(radius: 3)
-                }
+//                VStack {
+//                    Toggle(isOn: $usePencil) {
+//                        HStack {
+//                            Image(systemName: "pencil.and.scribble")
+//                            Text("画笔工具")
+//                        }
+//                    }
+//                    .toggleStyle(SwitchToggleStyle(tint: .blue)) // 自定义 Toggle 样式
+//                    .padding()
+//                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+//                    .background(.white)
+//                    .foregroundColor(.black)
+//                    .cornerRadius(10)
+//                    .shadow(radius: 3)
+//                }
+//
+//                
+//                //AI
+//                VStack {
+//                    Toggle(isOn: $isAIOn) {
+//                        HStack {
+//                            Image(systemName: "aqi.medium")
+//                            Text("AI识别")
+//                        }
+//                    }
+//                    .toggleStyle(SwitchToggleStyle(tint: .blue)) // 自定义 Toggle 样式
+//                    .padding()
+//                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+//                    .background(.white)
+//                    .foregroundColor(.black)
+//                    .cornerRadius(10)
+//                    .shadow(radius: 3)
+//                }
 
                 
-                //AI
-                VStack {
-                    Toggle(isOn: $isAIOn) {
-                        HStack {
-                            Image(systemName: "aqi.medium")
-                            Text("AI识别")
-                        }
-                    }
-                    .toggleStyle(SwitchToggleStyle(tint: .blue)) // 自定义 Toggle 样式
-                    .padding()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(.white)
-                    .foregroundColor(.black)
-                    .cornerRadius(10)
-                    .shadow(radius: 3)
-                }
+//                HStack{
+//                    ImagePicker(title: "图片", systemImage: "photo.badge.plus.fill", tint: .blue) { image in
+//                        onAddPhoto(image, currentPageIndex)
+//                    }
+//                    Spacer()
+//                    Button(action: onAddPDF) {
+//                        HStack{
+//                            VStack {
+//                                Image(systemName: "document.badge.plus.fill")
+//                                Text("PDF")
+//                            }
+//                        }
+//                        .font(.headline)
+//                        .padding()
+//                        .frame(maxWidth: 150, maxHeight: 200)
+//                        .background(.white)
+//                        .foregroundColor(.black)
+//                        .cornerRadius(10)
+//                        .shadow(radius: 3)
+//                        
+//                    }
+//                }
 
-                
-                HStack{
-                    ImagePicker(title: "图片", systemImage: "photo.badge.plus.fill", tint: .blue) { image in
-                        onAddPhoto(image, currentPageIndex)
-                    }
-                    Spacer()
-                    Button(action: onAddPDF) {
-                        HStack{
-                            VStack {
-                                Image(systemName: "document.badge.plus.fill")
-                                Text("PDF")
-                            }
-                        }
-                        .font(.headline)
-                        .padding()
-                        .frame(maxWidth: 150, maxHeight: 200)
-                        .background(.white)
-                        .foregroundColor(.black)
-                        .cornerRadius(10)
-                        .shadow(radius: 3)
-                        
-                    }
-                }
-
-                HStack{
-                    //PDF
-                    Button(action: onAddPDF) {
-                        HStack{
-                            VStack {
-                                Image(systemName: "square.and.arrow.up")
-                                Text("分享")
-                            }
-                        }
-                        .font(.headline)
-                        .padding()
-                        .frame(maxWidth: 150, maxHeight: 200)
-                        .background(.white)
-                        .foregroundColor(.black)
-                        .cornerRadius(10)
-                        .shadow(radius: 3)
-                        
-                    }
-                    Spacer()
-                    Button(action: onAddPDF) {
-                        HStack{
-                            VStack {
-                                Image(systemName: "arrow.trianglehead.2.clockwise.rotate.90.icloud.fill")
-                                Text("iCloud")
-                            }
-                        }
-                        .font(.headline)
-                        .padding()
-                        .frame(maxWidth: 150, maxHeight: 200)
-                        .background(.white)
-                        .foregroundColor(.black)
-                        .cornerRadius(10)
-                        .shadow(radius: 3)
-                        
-                    }
-                }
-                
-                HStack{
-                    // 清空按钮
-                    Button("识别文字") {
-                        let image = currentCanvasView.toImage()
-                        recognizeText(from: image) { text in
-                            recognizedText = text
-                        }
-                    }
-                    .font(.headline)
-                    .padding()
-                    .frame(maxWidth: 150, maxHeight: 200)
-                    .background(.white)
-                    .foregroundColor(.black)
-                    .cornerRadius(10)
-                    .shadow(radius: 3)
-                    Spacer()
-                    Text(recognizedText)
-                        .font(.headline)
-                        .padding()
-                        .background(.white)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
+//                HStack{
+//                    //PDF
+//                    Button(action: onAddPDF) {
+//                        HStack{
+//                            VStack {
+//                                Image(systemName: "square.and.arrow.up")
+//                                Text("分享")
+//                            }
+//                        }
+//                        .font(.headline)
+//                        .padding()
+//                        .frame(maxWidth: 150, maxHeight: 200)
+//                        .background(.white)
+//                        .foregroundColor(.black)
+//                        .cornerRadius(10)
+//                        .shadow(radius: 3)
+//                        
+//                    }
+//                    Spacer()
+//                    Button(action: onAddPDF) {
+//                        HStack{
+//                            VStack {
+//                                Image(systemName: "arrow.trianglehead.2.clockwise.rotate.90.icloud.fill")
+//                                Text("iCloud")
+//                            }
+//                        }
+//                        .font(.headline)
+//                        .padding()
+//                        .frame(maxWidth: 150, maxHeight: 200)
+//                        .background(.white)
+//                        .foregroundColor(.black)
+//                        .cornerRadius(10)
+//                        .shadow(radius: 3)
+//                        
+//                    }
+//                }
+//                
+//                HStack{
+//                    // 清空按钮
+//                    Button("识别文字") {
+//                        let image = currentCanvasView.toImage()
+//                        recognizeText(from: image) { text in
+//                            recognizedText = text
+//                        }
+//                    }
+//                    .font(.headline)
+//                    .padding()
+//                    .frame(maxWidth: 150, maxHeight: 200)
+//                    .background(.white)
+//                    .foregroundColor(.black)
+//                    .cornerRadius(10)
+//                    .shadow(radius: 3)
+//                    Spacer()
+//                    Text(recognizedText)
+//                        .font(.headline)
+//                        .padding()
+//                        .background(.white)
+//                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+//                }
 
             }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
