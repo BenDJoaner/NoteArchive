@@ -17,6 +17,8 @@ enum BackgroundStyle: String, CaseIterable {
     case verticalLines
     case grid
     case dots
+    case coordinate  // 新增坐标系
+    case staff       // 新增五线谱
     
     static func from(string: String?) -> BackgroundStyle {
         guard let str = string else { return .blank }
@@ -280,6 +282,8 @@ extension BackgroundStyle {
         case .verticalLines: return "竖线"
         case .grid: return "网格"
         case .dots: return "点阵"
+        case .coordinate: return "坐标系"
+        case .staff: return "五线谱"
         }
     }
 }

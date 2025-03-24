@@ -32,8 +32,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "136"
             endingLineNumber = "136"
-            landmarkName = "drawHorizontalLines(in:rect:)"
-            landmarkType = "7">
+            landmarkName = "BackgroundView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -48,7 +48,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "114"
             endingLineNumber = "114"
-            landmarkName = "draw(_:)"
+            landmarkName = "addBackground(to:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
