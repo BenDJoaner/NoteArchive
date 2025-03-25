@@ -7,6 +7,8 @@
 
 import SwiftUI
 import SwiftUICore
+import Foundation
+import NaturalLanguage
 //import ContributionChart
 
 struct NoteListView: View {
@@ -16,11 +18,39 @@ struct NoteListView: View {
     var addNote: () -> Void
     var parentConfig: AppConfig? // 添加 appConfig 参数
     @FocusState private var isKeyboardActive: Bool
+    @State private var frequentWords: [String] = []
+    @State private var viewWidth: CGFloat = UIScreen.main.bounds.width - 32 // 假设左右边距各16
+
     
     @State private var searchText: String = ""
     var body: some View {
-//        SearchBar()
-//            .padding(.horizontal)
+        SearchBar()
+            .padding(.horizontal)
+            .onChange(of: searchText) { _ in
+                updateFrequentWords()
+            }
+        // 添加 ChipsView
+        ChipsView(width: viewWidth) {
+            ForEach(frequentWords, id: \.self) { word in
+                let horizontalSpace: CGFloat = 10
+                let chipWidth = word.size(withAttributes: [.font: UIFont.preferredFont(forTextStyle: .body)]).width + horizontalSpace * 2
+                
+                Button(action: {
+                    searchText = word
+                }) {
+                    Text(word)
+                        .font(.body)
+                        .foregroundStyle(.white)
+                        .padding(.vertical, 6)
+                        .padding(.horizontal, horizontalSpace)
+                        .background(.blue.gradient, in: .capsule)
+                }
+                .containerValue(\.viewWidth, chipWidth)
+            }
+        }
+        .padding(.horizontal)
+        .animation(.easeInOut, value: frequentWords)
+        
         List {
             // 过滤掉“隐私”和“回收站”书架
             ForEach(notes.filter { $0.isShowen }, id: \.self) { note in
@@ -57,6 +87,47 @@ struct NoteListView: View {
         .background(.primary.opacity(0.06), in: .rect(cornerRadius: 10))
 
     }
+    
+    private func updateFrequentWords() {
+        // 收集所有文本数据
+        var allTexts: [String] = []
+        for note in notes {
+            for cover in note.coversArray {
+                if let pages = cover.drawingPages?.allObjects as? [DrawingPage] {
+                    for page in pages {
+                        if let text = page.textData {
+                            allTexts.append(text)
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 调用高频词分析方法
+        frequentWords = findFrequentWords(in: allTexts)
+    }
+    
+    func findFrequentWords(in texts: [String]) -> [String] {
+        var wordFrequency = [String: Int]()
+        let tokenizer = NLTokenizer(unit: .word)
+        
+        // 遍历每一段文本
+        for text in texts {
+            tokenizer.string = text
+            // 分词并统计词频
+            tokenizer.enumerateTokens(in: text.startIndex..<text.endIndex) { tokenRange, _ in
+                let word = String(text[tokenRange])
+                wordFrequency[word, default: 0] += 1
+                return true
+            }
+        }
+        
+        // 过滤出出现次数超过3次的词，并返回为数组
+        return wordFrequency.filter { $0.value > 3 }.map { $0.key }
+    }
+
+    //let frequentWords = findFrequentWords(in: texts)
+    //print(frequentWords) // 输出: ["电脑", "Deepseek", "宇宙"]
 }
 
 struct AddNoteButtonView: View {

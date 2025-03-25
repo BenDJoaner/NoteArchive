@@ -118,7 +118,7 @@ struct BookPageView: View {
     
     // 根据颜色方案返回对应颜色
     private var backgroundColors: Color {
-        colorScheme == .dark ? .black : .white
+        colorScheme == .dark ? .themeBG : .background
     }
 }
 

@@ -169,7 +169,8 @@ struct CanvasView: UIViewRepresentable {
         }
         
         private func drawHorizontalLines(in context: CGContext, rect: CGRect) {
-            let spacing: CGFloat = 45
+            let spacing: CGFloat = calculateLayout(height: rect.height, minItemHeight: 45)
+            print("spacing=\(spacing)")
             for y in stride(from: 0, to: rect.height, by: spacing) {
                 context.move(to: CGPoint(x: 0, y: y))
                 context.addLine(to: CGPoint(x: rect.width, y: y))
@@ -179,7 +180,8 @@ struct CanvasView: UIViewRepresentable {
         }
         
         private func drawVerticalLines(in context: CGContext, rect: CGRect) {
-            let spacing: CGFloat = 45
+            let spacing: CGFloat = calculateLayout(height: rect.width, minItemHeight: 45)
+            print("spacing=\(spacing)")
             for x in stride(from: 0, to: rect.width, by: spacing) {
                 context.move(to: CGPoint(x: x, y: 0))
                 context.addLine(to: CGPoint(x: x, y: rect.height))
@@ -189,7 +191,7 @@ struct CanvasView: UIViewRepresentable {
         }
         
         private func drawDots(in context: CGContext, rect: CGRect) {
-            let spacing: CGFloat = 50
+            let spacing: CGFloat = calculateLayout(height: rect.width, minItemHeight: 45)
             context.setFillColor(UIColor.lightGray.cgColor)
             
             for x in stride(from: 0, to: rect.width, by: spacing) {
@@ -273,6 +275,23 @@ struct CanvasView: UIViewRepresentable {
                 currentY += CGFloat(groupSize) * lineSpacing
             }
             context.strokePath()
+        }
+        
+        // 核心算法：动态计算区域数量和间距
+        private func calculateLayout(height: CGFloat, minItemHeight: CGFloat) -> (CGFloat) {
+            //获取能整除的值
+            let maxItemCount = Int(height / minItemHeight)
+            
+            guard maxItemCount > 0 else {
+                return (0)
+            }
+            
+            // 计算能整除的值占的高度
+            let totalItemsHeight = CGFloat(maxItemCount) * minItemHeight
+            // 计算剩下的高度/被整除的数量，获得增量
+            let spacing = (height - totalItemsHeight) / CGFloat(maxItemCount - 1)
+            //返回原高度/能整除的高度和增量
+            return minItemHeight + spacing
         }
         
         override func layoutSubviews() {
