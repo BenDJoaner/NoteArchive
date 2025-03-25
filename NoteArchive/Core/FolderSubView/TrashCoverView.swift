@@ -57,7 +57,7 @@ struct TrashCoverView: View {
                 Button(action: restoreAction) {
                     HStack {
                         Image(systemName: "arrow.uturn.backward")
-                        Text("还原")
+                        Text("Restore")
                     }
                     .font(.headline)
                     .foregroundColor(.white)
@@ -73,7 +73,7 @@ struct TrashCoverView: View {
                 }) {
                     HStack {
                         Image(systemName: "text.page.slash.fill")
-                        Text("销毁")
+                        Text("Delete")
                     }
                     .font(.headline)
                     .foregroundColor(.white)
@@ -85,9 +85,9 @@ struct TrashCoverView: View {
                 }
                 .alert(isPresented: $showDeleteConfirmation) {
                     Alert(
-                        title: Text("销毁"),
-                        message: Text("确定销毁该档案吗？销毁后将无法还原。"),
-                        primaryButton: .destructive(Text("销毁"), action: deleteAction),
+                        title: Text("Delete"),
+                        message: Text("deleteConfirm"),
+                        primaryButton: .destructive(Text("Delete"), action: deleteAction),
                         secondaryButton: .cancel()
                     )
                 }

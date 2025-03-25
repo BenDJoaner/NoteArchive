@@ -19,8 +19,8 @@ struct NoteListView: View {
     
     @State private var searchText: String = ""
     var body: some View {
-        SearchBar()
-            .padding(.horizontal)
+//        SearchBar()
+//            .padding(.horizontal)
         List {
             // 过滤掉“隐私”和“回收站”书架
             ForEach(notes.filter { $0.isShowen }, id: \.self) { note in
@@ -66,7 +66,7 @@ struct AddNoteButtonView: View {
         Button(action: addNote) {
             HStack {
                 Image(systemName: "folder.fill.badge.plus")
-                Text("添加档案夹")
+                Text("AddFolder")
             }
             .foregroundColor(.blue)
         }
@@ -99,7 +99,7 @@ struct NoteRowView: View {
                         ContributionChartView(data: data, rows: 5, columns: 20, targetValue: 1.0, blockColor: Color(hex: note.colorStr ?? "#7D177D"))
                             .frame(width: 285, height: 75)
 //                            .background(Color(.systemGray6))
-                            .background(Color(hex: note.colorStr ?? "#7D177D").opacity(0.2))
+                            .background(Color(hex: note.colorStr ?? "#7D177D").opacity(0.3))
                             .cornerRadius(5)
                             .shadow(radius: 1)
 
@@ -129,7 +129,7 @@ struct NoteRowView: View {
             Button(role: .destructive) {
                 moveToTrash(note)
             } label: {
-                Label("删除", systemImage: "trash")
+                Label("Delete", systemImage: "trash")
             }
         }
     }

@@ -28,7 +28,7 @@ struct ContentView: View {
                         BottomSectionView(privacyNote: appConfig.privacyNote, trashNote: appConfig.trashNote, selectedNote: $selectedNote)
                     }
                 }
-                .navigationTitle("档案柜")
+                .navigationTitle("ArchiveBox")
                 .onAppear {
                     setupAppConfig()
                 }
@@ -49,7 +49,7 @@ struct ContentView: View {
             // 创建隐私书架
             let privacyNote = Note(context: viewContext)
             privacyNote.id = UUID()
-            privacyNote.title = "机密档案"
+            privacyNote.title = "Confidential".localized
             privacyNote.isPinned = false
             privacyNote.isShowen = false
             newConfig.privacyNote = privacyNote
@@ -57,7 +57,7 @@ struct ContentView: View {
             // 创建回收站书架
             let trashNote = Note(context: viewContext)
             trashNote.id = UUID()
-            trashNote.title = "销毁处"
+            trashNote.title = "DestructionSite".localized
             trashNote.isPinned = false
             trashNote.isShowen = false
             newConfig.trashNote = trashNote
@@ -96,7 +96,7 @@ struct ContentView: View {
         withAnimation {
             let newNote = Note(context: viewContext)
             newNote.id = UUID() // 设置唯一 id
-            newNote.title = "档案夹 \(newNote.id?.uuidString.prefix(8) ?? "")" // 使用 id 的前 8 位
+            newNote.title = "\("Folder".localized) \(newNote.id?.uuidString.prefix(8) ?? "")" // 使用 id 的前 8 位
             newNote.isPinned = false
             newNote.createdAt = Date()
             newNote.isShowen = true

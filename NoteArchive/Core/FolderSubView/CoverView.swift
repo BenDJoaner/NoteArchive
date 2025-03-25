@@ -80,7 +80,7 @@ struct CoverView: View {
                             .padding(10)
                     }
                     Spacer()
-                    Text("\(cover.drawingPages?.count ?? 0)页")
+                    Text("\(cover.drawingPages?.count ?? 0)\("Pages".localized)")
                         .font(.caption)
                         .foregroundColor(.white)
                         .shadow(color: .black, radius: 2, x: 1, y:1)

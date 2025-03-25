@@ -49,7 +49,7 @@ struct ButtonBarView: View {
                     Button(action: onClear) {
                         VStack {
                             Image(systemName: "eraser.line.dashed.fill")
-                            Text("清空板块")
+                            Text("EmptyPage")
                         }
                         .font(.headline)
                         .padding()
@@ -97,7 +97,7 @@ struct ButtonBarView: View {
                     HStack {
                         Image(systemName: "person.and.background.striped.horizontal")
                         VStack{
-                            Text("背景样式")
+                            Text("backgroundType")
                             Text("\(backgroundStyle.localizedName)")
                         }
 
@@ -267,6 +267,8 @@ struct ButtonBarView: View {
         }
         
         request.recognitionLevel = .accurate
+        // 2. 多語言識別支持
+        request.recognitionLanguages = ["zh-Hans", "en-US"]
         
         let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
         try? requestHandler.perform([request])
@@ -277,13 +279,13 @@ struct ButtonBarView: View {
 extension BackgroundStyle {
     var localizedName: String {
         switch self {
-        case .blank: return "空白"
-        case .horizontalLines: return "横线"
-        case .verticalLines: return "竖线"
-        case .grid: return "网格"
-        case .dots: return "点阵"
-        case .coordinate: return "坐标系"
-        case .staff: return "五线谱"
+        case .blank: return "blank".localized
+        case .horizontalLines: return "horizontalLines".localized
+        case .verticalLines: return "verticalLines".localized
+        case .grid: return "grid".localized
+        case .dots: return "dots".localized
+        case .coordinate: return "coordinate".localized
+        case .staff: return "staff".localized
         }
     }
 }

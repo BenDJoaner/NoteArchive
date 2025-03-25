@@ -127,7 +127,7 @@ struct FolderView: View {
     private func titleForState() -> String {
         switch folderState {
         case .e_normal:
-            return note.title ?? "空"
+            return note.title ?? ""
         case .e_editing:
 //            if isPrivacy {
 //                return "机密处"
@@ -137,22 +137,22 @@ struct FolderView: View {
             return ""
             
         case .e_trash:
-            return "销毁处"
+            return "DestructionSite"
         case .e_privacy:
-            return "机密处"
+            return "Confidential"
         }
     }
     
     private func restoreCover(cover: Cover) {
         withAnimation {
             let fetchRequest: NSFetchRequest<Note> = Note.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "title == %@", "已取出")
+            fetchRequest.predicate = NSPredicate(format: "title == %@", "Retrieved".localized)
             if let restoredNote = try? viewContext.fetch(fetchRequest).first {
                 restoredNote.addToCovers(cover)
             } else {
                 let newRestoredNote = Note(context: viewContext)
                 newRestoredNote.id = UUID()
-                newRestoredNote.title = "已取出"
+                newRestoredNote.title = "Retrieved".localized
                 newRestoredNote.isPinned = false
                 newRestoredNote.addToCovers(cover)
             }
@@ -177,7 +177,7 @@ struct FolderView: View {
         withAnimation {
             let newCover = Cover(context: viewContext)
             newCover.id = UUID()
-            newCover.title = "新档案\(note.coversArray.count+1)"
+            newCover.title = "\("NewArchive".localized)\(note.coversArray.count+1)"
             newCover.createdAt = Date()
             newCover.color = folderState == .e_privacy ? "#555555" : randomColor() // 隐私状态下为黑色
             note.addToCovers(newCover)

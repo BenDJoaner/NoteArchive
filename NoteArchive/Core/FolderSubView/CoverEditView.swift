@@ -31,7 +31,7 @@ struct CoverEditView: View {
     var body: some View {
         VStack {
             // 顶部标题文本框
-            TextField("输入标题", text: $editedTitle)
+            TextField("Edited Title", text: $editedTitle)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal)
                 .padding(.top, 10)
@@ -56,7 +56,7 @@ struct CoverEditView: View {
                             .cornerRadius(10) // 设置背景的圆角为 10
                             .opacity(0.5)
                         // ColorPicker
-                        ColorPicker("档案颜色", selection: Binding(
+                        ColorPicker("ArchiveColor".localized, selection: Binding(
                             get: { Color(hex: cover.color ?? "#7D177D") },
                             set: { newColor in
                                 cover.color = newColor.toHex()
@@ -68,7 +68,7 @@ struct CoverEditView: View {
 
                     }
                     .frame(width: 50, height: 50) // 确保 ZStack 的大小与背景一致
-                    Text("颜色")
+                    Text("Color")
                         .font(.caption)
                         .foregroundColor(.white)
                         .shadow(color: .black, radius: 1, x: 1, y: 1) // 添加阴影
@@ -90,7 +90,7 @@ struct CoverEditView: View {
                                     .font(.title)
                                     .foregroundColor(.gray)
                             }
-                            Text("保密")
+                            Text("Confidentiality")
                                 .font(.caption)
                                 .foregroundColor(.white)
                                 .shadow(color: .black, radius: 1, x: 1, y: 1) // 添加阴影
@@ -112,7 +112,7 @@ struct CoverEditView: View {
                                 .font(.title)
                                 .foregroundColor(.red)
                         }
-                        Text("丢弃")
+                        Text("Discard")
                             .font(.caption)
                             .foregroundColor(.white)
                             .shadow(color: .black, radius: 1, x: 1, y: 1) // 添加阴影
@@ -133,7 +133,7 @@ struct CoverEditView: View {
                                 .font(.title)
                                 .foregroundColor(.blue)
                         }
-                        Text("转移")
+                        Text("Transfer")
                             .font(.caption)
                             .foregroundColor(.white)
                             .shadow(color: .black, radius: 1, x: 1, y: 1) // 添加阴影
@@ -141,8 +141,8 @@ struct CoverEditView: View {
                 }
                 .actionSheet(isPresented: $showMoveMenu) {
                     ActionSheet(
-                        title: Text("转移到"),
-                        buttons: notes.filter { $0.title != "隐私" && $0.title != "回收站" }.map { note in
+                        title: Text("TransferTo"),
+                        buttons: notes.filter { $0.isShowen }.map { note in
                             .default(Text(note.title ?? "未命名")) {
                                 moveCover(to: note)
                             }

@@ -57,7 +57,7 @@ struct TitleBarView: View {
                 }) {
                     HStack {
                         Image(systemName: "rectangle.and.pencil.and.ellipsis")
-                        Text("编辑")
+                        Text("Edit")
                     }
                     .font(.headline)
                     .padding(.trailing)
@@ -69,7 +69,7 @@ struct TitleBarView: View {
                 }) {
                     HStack {
                         Image(systemName: "square.and.arrow.down")
-                        Text("保存")
+                        Text("Save")
                     }
                     .font(.headline)
                     .padding(.trailing)
@@ -82,13 +82,13 @@ struct TitleBarView: View {
     private func titleForState() -> String {
         switch folderState {
         case .e_normal:
-            return note.title ?? "空"
+            return note.title ?? ""
         case .e_editing:
-            return isPrivacy ? "隐私" : "编辑中"
+            return isPrivacy ? "Confidential" : "Editing"
         case .e_trash:
-            return "回收站"
+            return "DestructionSite"
         case .e_privacy:
-            return "隐私"
+            return "Confidential"
         }
     }
 

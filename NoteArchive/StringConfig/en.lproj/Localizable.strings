@@ -11,9 +11,9 @@
 "DestructionSite"="Destruction Site";
 "Folder"="Folder";
 "AddFolder"="Add Folder";
-"Delete"="Delete";
+"Delete"="Destroy";
 "PendingDestruction"="Pending Destruction";
-"AuthAdvanced"="Advanced Authentication";
+"AuthAdvanced"="Advanced Archive Authorization";
 "Retrieved"="Retrieved";
 "NewArchive"="New Archive";
 "ArchiveColor"="Archive Color";
@@ -22,7 +22,7 @@
 "Discard"="Discard";
 "Transfer"="Transfer";
 "TransferTo"="Transfer To";
-"Page"="Page";
+"Pages"="Pages";
 "Edit"="Edit";
 "Save"="Save";
 "Editing"="Editing";
@@ -32,4 +32,17 @@
 "EnableAI"="Enable AI";
 "ImportImage"="Import Image";
 "ImportPDF"="Import PDF";
-
+"Restore"="Restore";
+"deleteConfirm"="Are you sure you want to destroy this archive? It cannot be recovered after destruction.";
+"atLessOnePage"="At least one page must be retained";
+"EmptyPage"="Clear Section";
+"DeletePage"="Delete This Page";
+"backgroundType"="Background Style";
+"moreComing"="More features coming soon...";
+"blank"="Blank";
+"horizontalLines"="Horizontal Lines";
+"verticalLines"="Vertical Lines";
+"grid"="Grid";
+"dots"="Dots";
+"coordinate"="Coordinate System";
+"staff"="Staff Paper";

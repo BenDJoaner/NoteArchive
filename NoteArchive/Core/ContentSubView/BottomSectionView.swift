@@ -64,7 +64,7 @@ struct BottomSectionView: View {
                 }) {
                     HStack {
                         Image(systemName: "lock.rectangle.stack.fill")
-                        Text("机密档案")
+                        Text("Confidential")
                         Spacer()
                         Text("\(privacyNote.covers?.count ?? 0)")
                             .font(.caption)
@@ -101,7 +101,7 @@ struct BottomSectionView: View {
                 }) {
                     HStack {
                         Image(systemName: "trash.fill")
-                        Text("待销毁")
+                        Text("DestructionSite")
                         Spacer()
                         Text("\(trashNote.covers?.count ?? 0)")
                             .font(.caption)
@@ -140,7 +140,7 @@ struct BottomSectionView: View {
 
         // 检查设备是否支持生物识别或设备密码
         if context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) {
-            let reason = "档案高级权限验证"
+            let reason = "DestructionSite".localized
 
             // 使用 .deviceOwnerAuthentication 策略
             context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, authenticationError in

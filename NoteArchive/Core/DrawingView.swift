@@ -37,7 +37,7 @@ struct DrawingView: View {
                 )
             }
         }
-        .navigationBarTitle("\(cover.title ?? "空")", displayMode: .inline)
+        .navigationBarTitle("\(cover.title ?? "")", displayMode: .inline)
         .onAppear {
             loadPages()
             // 从CoreData加载背景设置
@@ -96,7 +96,7 @@ struct DrawingView: View {
     private func onDeletePage() {
         // 边界检查：至少保留1页
         guard bookPages.count > 1 else {
-            print("至少需要保留一页")
+            print("atLessOnePage")
             return
         }
         
@@ -198,6 +198,12 @@ struct DrawingView: View {
     private func saveCurrentPage() {
         for pageData in bookPages {
             pageData.pageData.data = pageData.canvasView.drawing.dataRepresentation()
+            let image = pageData.canvasView.toImage()
+            recognizeText(from: image) { text in
+                pageData.pageData.textData = text
+                print("regonizeText: \(text)")
+            }
+
         }
 //        bookPages[currentPageIndex].pageData.data = bookPages[currentPageIndex].canvasView.drawing.dataRepresentation()
 //        pageDatas[currentPageIndex].createdAt = Date() // 更新最后编辑日期
@@ -252,6 +258,30 @@ struct DrawingView: View {
         // 更新画板背景
         // 背景逻辑在 CanvasView 中实现
         
+    }
+    
+    func recognizeText(from image: UIImage, completion: @escaping (String) -> Void) {
+        guard let cgImage = image.cgImage else { return }
+        
+        let request = VNRecognizeTextRequest { (request, error) in
+            guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
+            
+            var recognizedText = ""
+            for observation in observations {
+                if let topCandidate = observation.topCandidates(1).first {
+                    recognizedText += topCandidate.string + "\n"
+                }
+            }
+            
+            completion(recognizedText)
+        }
+        
+        request.recognitionLevel = .accurate
+        // 2. 多語言識別支持
+        request.recognitionLanguages = ["zh-Hans", "en-US"]
+        
+        let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        try? requestHandler.perform([request])
     }
 }
 // 独立封装的切换按钮组件
