@@ -90,7 +90,8 @@ struct NoteListView: View {
     
     private func updateFrequentWords() {
         // 收集所有文本数据
-        var allTexts: [String] = []
+//        var allTexts: [String] = []
+        var allTexts: String = ""
         for note in notes {
             for cover in note.coversArray {
                 if cover.isAnalyze {
@@ -102,7 +103,8 @@ struct NoteListView: View {
                                     .components(separatedBy: .punctuationCharacters) // 移除标点
                                     .joined()
                                     .replacingOccurrences(of: "\n", with: " ")       // 移除换行
-                                allTexts.append(cleanedText)
+//                                allTexts.append(cleanedText)
+                                allTexts += cleanedText
                             }
                         }
                     }
@@ -115,12 +117,12 @@ struct NoteListView: View {
         print("2. frequentWords[\(frequentWords.count)] >>> \(frequentWords)")
     }
     
-    func findFrequentWords(in texts: [String]) -> [String] {
+    func findFrequentWords(in text: String) -> [String] {
         var wordFrequency = [String: Int]()
         let tokenizer = NLTokenizer(unit: .word)
         
         // 遍历每一段文本
-        for text in texts {
+//        for text in texts {
             tokenizer.string = text
             // 分词并统计词频
             tokenizer.enumerateTokens(in: text.startIndex..<text.endIndex) { tokenRange, _ in
@@ -128,10 +130,10 @@ struct NoteListView: View {
                 wordFrequency[word, default: 0] += 1
                 return true
             }
-        }
+//        }
         
         // 过滤出出现次数超过3次的词，并返回为数组
-        return wordFrequency.filter { $0.value > 5 }.map { $0.key }
+        return wordFrequency.filter { $0.value > 3 }.map { $0.key }
     }
 
     //let frequentWords = findFrequentWords(in: texts)

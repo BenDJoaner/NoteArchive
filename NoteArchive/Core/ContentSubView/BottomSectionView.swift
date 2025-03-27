@@ -14,9 +14,56 @@ struct BottomSectionView: View {
     @Binding var selectedNote: Note?
     var appConfig: AppConfig? // 添加 appConfig 参数
     @State private var viewWidth: CGFloat = 300
+    
     @State private var showAuthenticationFailedAlert = false
     var body: some View {
         VStack(spacing: 2) {
+            Image("MyLogo")
+                .resizable()
+                .frame(width: 60, height: 60)
+                .padding(.vertical)
+                
+            
+            Button(action: {
+
+            }) {
+                Image(systemName: "text.bubble.badge.clock.fill")
+                    .font(.title)
+                    .foregroundColor(.white)
+                    .frame(maxHeight: 80)
+            }
+            Button(action: {
+
+            }) {
+                Image(systemName: "bell.and.waves.left.and.right.fill")
+                    .font(.title)
+                    .foregroundColor(.white)
+                    .frame(maxHeight: 80)
+            }
+            Button(action: {
+
+            }) {
+                Image(systemName: "folder.fill.badge.plus")
+                    .font(.title)
+                    .foregroundColor(.white)
+                    .frame(maxHeight: 80)
+            }
+            Button(action: {
+
+            }) {
+                Image(systemName: "arrow.trianglehead.clockwise.icloud.fill")
+                    .font(.title)
+                    .foregroundColor(.white)
+                    .frame(maxHeight: 80)
+            }
+            Button(action: {
+
+            }) {
+                Image(systemName: "sun.max.fill")
+                    .font(.title)
+                    .foregroundColor(.white)
+                    .frame(maxHeight: 80)
+            }
             Spacer()
             if let privacyNote = privacyNote {
                 Button(action: {
@@ -29,18 +76,22 @@ struct BottomSectionView: View {
                         }
                     }
                 }) {
-                    VStack {
+//                    VStack {
                         Image(systemName: "lock.rectangle.stack.fill")
+                        .font(.title)
+                        .foregroundColor(.white)
+                        .frame(maxHeight: 80)
+//                        .frame(maxHeight: .infinity)
 //                        Text("Confidential")
 //                        Spacer()
 //                        Text("\(privacyNote.covers?.count ?? 0)")
 //                            .font(.caption)
 //                            .foregroundColor(.white)
-                    }
-                    .padding()
-                    .foregroundColor(.white)
-                    .background(Color(.systemGray3))
-                    .cornerRadius(10)
+//                    }
+//                    .padding()
+//                    .foregroundColor(.white)
+//                    .background(Color(.systemGray3))
+//                    .cornerRadius(10)
 //                    .padding(.horizontal)
 //                    .padding(.all, 5)
 //                    .shadow(radius: 5)
@@ -67,17 +118,20 @@ struct BottomSectionView: View {
                         }
                     }
                 }) {
-                    VStack {
+//                    VStack {
                         Image(systemName: "trash.fill")
+                            .font(.title)
+                            .foregroundColor(.red)
+                            .frame(maxHeight: 80)
 //                        Text("DestructionSite")
 //                        Text("\(trashNote.covers?.count ?? 0)")
 //                            .font(.caption)
 //                            .foregroundColor(.gray)
-                    }
-                    .padding()
-                    .foregroundColor(.white)
-                    .background(Color(.red))
-                    .cornerRadius(10)
+//                    }
+//                    .padding()
+//                    .foregroundColor(.white)
+//                    .background(Color(.red))
+//                    .cornerRadius(10)
 //                    .padding(.horizontal)
 //                    .padding(.all, 5)
 //                    .shadow(radius: 5)
@@ -91,6 +145,14 @@ struct BottomSectionView: View {
                         label: { EmptyView() }
                     )
                 )
+            }
+            Button(action: {
+
+            }) {
+                Image(systemName: "gearshape.fill")
+                    .font(.title)
+                    .foregroundColor(.white)
+                    .frame(maxHeight: 80)
             }
         }
     }

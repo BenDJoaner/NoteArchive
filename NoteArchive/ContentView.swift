@@ -61,6 +61,7 @@ struct ContentView: View {
                         if let appConfig = appConfig {
                             BottomSectionView(privacyNote: appConfig.privacyNote, trashNote: appConfig.trashNote, selectedNote: $selectedNote)
                                 .hidden()
+                                .frame( height: 0)
                         }
                     }
                     .navigationTitle("ArchiveBox")
