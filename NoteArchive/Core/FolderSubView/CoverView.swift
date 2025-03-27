@@ -56,8 +56,9 @@ struct CoverView: View {
 
             // 第一个 page 的缩小版本内容（如果存在）
             if let drawingPages = cover.drawingPages,
-               drawingPages.count > 0, // 使用 count 判断是否为空
-               let firstPage = drawingPages.allObjects[0] as? DrawingPage,
+               drawingPages.count > 0,
+               let minPage = drawingPages.allObjects.min(by: { ($0 as? DrawingPage)?.page ?? 0 < ($1 as? DrawingPage)?.page ?? 0 }),
+               let firstPage = minPage as? DrawingPage,
                let pageData = firstPage.data,
                let drawing = try? PKDrawing(data: pageData) {
                 let image = drawing.image(from: drawing.bounds, scale: 0.5) // 缩小版本
@@ -66,7 +67,7 @@ struct CoverView: View {
                     .scaledToFit()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .padding(20)
-                }
+            }
 
             // 左下角显示创建时间
             VStack {

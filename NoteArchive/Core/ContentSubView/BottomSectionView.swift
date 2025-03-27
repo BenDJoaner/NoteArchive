@@ -17,6 +17,7 @@ struct BottomSectionView: View {
     @State private var showAuthenticationFailedAlert = false
     var body: some View {
         VStack(spacing: 2) {
+            Spacer()
             if let privacyNote = privacyNote {
                 Button(action: {
                     authenticate { success in
@@ -28,20 +29,21 @@ struct BottomSectionView: View {
                         }
                     }
                 }) {
-                    HStack {
+                    VStack {
                         Image(systemName: "lock.rectangle.stack.fill")
-                        Text("Confidential")
-                        Spacer()
-                        Text("\(privacyNote.covers?.count ?? 0)")
-                            .font(.caption)
-                            .foregroundColor(.gray)
+//                        Text("Confidential")
+//                        Spacer()
+//                        Text("\(privacyNote.covers?.count ?? 0)")
+//                            .font(.caption)
+//                            .foregroundColor(.white)
                     }
                     .padding()
-                    .background(Color(.systemGray6))
+                    .foregroundColor(.white)
+                    .background(Color(.systemGray3))
                     .cornerRadius(10)
-                    .padding(.horizontal)
-                    .padding(.all, 5)
-                    .shadow(radius: 5)
+//                    .padding(.horizontal)
+//                    .padding(.all, 5)
+//                    .shadow(radius: 5)
                 }
                 .background(
                     // 使用 NavigationLink 控制跳转
@@ -65,20 +67,20 @@ struct BottomSectionView: View {
                         }
                     }
                 }) {
-                    HStack {
+                    VStack {
                         Image(systemName: "trash.fill")
-                        Text("DestructionSite")
-                        Spacer()
-                        Text("\(trashNote.covers?.count ?? 0)")
-                            .font(.caption)
-                            .foregroundColor(.gray)
+//                        Text("DestructionSite")
+//                        Text("\(trashNote.covers?.count ?? 0)")
+//                            .font(.caption)
+//                            .foregroundColor(.gray)
                     }
                     .padding()
-                    .background(Color(.systemGray6))
+                    .foregroundColor(.white)
+                    .background(Color(.red))
                     .cornerRadius(10)
-                    .padding(.horizontal)
-                    .padding(.all, 5)
-                    .shadow(radius: 5)
+//                    .padding(.horizontal)
+//                    .padding(.all, 5)
+//                    .shadow(radius: 5)
                 }
                 .background(
                     // 使用 NavigationLink 控制跳转

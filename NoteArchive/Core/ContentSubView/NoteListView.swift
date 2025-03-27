@@ -93,18 +93,26 @@ struct NoteListView: View {
         var allTexts: [String] = []
         for note in notes {
             for cover in note.coversArray {
-                if let pages = cover.drawingPages?.allObjects as? [DrawingPage] {
-                    for page in pages {
-                        if let text = page.textData {
-                            allTexts.append(text)
+                if cover.isAnalyze {
+                    if let pages = cover.drawingPages?.allObjects as? [DrawingPage] {
+                        for page in pages {
+                            if let originalText = page.textData {
+                                // 清理文本：移除非允许字符 + 去除多余空格
+                                let cleanedText = originalText
+                                    .components(separatedBy: .punctuationCharacters) // 移除标点
+                                    .joined()
+                                    .replacingOccurrences(of: "\n", with: " ")       // 移除换行
+                                allTexts.append(cleanedText)
+                            }
                         }
                     }
                 }
             }
         }
-        
+        print("1. allTexts[\(allTexts.count)] >>> \(allTexts)")
         // 调用高频词分析方法
         frequentWords = findFrequentWords(in: allTexts)
+        print("2. frequentWords[\(frequentWords.count)] >>> \(frequentWords)")
     }
     
     func findFrequentWords(in texts: [String]) -> [String] {
@@ -123,7 +131,7 @@ struct NoteListView: View {
         }
         
         // 过滤出出现次数超过3次的词，并返回为数组
-        return wordFrequency.filter { $0.value > 3 }.map { $0.key }
+        return wordFrequency.filter { $0.value > 5 }.map { $0.key }
     }
 
     //let frequentWords = findFrequentWords(in: texts)

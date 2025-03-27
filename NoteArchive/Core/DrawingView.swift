@@ -9,7 +9,7 @@ struct DrawingView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @State private var currentPageIndex = 0
     @State private var bookPages: [BookCanvasView] = []
-    @State private var useAI: Bool = false
+    @State private var isAnalyze: Bool = false
     @State private var usePencil: Bool = true
     @State private var changeTheme: Bool = false
     @State private var stickImage: UIImage = UIImage()
@@ -69,7 +69,7 @@ struct DrawingView: View {
                 onAddPhoto: loadImage,
                 onAddPDF: loadPDF,
                 onDeletePage: onDeletePage,
-                isAIOn: $useAI,
+                isAIOn: $isAnalyze,
                 usePencil: $usePencil,
                 backgroundStyle: $backgroundStyle,
                 currentPageIndex: $currentPageIndex,
@@ -152,6 +152,7 @@ struct DrawingView: View {
         if bookPages.count < 2 {
             addNewPage()
         }
+        isAnalyze = cover.isAnalyze
     }
     
     private func addNewPage() {
@@ -198,10 +199,12 @@ struct DrawingView: View {
     private func saveCurrentPage() {
         for pageData in bookPages {
             pageData.pageData.data = pageData.canvasView.drawing.dataRepresentation()
-            let image = pageData.canvasView.toImage()
-            recognizeText(from: image) { text in
-                pageData.pageData.textData = text
-                print("regonizeText: \(text)")
+            if isAnalyze {
+                let image = pageData.canvasView.toImage()
+                recognizeText(from: image) { text in
+                    pageData.pageData.textData = text
+                    print("regonizeText: \(text)")
+                }
             }
 
         }
@@ -212,7 +215,7 @@ struct DrawingView: View {
         
         print("Saving background: \(backgroundStyle.rawValue)") // ✅ 调试输出
         cover.selectedBackground = backgroundStyle.rawValue
-        
+        cover.isAnalyze = isAnalyze
         saveContext()
     }
 
@@ -278,7 +281,7 @@ struct DrawingView: View {
         
         request.recognitionLevel = .accurate
         // 2. 多語言識別支持
-        request.recognitionLanguages = ["zh-Hans", "en-US"]
+        request.recognitionLanguages = [Locale.current.identifier, "en-US"]
         
         let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
         try? requestHandler.perform([request])

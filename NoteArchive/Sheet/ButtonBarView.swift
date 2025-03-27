@@ -147,7 +147,7 @@ struct ButtonBarView: View {
                     Toggle(isOn: $isAIOn) {
                         HStack {
                             Image(systemName: "aqi.medium")
-                            Text("AI识别")
+                            Text("识别Text")
                         }
                     }
                     .toggleStyle(SwitchToggleStyle(tint: .blue)) // 自定义 Toggle 样式
@@ -221,26 +221,68 @@ struct ButtonBarView: View {
                 }
                 
                 HStack{
-                    // 清空按钮
-                    Button("识别文字") {
+                    
+                    Button(action: onAddPDF) {
+                        HStack{
+                            VStack {
+                                Image(systemName: "document.on.document")
+                                Text("CopyText")
+                            }
+                        }
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: 150, maxHeight: 200)
+                        .background(.white)
+                        .foregroundColor(.black)
+                        .cornerRadius(10)
+                        .shadow(radius: 3)
+                        
+                    }
+                    
+                    Button(action: {
                         let image = currentCanvasView.toImage()
                         recognizeText(from: image) { text in
                             recognizedText = text
+                            UIPasteboard.general.string = text
                         }
-                    }
-                    .font(.headline)
-                    .padding()
-                    .frame(maxWidth: 150, maxHeight: 200)
-                    .background(.white)
-                    .foregroundColor(.black)
-                    .cornerRadius(10)
-                    .shadow(radius: 3)
-                    Spacer()
-                    Text(recognizedText)
+                    }) {
+                        HStack{
+                            VStack {
+                                Image(systemName: "document.on.document")
+                                Text("CopyText")
+                            }
+                        }
                         .font(.headline)
                         .padding()
+                        .frame(maxWidth: 150, maxHeight: 200)
                         .background(.white)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .foregroundColor(.black)
+                        .cornerRadius(10)
+                        .shadow(radius: 3)
+                        
+                    }
+                    
+//                    // 清空按钮
+//                    Button("CopyText") {
+//                        let image = currentCanvasView.toImage()
+//                        recognizeText(from: image) { text in
+//                            recognizedText = text
+//                        }
+//                    }
+//                    .font(.headline)
+//                    .padding()
+//                    .frame(maxWidth: 150, maxHeight: 200)
+//                    .background(.white)
+//                    .foregroundColor(.black)
+//                    .cornerRadius(10)
+//                    .shadow(radius: 3)
+//                    Spacer()
+//                    Text(recognizedText)
+//                        .font(.headline)
+//                        .padding()
+//                        .background(.white)
+//                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+
                 }
 
             }

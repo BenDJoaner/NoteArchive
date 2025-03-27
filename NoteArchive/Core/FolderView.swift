@@ -137,9 +137,9 @@ struct FolderView: View {
             return ""
             
         case .e_trash:
-            return "DestructionSite"
+            return "DestructionSite".localized
         case .e_privacy:
-            return "Confidential"
+            return "Confidential".localized
         }
     }
     
@@ -180,6 +180,7 @@ struct FolderView: View {
             newCover.title = "\("NewArchive".localized)\(note.coversArray.count+1)"
             newCover.createdAt = Date()
             newCover.color = folderState == .e_privacy ? "#555555" : randomColor() // 隐私状态下为黑色
+            newCover.isAnalyze = false
             note.addToCovers(newCover)
             
             do {

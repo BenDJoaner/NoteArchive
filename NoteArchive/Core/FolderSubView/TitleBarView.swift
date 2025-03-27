@@ -84,11 +84,11 @@ struct TitleBarView: View {
         case .e_normal:
             return note.title ?? ""
         case .e_editing:
-            return isPrivacy ? "Confidential" : "Editing"
+            return isPrivacy ? "Confidential".localized : "Editing".localized
         case .e_trash:
-            return "DestructionSite"
+            return "DestructionSite".localized
         case .e_privacy:
-            return "Confidential"
+            return "Confidential".localized
         }
     }
 
