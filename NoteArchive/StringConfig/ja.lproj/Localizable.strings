@@ -46,3 +46,13 @@
 "dots"="ドット";
 "coordinate"="座標系";
 "staff"="五線譜";
+"ExportSuccess"="Export Success";
+"ImportSuccess"="Import Success";
+"ImportError"="Import Error";
+"SyncSuccess"="Sync Success";
+"SyncError"="Sync Error";
+"Unpin"="Unpin";
+"Pin"="Pin";
+"selectSaveNote"="Select notes";
+"Confirm"="Confirm";
+"Cancel"="Cancel";

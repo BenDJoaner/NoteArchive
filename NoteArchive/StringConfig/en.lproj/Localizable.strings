@@ -46,3 +46,13 @@
 "dots"="Dots";
 "coordinate"="Coordinate System";
 "staff"="Staff Paper";
+"ExportSuccess"="Export Success";
+"ImportSuccess"="Import Success";
+"ImportError"="Import Error";
+"SyncSuccess"="Sync Success";
+"SyncError"="Sync Error";
+"Unpin"="Unpin";
+"Pin"="Pin";
+"selectSaveNote"="Select notes";
+"Confirm"="Confirm";
+"Cancel"="Cancel";

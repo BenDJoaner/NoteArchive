@@ -46,3 +46,13 @@
 "dots"="点阵";
 "coordinate"="坐标系";
 "staff"="五线谱";
+"ExportSuccess"="导出成功!";
+"ImportSuccess"="导入成功!";
+"ImportError"="导入错误!";
+"SyncSuccess"="同步成功!";
+"SyncError"="同步失败!";
+"Unpin"="置顶";
+"Pin"="置顶";
+"selectSaveNote"="请选择需要保存的档案";
+"Confirm"="确认";
+"Cancel"="取消";

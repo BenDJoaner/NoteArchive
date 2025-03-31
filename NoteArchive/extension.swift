@@ -17,6 +17,16 @@ extension String {
     func size(_ font: UIFont) -> CGSize {
         size(withAttributes: [NSAttributedString.Key.font: font])
     }
+    var localized: String {
+        NSLocalizedString(self, comment: "")
+    }
+    func safeFileName() -> String {
+        let invalidCharacters = CharacterSet(charactersIn: "/\\?%*|\"<>:")
+        return self
+            .components(separatedBy: invalidCharacters)
+            .joined(separator: "")
+            .replacingOccurrences(of: " ", with: "_")
+    }
 }
 
 // 扩展 Note 以方便访问 covers
@@ -79,10 +89,5 @@ extension PKCanvasView {
             ctx.fill(bounds)
             drawing.image(from: bounds, scale: UIScreen.main.scale).draw(in: bounds)
         }
-    }
-}
-extension String {
-    var localized: String {
-        NSLocalizedString(self, comment: "")
     }
 }

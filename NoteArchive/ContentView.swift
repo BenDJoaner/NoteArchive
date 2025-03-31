@@ -17,63 +17,69 @@ struct ContentView: View {
     @State private var appConfig: AppConfig? = nil
     @State var showSideBar = false
     var body: some View {
-        HStack(spacing: 0) {
-            VStack {
-                // 底部区域（隐私书架和回收站）
-                if let appConfig = appConfig {
-                    BottomSectionView(privacyNote: appConfig.privacyNote, trashNote: appConfig.trashNote, selectedNote: $selectedNote)
-                }
-                Spacer(minLength:  getScreenRect().height < 750 ? 30 : 50)
-                Button(action: {
-                    withAnimation(.easeIn) {
-                        showSideBar.toggle()
+        
+
+        NavigationView {
+            HStack(spacing: 0) {
+                VStack {
+                    // 底部区域（隐私书架和回收站）
+                    if let appConfig = appConfig {
+                        BottomSectionView(
+                            privacyNote: appConfig.privacyNote,
+                            trashNote: appConfig.trashNote,
+                            selectedNote: $selectedNote,
+                            appConfig: appConfig
+                        )
                     }
-                    
-                }, label: {
-                    Image(systemName: "chevron.right")
-                        .font(.title2)
-                        .foregroundColor(.white)
-                        .rotationEffect(.init(degrees:  showSideBar ? -180 : 0))
-                        .padding()
-                        .background(Color.black)
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
-                    
-                })
-                .padding(.top,  getScreenRect().height < 750 ? 15 : 30)
-                .padding(.bottom, getSafeArea().bottom == 0 ? 15 : 0)
-                .offset(x: showSideBar ? 0 : 100)
-                
-            }
-            .frame(width: 80)
-            .background(Color.black.ignoresSafeArea())
-            .offset(x: showSideBar ? 0 : -100)
-            .padding(.trailing, showSideBar ? CGFloat(0) : -100)
-            .zIndex(1.0)
-            
-            NavigationView {
-                ZStack{
-                    VStack(spacing: 0) {
-                        // 笔记列表
-                        NoteListView(notes: notes, selectedNote: $selectedNote, moveToTrash: moveToTrash, addNote: addNote, parentConfig: appConfig)
-
-
-                        if let appConfig = appConfig {
-                            BottomSectionView(privacyNote: appConfig.privacyNote, trashNote: appConfig.trashNote, selectedNote: $selectedNote)
-                                .hidden()
-                                .frame( height: 0)
+                    Spacer(minLength:  getScreenRect().height < 750 ? 30 : 50)
+                    Button(action: {
+                        withAnimation(.easeIn) {
+                            showSideBar.toggle()
                         }
-                    }
-                    .navigationTitle("ArchiveBox")
-
+                        
+                    }, label: {
+                        Image(systemName: "chevron.right")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                            .rotationEffect(.init(degrees:  showSideBar ? -180 : 0))
+                            .padding()
+                            .background(Color.black)
+                            .cornerRadius(10)
+                            .shadow(radius: 5)
+                        
+                    })
+                    .padding(.top,  getScreenRect().height < 750 ? 15 : 30)
+                    .padding(.bottom, getSafeArea().bottom == 0 ? 15 : 0)
+                    .offset(x: showSideBar ? 0 : 100)
+                    
                 }
+                .frame(width: 80)
+                .background(Color.black.ignoresSafeArea())
+                .offset(x: showSideBar ? 0 : -100)
+                .padding(.trailing, showSideBar ? CGFloat(0) : -100)
+                .zIndex(1.0)
+                VStack(spacing: 0) {
+                    // 笔记列表
+                    NoteListView(notes: notes, selectedNote: $selectedNote, moveToTrash: moveToTrash, addNote: addNote, parentConfig: appConfig)
+                    if let appConfig = appConfig {
+                        BottomSectionView(
+                            privacyNote: appConfig.privacyNote,
+                            trashNote: appConfig.trashNote,
+                            selectedNote: $selectedNote,
+                            appConfig: appConfig
+                        )
+                            .hidden()
+                            .frame( height: 0)
+                    }
+                }
+//                .navigationTitle("ArchiveBox")
             }
-            .navigationViewStyle(StackNavigationViewStyle()) // 设置堆栈样式
+
         }
+        .navigationViewStyle(StackNavigationViewStyle()) // 设置堆栈样式
         .onAppear {
             setupAppConfig()
         }
-
     }
 
     private func setupAppConfig() {

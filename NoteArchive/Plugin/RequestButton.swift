@@ -65,9 +65,10 @@ struct RequestButton<ButtonContent>: View where ButtonContent: View {
                 }
                 .overlay {
                     if taskStatus != .idle {
-                        Image(systemName: isFailed ? "exclamationmark" : "checkmark")
+                        Image(systemName: isFailed ? "exclamationmark.icloud.fill" : "checkmark.icloud.fill")
                             .font(.title2.bold())
                             .foregroundStyle(.white)
+                            .frame(maxHeight: 80)
                     }
                 }
                 .overlay(content: {

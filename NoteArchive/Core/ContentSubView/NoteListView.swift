@@ -161,7 +161,11 @@ struct NoteRowView: View {
     @State private var data = []
     var body: some View {
         let data = getCoverData(note: selectedNote ?? note)
-        NavigationLink(destination: FolderView(note: note, folderState: FolderView.FolderState.e_normal, systemImageType: .badgeclock), tag: note, selection: $selectedNote) {
+        NavigationLink(destination: FolderView(
+            note: note,
+            folderState: FolderView.FolderState.e_normal,
+            systemImageType: .badgeclock
+        ), tag: note, selection: $selectedNote) {
 //            ZStack(alignment: .topTrailing) { // 使用 ZStack 将图片作为背景
                 // 主要内容
                 VStack {
@@ -210,7 +214,7 @@ struct NoteRowView: View {
             Button(role: .destructive) {
                 moveToTrash(note)
             } label: {
-                Label("Delete", systemImage: "trash")
+                Label("Delete".localized, systemImage: "xmark.bin.fill")
             }
         }
     }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24D60" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
     <entity name="AppConfig" representedClassName=".AppConfig" syncable="YES" codeGenerationType="class">
+        <attribute name="themeScheme" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <relationship name="notes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Note" inverseName="config" inverseEntity="Note"/>
         <relationship name="privacyNote" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Note" inverseName="privateconfig" inverseEntity="Note"/>
         <relationship name="trashNote" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Note" inverseName="trashconfig" inverseEntity="Note"/>
