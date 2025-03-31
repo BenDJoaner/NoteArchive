@@ -15,30 +15,29 @@ struct NoteSelectionView: View {
     ) var notes: FetchedResults<Note>
     
     @Binding var selectedNotes: Set<Note>
-    var onConfirm: () -> Void // 新增确认回调
+    var onConfirm: () -> Void
     @Environment(\.presentationMode) var presentationMode
+    
+    private let columns = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
+    ]
     
     var body: some View {
         NavigationView {
-            List {
-                ForEach(notes.filter { $0.isShowen }) { note in
-                    HStack {
-                        Text(note.title ?? "Untitled")
-                        Spacer()
-                        if selectedNotes.contains(note) {
-                            Image(systemName: "checkmark")
-                                .foregroundColor(.blue)
-                        }
-                    }
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        if selectedNotes.contains(note) {
-                            selectedNotes.remove(note)
-                        } else {
-                            selectedNotes.insert(note)
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 16) {
+                    ForEach(notes.filter { $0.isShowen }) { note in
+                        NoteGridItem(note: note, isSelected: selectedNotes.contains(note)) {
+                            if selectedNotes.contains(note) {
+                                selectedNotes.remove(note)
+                            } else {
+                                selectedNotes.insert(note)
+                            }
                         }
                     }
                 }
+                .padding()
             }
             .navigationTitle("选择笔记")
             .navigationBarItems(
@@ -46,11 +45,68 @@ struct NoteSelectionView: View {
                     presentationMode.wrappedValue.dismiss()
                 },
                 trailing: Button("确认") {
-                    onConfirm() // 用户明确点击确认时才调用
+                    onConfirm()
                     presentationMode.wrappedValue.dismiss()
                 }
                 .disabled(selectedNotes.isEmpty)
             )
         }
+    }
+}
+
+struct NoteGridItem: View {
+    var note: Note
+    var isSelected: Bool
+    var action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            VStack {
+                ZStack {
+                    // Background with note color
+                    Color(hex: note.colorStr ?? "#7D177D")
+                        .cornerRadius(10)
+                    
+                    // Checkmark indicator
+                    if isSelected {
+                        VStack {
+                            HStack {
+                                Spacer()
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.title)
+                                    .foregroundColor(.white)
+                                    .padding(8)
+                            }
+                            Spacer()
+                        }
+                    }
+                    
+                    // Note content
+                    VStack {
+                        Text(note.title ?? "Untitled")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding(.top, 8)
+                        
+                        Spacer()
+                        
+                        // Display number of covers if available
+                        if let covers = note.covers {
+                            Text("\(covers.count) 个档案")
+                                .font(.caption)
+                                .foregroundColor(.white)
+                                .padding(.bottom, 8)
+                        }
+                    }
+                    .padding()
+                }
+                .frame(height: 120)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 3)
+                )
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 }

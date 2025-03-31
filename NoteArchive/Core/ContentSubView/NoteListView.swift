@@ -24,11 +24,11 @@ struct NoteListView: View {
     
     @State private var searchText: String = ""
     var body: some View {
-        SearchBar()
-            .padding(.horizontal)
-            .onChange(of: searchText) { _ in
-                updateFrequentWords()
-            }
+//        SearchBar()
+//            .padding(.horizontal)
+//            .onChange(of: searchText) { _ in
+//                updateFrequentWords()
+//            }
         // 添加 ChipsView
         ChipsView(width: viewWidth) {
             ForEach(frequentWords, id: \.self) { word in
@@ -75,18 +75,18 @@ struct NoteListView: View {
         }
     }
     
-    @ViewBuilder
-    func SearchBar() -> some View {
-        HStack(spacing: 10) {
-            Image(systemName: "magnifyingglass")
-            
-            TextField("Search", text: $searchText)
-        }
-        .padding(.vertical, 10)
-        .padding(.horizontal, 15)
-        .background(.primary.opacity(0.06), in: .rect(cornerRadius: 10))
-
-    }
+//    @ViewBuilder
+//    func SearchBar() -> some View {
+//        HStack(spacing: 10) {
+//            Image(systemName: "magnifyingglass")
+//            
+//            TextField("Search", text: $searchText)
+//        }
+//        .padding(.vertical, 10)
+//        .padding(.horizontal, 15)
+//        .background(.primary.opacity(0.06), in: .rect(cornerRadius: 10))
+//
+//    }
     
     private func updateFrequentWords() {
         // 收集所有文本数据

@@ -12,7 +12,7 @@ import PencilKit
 struct CoverView: View {
     var cover: Cover
     var isPrivacy: Bool
-    var systemImageType: SystemImageType? // 接收外部传入的 systemImage 类型
+    var iconStr: String?  // Add this parameter
     var onLongPress: () -> Void // 添加长按回调
 
     var body: some View {
@@ -22,14 +22,14 @@ struct CoverView: View {
                 .cornerRadius(10)
             
             // 显示 systemImage
-            if let systemImageType = systemImageType {
-                Image(systemName: systemImageType.rawValue)
+            if let iconStr = iconStr {
+                Image(systemName: iconStr)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 120, height: 120)
                     .offset(x: 20, y: -50)
                     .foregroundColor(.white)
-                    .opacity(0.2) // 设置透明度为 50%
+                    .opacity(0.2)
             }
             
             if isPrivacy {

@@ -86,6 +86,9 @@ struct ContentView: View {
         let fetchRequest: NSFetchRequest<AppConfig> = AppConfig.fetchRequest()
         if let config = try? viewContext.fetch(fetchRequest).first {
             self.appConfig = config
+            if let window = UIApplication.shared.windows.first {
+                window.overrideUserInterfaceStyle = config.themeScheme ? .dark : .light
+            }
         } else {
             // 创建 AppConfig 实例
             let newConfig = AppConfig(context: viewContext)

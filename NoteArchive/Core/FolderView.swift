@@ -31,78 +31,34 @@ struct FolderView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            // 显示 systemImage
-            if folderState == .e_privacy {
-                Image(systemName: "lock.open.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 300, height: 300)
-                    .offset(x: 100, y: 300)
-                    .foregroundColor(Color(.systemGreen))
-                    .opacity(0.2) // 设置透明度为 50%
-            } else if folderState == .e_trash {
-                Image(systemName: "trash")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 300, height: 300)
-                    .offset(x: 100, y: 300)
-                    .foregroundColor(Color(.systemRed))
-                    .opacity(0.2) // 设置透明度为 50%
-            }else{
-                if let systemImageType = systemImageType {
-                    Image(systemName: systemImageType.rawValue)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 300, height: 300)
-                        .offset(x: 100, y: 300)
-                        .foregroundColor(Color(hex: note.colorStr ?? "#7D177D"))
-                        .opacity(0.5) // 设置透明度为 50%
-                }
-            }
-            
-            VStack {
-                // 标题栏
-                TitleBarView(
-                    folderState: $folderState,
-                    isPrivacy: isPrivacy,
-                    newTitle: $newTitle,
-                    note: note,
-                    saveTitle: saveTitle
+            ZStack {
+                // Background Image (now using note.iconStr)
+                BackgroundImageView(
+                    folderState: folderState,
+                    iconStr: note.iconStr,  // Pass the icon string
+                    note: note
                 )
-
-                // 封面网格
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHGrid(rows: [GridItem(.adaptive(minimum: 290))], spacing: 20) {
-                        ForEach(note.coversArray.sorted { $0.createdAt ?? Date() < $1.createdAt ?? Date() }, id: \.self) { cover in
-
-                            if folderState == .e_editing {
-                                CoverEditView(cover: cover)
-                                .frame(width: 180, height: 280)
-                            } else if folderState == .e_trash {
-                                TrashCoverView(cover: cover, restoreAction: {
-                                    restoreCover(cover: cover)
-                                }, deleteAction: {
-                                    deleteCover(cover: cover)
-                                })
-                                .frame(width: 180, height: 280)
-                            } else {
-                                // 在 `FolderView` 中添加 `matchedGeometryEffect`
-                                NavigationLink(destination: DrawingView(cover: cover, namespace: namespace)) {
-                                    CoverView(cover: cover, isPrivacy: isPrivacy,systemImageType: systemImageType, onLongPress: {
-                                        folderState = .e_editing // 长按时进入编辑模式
-                                    })
-                                    .frame(width: 180, height: 280)
-                                }
-                            }
-                        }
-                        if folderState == .e_normal || folderState == .e_privacy {
-                            AddCoverButton {
-                                addCover()
-                            }
-                            .frame(width: 180, height: 280)
-                        }
-                    }
-                    .padding()
+                
+                // Main Content
+                VStack {
+                    // Header (now properly bound to note.iconStr)
+                    FolderHeaderView(
+                        folderState: $folderState,
+                        newTitle: $newTitle,
+                        note: note,
+                        saveTitle: saveTitle,
+                        isPrivacy: isPrivacy
+                    )
+                    
+                    // Cover Grid
+                    CoverGridView(
+                        note: note,
+                        folderState: $folderState,
+                        isPrivacy: isPrivacy,
+                        iconStr: note.iconStr,  // Pass the icon string
+                        namespace: namespace,
+                        addCoverAction: addCover
+                    )
                 }
             }
         }
@@ -110,18 +66,6 @@ struct FolderView: View {
             newTitle = note.title ?? ""
             isPrivacy = folderState == .e_privacy
         }
-//        .sheet(item: $editingCover) { cover in
-//            EditCoverSheet(cover: cover, editedTitle: $editedTitle, editedColor: $editedColor, onSave: {
-//                saveCoverChanges(cover: cover)
-//            }, onCancel: {
-//                editingCover = nil
-//            })
-//            .background(BackgroundCleanerView())
-//        }
-        .sheet(isPresented: $showSettingSheet, content: {
-
-        })
-        
     }
 
     private func titleForState() -> String {
@@ -129,11 +73,6 @@ struct FolderView: View {
         case .e_normal:
             return note.title ?? ""
         case .e_editing:
-//            if isPrivacy {
-//                return "机密处"
-//            }else{
-//                return "编辑中"
-//            }
             return ""
             
         case .e_trash:

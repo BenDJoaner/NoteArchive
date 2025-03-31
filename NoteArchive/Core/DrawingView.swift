@@ -21,8 +21,8 @@ struct DrawingView: View {
 
     var body: some View {
         ZStack {
-            Color(.systemGray6)// 灰色背景
-                .edgesIgnoringSafeArea(.all)
+//            Color(.systemGray6)// 灰色背景
+//                .edgesIgnoringSafeArea(.all)
 
             if !bookPages.isEmpty { // 确保 pageDatas 被赋值后才渲染 BookPageView
                 BookPageView(
