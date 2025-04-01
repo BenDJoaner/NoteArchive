@@ -78,20 +78,20 @@ struct BottomSectionView: View {
                 handleFileImport(result: result)
             }
             // 新增 iCloud 同步按钮
-//            Button(action: {
-//                syncToiCloud()
-//            }) {
-//                if isSyncingToiCloud {
-//                    ProgressView()
-//                        .frame(width: 24, height: 24)
-//                } else {
-//                    Image(systemName: "icloud.and.arrow.up.fill")
-//                        .font(.title)
-//                        .foregroundColor(.white)
-//                }
-//            }
-//            .frame(maxHeight: 80)
-//            .disabled(isSyncingToiCloud)
+            Button(action: {
+                syncToiCloud()
+            }) {
+                if isSyncingToiCloud {
+                    ProgressView()
+                        .frame(width: 24, height: 24)
+                } else {
+                    Image(systemName: "icloud.and.arrow.up.fill")
+                        .font(.title)
+                        .foregroundColor(.white)
+                }
+            }
+            .frame(maxHeight: 80)
+            .disabled(isSyncingToiCloud)
             
             RequestButton(buttonTint: .clear, foregroundColor: .white) {
                 try? await Task.sleep(for: .seconds(2))

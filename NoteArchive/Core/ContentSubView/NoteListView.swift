@@ -163,8 +163,7 @@ struct NoteRowView: View {
         let data = getCoverData(note: selectedNote ?? note)
         NavigationLink(destination: FolderView(
             note: note,
-            folderState: FolderView.FolderState.e_normal,
-            systemImageType: .badgeclock
+            folderState: FolderView.FolderState.e_normal
         ), tag: note, selection: $selectedNote) {
 //            ZStack(alignment: .topTrailing) { // 使用 ZStack 将图片作为背景
                 // 主要内容

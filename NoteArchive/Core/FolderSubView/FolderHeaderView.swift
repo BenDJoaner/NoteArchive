@@ -20,7 +20,7 @@ struct FolderHeaderView: View {
     var body: some View {
         if folderState == .e_editing && !isPrivacy {
             editingHeaderView
-        } else {
+        } else if folderState != .e_trash {
             normalHeaderView
         }
     }
@@ -169,9 +169,6 @@ struct IconPickerView: View {
                                         Color.blue.opacity(0.2) : Color(.systemGray5)
                                     )
                                     .cornerRadius(10)
-                                Text(iconType.description)
-                                    .font(.caption2)
-                                    .lineLimit(1)
                             }
                         }
                         .buttonStyle(PlainButtonStyle())

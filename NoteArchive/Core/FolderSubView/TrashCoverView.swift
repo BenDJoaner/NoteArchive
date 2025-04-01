@@ -7,13 +7,13 @@
 
 import SwiftUICore
 import SwiftUI
+import CoreData
 
 struct TrashCoverView: View {
     @ObservedObject var cover: Cover
-    var restoreAction: () -> Void
-    var deleteAction: () -> Void
+    @ObservedObject var note: Note
     @State private var showDeleteConfirmation = false
-    
+    @Environment(\.managedObjectContext) private var viewContext
     var body: some View {
         ZStack {
             // 背景颜色
@@ -54,7 +54,9 @@ struct TrashCoverView: View {
 
             // 还原和彻底删除按钮
             VStack(spacing: 10) {
-                Button(action: restoreAction) {
+                Button(action: {
+                    restoreCover(cover: cover)
+                }) {
                     HStack {
                         Image(systemName: "arrow.uturn.backward")
                         Text("Restore")
@@ -87,7 +89,10 @@ struct TrashCoverView: View {
                     Alert(
                         title: Text("Delete"),
                         message: Text("deleteConfirm"),
-                        primaryButton: .destructive(Text("Delete"), action: deleteAction),
+                        primaryButton: .destructive(Text("Delete"), action: {
+                            // delete action
+                            deleteCover(cover: cover)
+                        }),
                         secondaryButton: .cancel()
                     )
                 }
@@ -96,5 +101,46 @@ struct TrashCoverView: View {
         }
         .cornerRadius(20)
         .shadow(radius: 5)
+    }
+    
+    private func deleteCover(cover: Cover) {
+        withAnimation {
+            if let drawingPages = cover.drawingPages?.allObjects as? [DrawingPage] {
+                for page in drawingPages {
+                    viewContext.delete(page)
+                }
+            }
+            viewContext.delete(cover)
+            
+            do {
+                try viewContext.save()
+            } catch {
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        }
+    }
+    
+    private func restoreCover(cover: Cover) {
+        withAnimation {
+            let fetchRequest: NSFetchRequest<Note> = Note.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "title == %@", "Retrieved".localized)
+            if let restoredNote = try? viewContext.fetch(fetchRequest).first {
+                restoredNote.addToCovers(cover)
+            } else {
+                let newRestoredNote = Note(context: viewContext)
+                newRestoredNote.id = UUID()
+                newRestoredNote.title = "Retrieved".localized
+                newRestoredNote.isPinned = false
+                newRestoredNote.addToCovers(cover)
+            }
+            note.removeFromCovers(cover)
+            do {
+                try viewContext.save()
+            } catch {
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        }
     }
 }

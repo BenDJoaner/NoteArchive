@@ -24,12 +24,8 @@ struct CoverGridView: View {
                         CoverEditView(cover: cover)
                             .frame(width: 180, height: 280)
                     } else if folderState == .e_trash {
-                        TrashCoverView(cover: cover, restoreAction: {
-                            // restore action
-                        }, deleteAction: {
-                            // delete action
-                        })
-                        .frame(width: 180, height: 280)
+                        TrashCoverView(cover: cover,note: note)
+                            .frame(width: 180, height: 280)
                     } else {
                         NavigationLink(destination: DrawingView(cover: cover, namespace: namespace)) {
                             CoverView(

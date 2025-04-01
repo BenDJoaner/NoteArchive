@@ -25,7 +25,6 @@ struct FolderView: View {
     @State private var editedColor = ""
     @State public var folderState: FolderState = .e_normal // 默认状态
     @State private var isPrivacy = false
-    var systemImageType: SystemImageType? // 接收外部传入的 systemImage 类型
     @Namespace private var namespace // 命名空间
     @State private var showSettingSheet: Bool = false
     
@@ -59,6 +58,7 @@ struct FolderView: View {
                         namespace: namespace,
                         addCoverAction: addCover
                     )
+
                 }
             }
         }
@@ -82,35 +82,7 @@ struct FolderView: View {
         }
     }
     
-    private func restoreCover(cover: Cover) {
-        withAnimation {
-            let fetchRequest: NSFetchRequest<Note> = Note.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "title == %@", "Retrieved".localized)
-            if let restoredNote = try? viewContext.fetch(fetchRequest).first {
-                restoredNote.addToCovers(cover)
-            } else {
-                let newRestoredNote = Note(context: viewContext)
-                newRestoredNote.id = UUID()
-                newRestoredNote.title = "Retrieved".localized
-                newRestoredNote.isPinned = false
-                newRestoredNote.addToCovers(cover)
-            }
-            note.removeFromCovers(cover)
-//            Toast.shared.present(
-//                title: "转移到取出档案",
-//                symbol: "trash.fill",
-//                tint: .red,
-//                isUserInteractionEnabled: true,
-//                timing: .long
-//            )
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
+
     
     private func addCover() {
         withAnimation {
@@ -130,49 +102,7 @@ struct FolderView: View {
             }
         }
     }
-
     
-    private func moveToTrash(cover: Cover) {
-        withAnimation {
-            if let drawingPages = cover.drawingPages, drawingPages.count > 0{
-                appConfig?.trashNote?.addToCovers(cover)
-            }
-
-            deleteCover(cover: cover)
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-    
-    private func deleteCover(cover: Cover) {
-        withAnimation {
-            if let drawingPages = cover.drawingPages?.allObjects as? [DrawingPage] {
-                for page in drawingPages {
-                    viewContext.delete(page)
-                }
-            }
-            viewContext.delete(cover)
-            
-//            Toast.shared.present(
-//                title: "档案已彻底销毁",
-//                symbol: "trash.fill",
-//                tint: .red,
-//                isUserInteractionEnabled: true,
-//                timing: .long
-//            )
-//            
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
 
     private func saveTitle() {
         withAnimation {

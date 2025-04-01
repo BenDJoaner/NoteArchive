@@ -17,7 +17,6 @@ struct CoverEditView: View {
     @State private var showMoveMenu: Bool = false
     @State private var isPrivacy: Bool = false
     @Environment(\.managedObjectContext) private var viewContext
-    @State private var toasts: [Toast] = []
     @FetchRequest(
         entity: Note.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Note.createdAt, ascending: true)]
@@ -181,52 +180,20 @@ struct CoverEditView: View {
     private func moveCoverToPrivacy() {
         if let privacyNote = appConfigs.first?.privacyNote {
             moveCover(to: privacyNote)
-//            Toast.shared.present(
-//                title: "已转移到机密处",
-//                symbol: "trash.fill",
-//                tint: .red,
-//                isUserInteractionEnabled: true,
-//                timing: .long
-//            )
-            showToast()
         }
     }
 
     // 移动 Cover 到回收站 Note
     private func moveCoverToTrash() {
-//        if let trashNote = appConfigs.first?.trashNote {
-//            if cover.drawingPages!.count > 0 {
-//                moveCover(to: trashNote)
-//            }else{
-//                cover.note?.removeFromCovers(cover)
-//            }
-//
-//        }
         withAnimation {
             if let trashNote = appConfigs.first?.trashNote {
                 if cover.drawingPages!.count > 0 {
                     cover.note?.removeFromCovers(cover)
                     trashNote.addToCovers(cover)
-//                    Toast.shared.present(
-//                        title: "已转移到销毁处",
-//                        symbol: "trash.fill",
-//                        tint: .red,
-//                        isUserInteractionEnabled: true,
-//                        timing: .long
-//                    )
                 } else {
                     cover.note?.removeFromCovers(cover)
-//                    Toast.shared.present(
-//                        title: "档案已销毁",
-//                        symbol: "trash.fill",
-//                        tint: .red,
-//                        isUserInteractionEnabled: true,
-//                        timing: .long
-//                    )
                 }
             }
-            showToast()
-
             
             do {
                 try viewContext.save()
@@ -235,43 +202,5 @@ struct CoverEditView: View {
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
         }
-    }
-    
-    func showToast() {
-        withAnimation(.bouncy) {
-            let toast = Toast { id in
-                ToastView(id)
-            }
-            toasts.append(toast)
-        }
-    }
-    
-    @ViewBuilder
-    func ToastView(_ id: String) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: "square.and.arrow.up.fill")
-            
-            Text("Hello world")
-                .font(.callout)
-            
-            Spacer(minLength: 0)
-            
-            Button {
-                $toasts.delete(id)
-            } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.title2)
-            }
-        }
-        .foregroundStyle(.primary)
-        .padding(.vertical, 12)
-        .padding(.horizontal, 15)
-        .background {
-            Capsule()
-                .fill(.background)
-                .shadow(color: .black.opacity(0.06), radius: 3, x: -1, y: -3)
-                .shadow(color: .black.opacity(0.06), radius: 2, x: 1, y: 4)
-        }
-        .padding(.horizontal, 15)
     }
 }
