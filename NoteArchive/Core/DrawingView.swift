@@ -11,8 +11,7 @@ struct DrawingView: View {
     @State private var bookPages: [BookCanvasView] = []
     @State private var isAnalyze: Bool = false
     @State private var usePencil: Bool = true
-    @State private var changeTheme: Bool = false
-    @State private var stickImage: UIImage = UIImage()
+    @State private var isShowTool: Bool = false
     // 添加背景样式状态
     @State private var backgroundStyle: BackgroundStyle = .blank
     @State private var isToolPickerVisible = true // 新增状态
@@ -63,7 +62,7 @@ struct DrawingView: View {
                 .tint(.black)
             }
         }
-        .sheet(isPresented: $changeTheme, content: {
+        .sheet(isPresented: $isShowTool, content: {
             ButtonBarView(
                 onClear: clearCurrentPage,
                 onAddPhoto: loadImage,
@@ -90,7 +89,7 @@ struct DrawingView: View {
 
 
     private func showToolPicker() {
-        changeTheme = true
+        isShowTool = true
     }
 
     private func onDeletePage() {

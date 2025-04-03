@@ -161,26 +161,26 @@ struct ButtonBarView: View {
 
                 
                 HStack{
-                    ImagePicker(title: "图片", systemImage: "photo.badge.plus.fill", tint: .blue) { image in
-                        onAddPhoto(image, currentPageIndex)
-                    }
-                    Spacer()
-                    Button(action: onAddPDF) {
-                        HStack{
-                            VStack {
-                                Image(systemName: "document.badge.plus.fill")
-                                Text("PDF")
-                            }
-                        }
-                        .font(.headline)
-                        .padding()
-                        .frame(maxWidth: 150, maxHeight: 200)
-                        .background(.white)
-                        .foregroundColor(.black)
-                        .cornerRadius(10)
-                        .shadow(radius: 3)
-                        
-                    }
+//                    ImagePicker(title: "图片", systemImage: "photo.badge.plus.fill", tint: .blue) { image in
+//                        onAddPhoto(image, currentPageIndex)
+//                    }
+//                    Spacer()
+//                    Button(action: onAddPDF) {
+//                        HStack{
+//                            VStack {
+//                                Image(systemName: "document.badge.plus.fill")
+//                                Text("PDF")
+//                            }
+//                        }
+//                        .font(.headline)
+//                        .padding()
+//                        .frame(maxWidth: 150, maxHeight: 200)
+//                        .background(.white)
+//                        .foregroundColor(.black)
+//                        .cornerRadius(10)
+//                        .shadow(radius: 3)
+//                        
+//                    }
                 }
 
                 HStack{

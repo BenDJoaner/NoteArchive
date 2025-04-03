@@ -21,17 +21,6 @@ struct CoverView: View {
             Color(hex: cover.color ?? "#7D177D")
                 .cornerRadius(10)
             
-            // 显示 systemImage
-            if let iconStr = iconStr {
-                Image(systemName: iconStr)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 120, height: 120)
-                    .offset(x: 20, y: -50)
-                    .foregroundColor(.white)
-                    .opacity(0.2)
-            }
-            
             if isPrivacy {
                 // 图片
                 Image(systemName: "person.badge.shield.checkmark") // 使用图片名称
@@ -41,6 +30,17 @@ struct CoverView: View {
                     .offset(x: -50, y: 80)
                     .opacity(0.5) // 设置透明度为 50%
                     .foregroundColor(.white)
+            }else{
+                // 显示 systemImage
+                if let iconStr = iconStr {
+                    Image(systemName: iconStr)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 120, height: 120)
+                        .offset(x: 20, y: -50)
+                        .foregroundColor(.white)
+                        .opacity(0.2)
+                }
             }
 
             

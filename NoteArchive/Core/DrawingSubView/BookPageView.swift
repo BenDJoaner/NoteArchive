@@ -50,9 +50,6 @@ struct BookPageView: View {
 //                .contentShape(Rectangle()) // ✅ 确保整个区域可触发手势
                 .allowsHitTesting(true)    // ✅ 允许交互穿透
                 
-                // 图片叠加层
-                ImageOverlayView(pageData: page.pageData)
-                    .allowsHitTesting(true ) // 禁止交互
                 
                 // 页码显示 - 添加在底部右侧
                 Text("-\(i+1)-")
@@ -119,18 +116,5 @@ struct BookPageView: View {
     // 根据颜色方案返回对应颜色
     private var backgroundColors: Color {
         colorScheme == .dark ? .themeBG : .background
-    }
-}
-
-
-struct ImageOverlayView: View {
-    let pageData: DrawingPage
-    
-    var body: some View {
-        ZStack {
-            ForEach(pageData.imagesArray, id: \.self) { imageItem in
-                DraggableImageView(imageItem: imageItem)
-            }
-        }
     }
 }

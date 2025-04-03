@@ -30,26 +30,26 @@ struct NoteListView: View {
 //                updateFrequentWords()
 //            }
         // 添加 ChipsView
-        ChipsView(width: viewWidth) {
-            ForEach(frequentWords, id: \.self) { word in
-                let horizontalSpace: CGFloat = 10
-                let chipWidth = word.size(withAttributes: [.font: UIFont.preferredFont(forTextStyle: .body)]).width + horizontalSpace * 2
-                
-                Button(action: {
-                    searchText = word
-                }) {
-                    Text(word)
-                        .font(.body)
-                        .foregroundStyle(.white)
-                        .padding(.vertical, 6)
-                        .padding(.horizontal, horizontalSpace)
-                        .background(.blue.gradient, in: .capsule)
-                }
-                .containerValue(\.viewWidth, chipWidth)
-            }
-        }
-        .padding(.horizontal)
-        .animation(.easeInOut, value: frequentWords)
+//        ChipsView(width: viewWidth) {
+//            ForEach(frequentWords, id: \.self) { word in
+//                let horizontalSpace: CGFloat = 10
+//                let chipWidth = word.size(withAttributes: [.font: UIFont.preferredFont(forTextStyle: .body)]).width + horizontalSpace * 2
+//                
+//                Button(action: {
+//                    searchText = word
+//                }) {
+//                    Text(word)
+//                        .font(.body)
+//                        .foregroundStyle(.white)
+//                        .padding(.vertical, 6)
+//                        .padding(.horizontal, horizontalSpace)
+//                        .background(.blue.gradient, in: .capsule)
+//                }
+//                .containerValue(\.viewWidth, chipWidth)
+//            }
+//        }
+//        .padding(.horizontal)
+//        .animation(.easeInOut, value: frequentWords)
         
         List {
             // 过滤掉“隐私”和“回收站”书架
@@ -174,9 +174,11 @@ struct NoteRowView: View {
                                 .foregroundColor(.orange)
                         }
                         Text(note.title ?? "Untitled")
-//                        Text("\(note.covers?.count ?? 0)")
-//                            .font(.caption)
-//                            .foregroundColor(.gray)
+
+                        if (note.iconStr != nil) {
+                            Image(systemName: note.iconStr!)
+                                .foregroundColor(Color(hex: note.colorStr ?? "#7D177D"))
+                        }
                         Spacer()
                     }
                     HStack {
@@ -186,8 +188,16 @@ struct NoteRowView: View {
                             .background(Color(hex: note.colorStr ?? "#7D177D").opacity(0.3))
                             .cornerRadius(5)
                             .shadow(radius: 1)
+                        VStack{
+                            Spacer()
+                            Text("\(note.covers?.count ?? 0)/100")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                                .padding(.bottom, 10)
+                        }
 
                         Spacer()
+
                     }
                 }
                 .padding(2)
