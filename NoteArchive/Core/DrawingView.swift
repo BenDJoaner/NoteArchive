@@ -16,7 +16,7 @@ struct DrawingView: View {
     @State private var backgroundStyle: BackgroundStyle = .blank
     @State private var isToolPickerVisible = true // 新增状态
     var namespace: Namespace.ID // 接收命名空间
-    
+    @State private var showImagePicker: Bool = false
 
     var body: some View {
         ZStack {
@@ -32,7 +32,8 @@ struct DrawingView: View {
                     backgroundStyle: $backgroundStyle, // 传递绑定
                     saveCurrentPage: saveCurrentPage,
                     addNewPage:addNewPage,// 传递背景样式绑定
-                    saveContext: saveContext
+                    saveContext: saveContext,
+                    showImagePicker: $showImagePicker
                 )
             }
         }
@@ -48,9 +49,23 @@ struct DrawingView: View {
             saveCurrentPage()
         }
         .toolbar {
+            // 添加图片
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    showImagePicker = true
+                } label: {
+                    Image(systemName: "photo.fill")
+                        .foregroundColor(Color(.systemBlue))
+                }
+                .tint(.black)
+            }
             // 新增工具选择器切换按钮
             ToolbarItem(placement: .navigationBarTrailing) {
-                ToggleButton(isOn: $isToolPickerVisible)
+                ToggleButton(
+                    isOn: $isToolPickerVisible,
+                    onImageString: "pencil.tip.crop.circle.fill",
+                    offImageString: "pencil.tip.crop.circle"
+                )
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
@@ -289,11 +304,12 @@ struct DrawingView: View {
 // 独立封装的切换按钮组件
 struct ToggleButton: View {
     @Binding var isOn: Bool
+    var onImageString: String
+    var offImageString: String
     
     var body: some View {
         Button(action: { isOn.toggle() }) {
-            Image(systemName: isOn ?
-                  "pencil.tip.crop.circle.fill":"pencil.tip.crop.circle")
+            Image(systemName: isOn ? onImageString:offImageString)
                 .symbolRenderingMode(.multicolor)
         }
     }

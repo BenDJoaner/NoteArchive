@@ -8,60 +8,30 @@ import SwiftUI
 import PhotosUI
 
 struct PhotoPanelView: View {
-    @State private var selectedImages: [UIImage] = []
-    @State private var imageTransforms: [ImageTransform] = []
-    @State private var showImagePicker = false
+    @State var imageTransforms: [ImageInfo] = []
+    @Binding var showImagePicker: Bool
     @State private var editingImageIndex: Int? = nil  // 当前编辑的图片索引，nil表示没有编辑
     
     // Scale limits
     private let minScale: CGFloat = 0.3
     private let maxScale: CGFloat = 5.0
     
-    struct ImageTransform {
-        var position: CGSize = .zero
-        var lastPosition: CGSize = .zero
-        var scale: CGFloat = 1.0
-        var rotation: Angle = .zero
-        var lastScale: CGFloat = 1.0
-        var lastRotation: Angle = .zero
-    }
-    
     var body: some View {
         VStack {
-            // Control panel
-            HStack {
-                Button(action: {
-                    showImagePicker = true
-                }) {
-                    Text("Import Photo")
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                }
-                
-                Spacer()
-                
-                Text(editingImageIndex != nil ? "Edit Mode" : "Browse Mode")
-                    .foregroundColor(.gray)
-            }
-            .padding()
-            
             // Image display area
             ZStack {
-                if selectedImages.isEmpty {
-                    Text("Please import a photo")
-                        .foregroundColor(.gray)
+                if imageTransforms.isEmpty {
+//                    Text("Please import a photo")
+//                        .foregroundColor(.gray)
                 } else {
-                    ForEach(selectedImages.indices, id: \.self) { index in
+                    ForEach(imageTransforms.indices, id: \.self) { index in
                         let isEditing = editingImageIndex == index
-                        
                         ContainerView(
                             position: imageTransforms[index].position,
                             content: {
                                 ZStack {
                                     // Image with border
-                                    Image(uiImage: selectedImages[index])
+                                    Image(uiImage: imageTransforms[index].selectedImage)
                                         .resizable()
                                         .scaledToFit()
                                         .scaleEffect(imageTransforms[index].scale)
@@ -95,7 +65,6 @@ struct PhotoPanelView: View {
                                             Button(action: {
                                                 // Delete image
                                                 withAnimation {
-                                                    selectedImages.remove(at: index)
                                                     imageTransforms.remove(at: index)
                                                     // 如果删除的是正在编辑的图片，取消编辑状态
                                                     if editingImageIndex == index {
@@ -178,12 +147,11 @@ struct PhotoPanelView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(.systemGray6))
-            .cornerRadius(12)
             .padding()
+//            .allowsHitTesting(editingImageIndex != nil)    // ✅ 允许交互穿透
         }
         .sheet(isPresented: $showImagePicker) {
-            ImagePicker(selectedImages: $selectedImages, imageTransforms: $imageTransforms)
+            ImagePicker(imageTransforms: $imageTransforms)
         }
     }
 }
@@ -199,9 +167,19 @@ struct ContainerView<Content: View>: View {
     }
 }
 
+struct ImageInfo {
+    var selectedImage: UIImage
+    var position: CGSize = .zero
+    var lastPosition: CGSize = .zero
+    var scale: CGFloat = 1.0
+    var rotation: Angle = .zero
+    var lastScale: CGFloat = 1.0
+    var lastRotation: Angle = .zero
+}
+
 struct ImagePicker: UIViewControllerRepresentable {
-    @Binding var selectedImages: [UIImage]
-    @Binding var imageTransforms: [PhotoPanelView.ImageTransform]
+//    @Binding var selectedImages: [UIImage]
+    @Binding var imageTransforms: [ImageInfo]
     @Environment(\.presentationMode) private var presentationMode
     
     func makeUIViewController(context: Context) -> PHPickerViewController {
@@ -236,8 +214,9 @@ struct ImagePicker: UIViewControllerRepresentable {
                 provider.loadObject(ofClass: UIImage.self) { image, error in
                     DispatchQueue.main.async {
                         if let image = image as? UIImage {
-                            self.parent.selectedImages.append(image)
-                            self.parent.imageTransforms.append(PhotoPanelView.ImageTransform())
+//                            self.parent.selectedImages.append(image)
+                            var _info = ImageInfo(selectedImage: image)
+                            self.parent.imageTransforms.append(_info)
                         }
                     }
                 }

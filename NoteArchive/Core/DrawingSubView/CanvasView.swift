@@ -17,7 +17,7 @@ struct CanvasView: UIViewRepresentable {
     @Binding var isToolPickerVisible: Bool // 新增绑定
     var onDrawingChange: () -> Void
     @Environment(\.colorScheme) var colorScheme
-
+    
     func makeUIView(context: Context) -> PKCanvasView {
         // 添加背景
         addBackground(to: canvasView)
@@ -29,6 +29,7 @@ struct CanvasView: UIViewRepresentable {
             color: UIColor.black,
             width: 15 // 基础宽度
         )
+        
         canvasView.tool = inkTool
         canvasView.backgroundColor = .clear
         // 添加手势穿透
@@ -48,7 +49,14 @@ struct CanvasView: UIViewRepresentable {
         } else {
             addBackground(to: uiView)
         }
+        // Update photos
+        updatePhotoViews(in: uiView)
         updateToolPickerVisibility()
+    }
+    
+    private func updatePhotoViews(in canvasView: PKCanvasView) {
+
+        
     }
 
     func makeCoordinator() -> Coordinator {

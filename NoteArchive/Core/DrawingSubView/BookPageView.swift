@@ -13,6 +13,8 @@ struct BookCanvasView {
     var pageData: DrawingPage
     var index: Int
     var canvasView: PKCanvasView
+    var selectedImages: [UIImage] = []
+    var imageTransforms: [ImageInfo] = []
 }
 
 struct BookPageView: View {
@@ -32,6 +34,8 @@ struct BookPageView: View {
     var saveContext: () -> Void
     
     @State var frameCount: Int = 0
+    @Binding var showImagePicker: Bool
+    
     var body: some View {
         ModelPages(
             bookPages,
@@ -49,7 +53,9 @@ struct BookPageView: View {
                 )
 //                .contentShape(Rectangle()) // ✅ 确保整个区域可触发手势
                 .allowsHitTesting(true)    // ✅ 允许交互穿透
-                
+                PhotoPanelView(
+                    showImagePicker: $showImagePicker // 使用绑定传递
+                )
                 
                 // 页码显示 - 添加在底部右侧
                 Text("-\(i+1)-")
