@@ -15,6 +15,7 @@ struct CanvasView: UIViewRepresentable {
     
     @Binding var backgroundStyle: BackgroundStyle// 添加背景样式绑定
     @Binding var isToolPickerVisible: Bool // 新增绑定
+    @Binding var gridSpacing: CGFloat
     var onDrawingChange: () -> Void
     @Environment(\.colorScheme) var colorScheme
     
@@ -45,19 +46,14 @@ struct CanvasView: UIViewRepresentable {
         // 更新时检查背景视图
         if let background = uiView.subviews.first(where: { $0 is BackgroundView }) as? BackgroundView {
             background.style = backgroundStyle
+            background.gridSpacing = gridSpacing // 更新 gridSpacing
             background.setNeedsDisplay() // ✅ 主动触发重绘
         } else {
             addBackground(to: uiView)
         }
-        // Update photos
-        updatePhotoViews(in: uiView)
         updateToolPickerVisibility()
     }
     
-    private func updatePhotoViews(in canvasView: PKCanvasView) {
-
-        
-    }
 
     func makeCoordinator() -> Coordinator {
         Coordinator(onDrawingChange: onDrawingChange)
@@ -87,14 +83,14 @@ struct CanvasView: UIViewRepresentable {
     
     // 在 CanvasView 的 makeUIView 中
     private func addBackground(to canvasView: PKCanvasView) {
-        print("addBackground ✅ 在 CanvasView 的 makeUIView 中")
+//        print("addBackground ✅ 在 CanvasView 的 makeUIView 中")
         // 移除旧背景
         canvasView.subviews
             .filter { $0 is BackgroundView }
             .forEach { $0.removeFromSuperview() }
         
         // 添加新背景
-        let backgroundView = BackgroundView(style: backgroundStyle)
+        let backgroundView = BackgroundView(style: backgroundStyle, gridSpacing: gridSpacing)
         backgroundView.isUserInteractionEnabled = false
         backgroundView.backgroundColor = .clear // 确保背景可见
         
@@ -115,12 +111,12 @@ struct CanvasView: UIViewRepresentable {
         canvasView.layoutIfNeeded()
         
         // 此时 frame 仍可能为0，因为父视图尚未完成布局
-        print("⏱️ 立即获取背景视图尺寸:", backgroundView.frame)
+//        print("⏱️ 立即获取背景视图尺寸:", backgroundView.frame)
         
         // ✅ 延迟获取实际尺寸
-        DispatchQueue.main.async {
-            print("🕒 延迟获取背景视图尺寸:", backgroundView.frame)
-        }
+//        DispatchQueue.main.async {
+//            print("🕒 延迟获取背景视图尺寸:", backgroundView.frame)
+//        }
     }
     // 添加背景视图实现
     private class BackgroundView: UIView {
@@ -129,10 +125,11 @@ struct CanvasView: UIViewRepresentable {
                 setNeedsDisplay() // ✅ 样式变化时自动重绘
             }
         }
-        
-        init(style: BackgroundStyle) {
-            print("添加背景视图实现 init \(style)")
+        var gridSpacing: CGFloat // 新增属性
+        init(style: BackgroundStyle, gridSpacing: CGFloat) {
+//            print("添加背景视图实现 init \(style)")
             self.style = style
+            self.gridSpacing = gridSpacing
             super.init(frame: .zero)
             // 关键配置
             configureView()
@@ -149,11 +146,11 @@ struct CanvasView: UIViewRepresentable {
         }
         
         override func draw(_ rect: CGRect) {
-            print("Drawing rect:", rect) // ✅ 确认绘制区域
+//            print("Drawing rect:", rect) // ✅ 确认绘制区域
             guard !rect.isEmpty else { return } // ✅ 跳过无效绘制
             
             guard let context = UIGraphicsGetCurrentContext() else { return }
-            print("Draw background >>>>>>")
+//            print("Draw background >>>>>>")
             context.setStrokeColor(UIColor.lightGray.cgColor)
             context.setLineWidth(0.5)
             
@@ -177,29 +174,29 @@ struct CanvasView: UIViewRepresentable {
         }
         
         private func drawHorizontalLines(in context: CGContext, rect: CGRect) {
-            let spacing: CGFloat = calculateLayout(height: rect.height, minItemHeight: 45)
-            print("spacing=\(spacing)")
+            let spacing: CGFloat = calculateLayout(height: rect.height, minItemHeight: gridSpacing)
+//            print("spacing=\(spacing)")
             for y in stride(from: 0, to: rect.height, by: spacing) {
                 context.move(to: CGPoint(x: 0, y: y))
                 context.addLine(to: CGPoint(x: rect.width, y: y))
             }
             context.strokePath()
-            print("drawHorizontalLines")
+//            print("drawHorizontalLines")
         }
         
         private func drawVerticalLines(in context: CGContext, rect: CGRect) {
-            let spacing: CGFloat = calculateLayout(height: rect.width, minItemHeight: 45)
-            print("spacing=\(spacing)")
+            let spacing: CGFloat = calculateLayout(height: rect.width, minItemHeight: gridSpacing)
+//            print("spacing=\(spacing)")
             for x in stride(from: 0, to: rect.width, by: spacing) {
                 context.move(to: CGPoint(x: x, y: 0))
                 context.addLine(to: CGPoint(x: x, y: rect.height))
             }
             context.strokePath()
-            print("drawVerticalLines")
+//            print("drawVerticalLines")
         }
         
         private func drawDots(in context: CGContext, rect: CGRect) {
-            let spacing: CGFloat = calculateLayout(height: rect.width, minItemHeight: 45)
+            let spacing: CGFloat = calculateLayout(height: rect.width, minItemHeight: gridSpacing)
             context.setFillColor(UIColor.lightGray.cgColor)
             
             for x in stride(from: 0, to: rect.width, by: spacing) {
@@ -208,7 +205,7 @@ struct CanvasView: UIViewRepresentable {
                     context.fillEllipse(in: dotRect)
                 }
             }
-            print("drawDots")
+//            print("drawDots")
         }
         
         private func drawCoordinateSystem(in context: CGContext, rect: CGRect) {
@@ -304,21 +301,21 @@ struct CanvasView: UIViewRepresentable {
         
         override func layoutSubviews() {
             super.layoutSubviews()
-            print("Layout bounds:", bounds) // ✅ 调试输出
+//            print("Layout bounds:", bounds) // ✅ 调试输出
             setNeedsDisplay() // ✅ 确保布局变化后重绘
-            print("""
-            🟢 布局完成:
-            - Frame: \(frame)
-            - Bounds: \(bounds)
-            - Superview Size: \(superview?.bounds.size ?? .zero)
-            """)
+//            print("""
+//            🟢 布局完成:
+//            - Frame: \(frame)
+//            - Bounds: \(bounds)
+//            - Superview Size: \(superview?.bounds.size ?? .zero)
+//            """)
             
             // 验证约束是否生效
-            if let sv = superview {
-                print("约束检查:")
-                print("Leading约束:", constraints.first { $0.firstAnchor == leadingAnchor }?.constant ?? "无")
-                print("父视图尺寸:", sv.bounds.size)
-            }
+//            if let sv = superview {
+//                print("约束检查:")
+//                print("Leading约束:", constraints.first { $0.firstAnchor == leadingAnchor }?.constant ?? "无")
+//                print("父视图尺寸:", sv.bounds.size)
+//            }
         }
         
     }

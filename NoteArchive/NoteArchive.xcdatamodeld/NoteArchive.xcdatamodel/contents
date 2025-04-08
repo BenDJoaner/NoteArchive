@@ -9,6 +9,7 @@
     <entity name="Cover" representedClassName="Cover" syncable="YES" codeGenerationType="class">
         <attribute name="color" optional="YES" attributeType="String"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="gridSpacing" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isAnalyze" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="selectedBackground" optional="YES" attributeType="String"/>

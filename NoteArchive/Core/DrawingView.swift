@@ -12,12 +12,13 @@ struct DrawingView: View {
     @State private var isAnalyze: Bool = false
     @State private var usePencil: Bool = true
     @State private var isShowTool: Bool = false
+    @State private var gridSpacing: CGFloat = 45
     // 添加背景样式状态
     @State private var backgroundStyle: BackgroundStyle = .blank
     @State private var isToolPickerVisible = true // 新增状态
     var namespace: Namespace.ID // 接收命名空间
     @State private var showImagePicker: Bool = false
-
+    @State private var isEditingImage: Bool = false
     var body: some View {
         ZStack {
 //            Color(.systemGray6)// 灰色背景
@@ -33,7 +34,9 @@ struct DrawingView: View {
                     saveCurrentPage: saveCurrentPage,
                     addNewPage:addNewPage,// 传递背景样式绑定
                     saveContext: saveContext,
-                    showImagePicker: $showImagePicker
+                    showImagePicker: $showImagePicker,
+                    isEditingImage: $isEditingImage,
+                    gridSpacing: $gridSpacing
                 )
             }
         }
@@ -51,13 +54,11 @@ struct DrawingView: View {
         .toolbar {
             // 添加图片
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    showImagePicker = true
-                } label: {
-                    Image(systemName: "photo.fill")
-                        .foregroundColor(Color(.systemBlue))
-                }
-                .tint(.black)
+                ToggleButton(
+                    isOn: $isEditingImage,
+                    onImageString: "photo.badge.checkmark.fill",
+                    offImageString: "photo.artframe"
+                )
             }
             // 新增工具选择器切换按钮
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -84,7 +85,8 @@ struct DrawingView: View {
                 onAddPDF: loadPDF,
                 onDeletePage: onDeletePage,
                 isAIOn: $isAnalyze,
-                usePencil: $usePencil,
+//                usePencil: $usePencil,
+                gridSpacing: $gridSpacing,
                 backgroundStyle: $backgroundStyle,
                 currentPageIndex: $currentPageIndex,
                 currentCanvasView: bookPages[currentPageIndex].canvasView
@@ -167,6 +169,10 @@ struct DrawingView: View {
             addNewPage()
         }
         isAnalyze = cover.isAnalyze
+        if  cover.gridSpacing == 0 {
+            cover.gridSpacing = 45
+        }
+        gridSpacing = CGFloat(cover.gridSpacing)
     }
     
     private func addNewPage() {
@@ -230,6 +236,7 @@ struct DrawingView: View {
         print("Saving background: \(backgroundStyle.rawValue)") // ✅ 调试输出
         cover.selectedBackground = backgroundStyle.rawValue
         cover.isAnalyze = isAnalyze
+        cover.gridSpacing = Float(gridSpacing)
         saveContext()
     }
 
@@ -239,24 +246,14 @@ struct DrawingView: View {
     }
 
 
-    private func loadImage(selectImage: UIImage, index:Int) {
-        // 获取当前页面的pageData
-        let currentPageData = bookPages[currentPageIndex].pageData
-        
-        // 创建新ImageItem
-        let newImageItem = ImageItem(context: viewContext)
-        newImageItem.imageData = selectImage.pngData()
-        
-        // 设置默认位置（居中显示）
-        let defaultSize = CGSize(width: 200, height: 200)
-        newImageItem.x = Double(UIScreen.main.bounds.width/2 - defaultSize.width/2)
-        newImageItem.y = Double(UIScreen.main.bounds.height/2 - defaultSize.height/2)
-        newImageItem.width = Double(defaultSize.width)
-        newImageItem.height = Double(defaultSize.height)
-        
-        // 关联到当前页面
-        currentPageData.addImage(newImageItem)
-        saveContext()
+    private func loadImage() {
+//        // 获取当前页面的pageData
+//        let currentPageData = bookPages[currentPageIndex].pageData
+
+//        // 关联到当前页面
+//        currentPageData.addImage(newImageItem)
+//        saveContext()
+        showImagePicker = true
     }
 
     private func saveContext() {

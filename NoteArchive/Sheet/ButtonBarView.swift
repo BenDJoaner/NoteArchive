@@ -28,12 +28,13 @@ enum BackgroundStyle: String, CaseIterable {
 
 struct ButtonBarView: View {
     var onClear: () -> Void // 清空按钮的回调
-    var onAddPhoto: (UIImage, Int) -> Void// 修改onAddPhoto类型
+    var onAddPhoto: () -> Void// 修改onAddPhoto类型
     var onAddPDF: () -> Void
     var onDeletePage: () -> Void
 
     @Binding var isAIOn: Bool // Toggle 的状态
-    @Binding var usePencil: Bool // Toggle 的状态
+//    @Binding var usePencil: Bool // Toggle 的状态
+    @Binding var gridSpacing: CGFloat
     @Binding var backgroundStyle: BackgroundStyle    // 添加背景样式绑定
     @Binding var currentPageIndex: Int    // 新增当前页面索引绑定
     @State private var selection2: String?
@@ -49,7 +50,7 @@ struct ButtonBarView: View {
                     Button(action: onClear) {
                         VStack {
                             Image(systemName: "eraser.line.dashed.fill")
-                            Text("EmptyPage")
+                            Text("ClearSection".localized)
                         }
                         .font(.headline)
                         .padding()
@@ -64,7 +65,7 @@ struct ButtonBarView: View {
                         HStack{
                             VStack {
                                 Image(systemName: "trash.slash")
-                                Text("删除此页")
+                                Text("DeletePage".localized)
                             }
                         }
                         .font(.headline)
@@ -97,7 +98,7 @@ struct ButtonBarView: View {
                     HStack {
                         Image(systemName: "person.and.background.striped.horizontal")
                         VStack{
-                            Text("backgroundType")
+                            Text("BackgroundStyle".localized)
                             Text("\(backgroundStyle.localizedName)")
                         }
 
@@ -125,29 +126,13 @@ struct ButtonBarView: View {
 //                    .shadow(radius: 3)
 //                }
 
-                VStack {
-                    Toggle(isOn: $usePencil) {
-                        HStack {
-                            Image(systemName: "pencil.and.scribble")
-                            Text("画笔工具")
-                        }
-                    }
-                    .toggleStyle(SwitchToggleStyle(tint: .blue)) // 自定义 Toggle 样式
-                    .padding()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(.white)
-                    .foregroundColor(.black)
-                    .cornerRadius(10)
-                    .shadow(radius: 3)
-                }
-
                 
                 //AI
                 VStack {
                     Toggle(isOn: $isAIOn) {
                         HStack {
                             Image(systemName: "aqi.medium")
-                            Text("识别Text")
+                            Text("EnableAI".localized)
                         }
                     }
                     .toggleStyle(SwitchToggleStyle(tint: .blue)) // 自定义 Toggle 样式
@@ -158,29 +143,58 @@ struct ButtonBarView: View {
                     .cornerRadius(10)
                     .shadow(radius: 3)
                 }
+                VStack {
+                    HStack {
+                        Image(systemName: "text.justify")
+                        Slider(value: $gridSpacing, in: 10...99) {
+     
+                        }
+                        .photosPickerStyle(.compact)
+                        Text("\(gridSpacing, specifier: "%.0f")")
+                        
+                    }
 
+                    .padding()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(.white)
+                    .foregroundColor(.black)
+                    .cornerRadius(10)
+                    .shadow(radius: 3)
+                }
                 
                 HStack{
-//                    ImagePicker(title: "图片", systemImage: "photo.badge.plus.fill", tint: .blue) { image in
-//                        onAddPhoto(image, currentPageIndex)
-//                    }
-//                    Spacer()
-//                    Button(action: onAddPDF) {
-//                        HStack{
-//                            VStack {
-//                                Image(systemName: "document.badge.plus.fill")
-//                                Text("PDF")
-//                            }
-//                        }
-//                        .font(.headline)
-//                        .padding()
-//                        .frame(maxWidth: 150, maxHeight: 200)
-//                        .background(.white)
-//                        .foregroundColor(.black)
-//                        .cornerRadius(10)
-//                        .shadow(radius: 3)
-//                        
-//                    }
+                    Button(action: onAddPhoto) {
+                        HStack{
+                            VStack {
+                                Image(systemName: "photo.badge.plus.fill")
+                                Text("ImportImage".localized)
+                            }
+                        }
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: 150, maxHeight: 200)
+                        .background(.white)
+                        .foregroundColor(.black)
+                        .cornerRadius(10)
+                        .shadow(radius: 3)
+                        
+                    }
+                    Button(action: onAddPDF) {
+                        HStack{
+                            VStack {
+                                Image(systemName: "document.badge.plus.fill")
+                                Text("PDF")
+                            }
+                        }
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: 150, maxHeight: 200)
+                        .background(.white)
+                        .foregroundColor(.black)
+                        .cornerRadius(10)
+                        .shadow(radius: 3)
+                        
+                    }
                 }
 
                 HStack{
@@ -221,24 +235,6 @@ struct ButtonBarView: View {
                 }
                 
                 HStack{
-                    
-                    Button(action: onAddPDF) {
-                        HStack{
-                            VStack {
-                                Image(systemName: "document.on.document")
-                                Text("CopyText")
-                            }
-                        }
-                        .font(.headline)
-                        .padding()
-                        .frame(maxWidth: 150, maxHeight: 200)
-                        .background(.white)
-                        .foregroundColor(.black)
-                        .cornerRadius(10)
-                        .shadow(radius: 3)
-                        
-                    }
-                    
                     Button(action: {
                         let image = currentCanvasView.toImage()
                         recognizeText(from: image) { text in
@@ -261,27 +257,6 @@ struct ButtonBarView: View {
                         .shadow(radius: 3)
                         
                     }
-                    
-//                    // 清空按钮
-//                    Button("CopyText") {
-//                        let image = currentCanvasView.toImage()
-//                        recognizeText(from: image) { text in
-//                            recognizedText = text
-//                        }
-//                    }
-//                    .font(.headline)
-//                    .padding()
-//                    .frame(maxWidth: 150, maxHeight: 200)
-//                    .background(.white)
-//                    .foregroundColor(.black)
-//                    .cornerRadius(10)
-//                    .shadow(radius: 3)
-//                    Spacer()
-//                    Text(recognizedText)
-//                        .font(.headline)
-//                        .padding()
-//                        .background(.white)
-//                        .frame(maxWidth: .infinity, maxHeight: .infinity)
 
                 }
 
@@ -309,7 +284,7 @@ struct ButtonBarView: View {
         
         request.recognitionLevel = .accurate
         // 2. 多語言識別支持
-        request.recognitionLanguages = ["zh-Hans", "en-US"]
+        request.recognitionLanguages = [Locale.current.identifier, "en-US"]
         
         let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
         try? requestHandler.perform([request])

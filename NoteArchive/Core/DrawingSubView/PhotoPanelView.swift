@@ -13,7 +13,7 @@ struct PhotoPanelView: View {
     @State private var editingImageIndex: Int? = nil  // 当前编辑的图片索引，nil表示没有编辑
     
     // Scale limits
-    private let minScale: CGFloat = 0.3
+    private let minScale: CGFloat = 0.2
     private let maxScale: CGFloat = 5.0
     
     var body: some View {
@@ -148,6 +148,7 @@ struct PhotoPanelView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding()
+//            .background(editingImageIndex == nil ? Color.clear : Color.gray.opacity(0.2))
 //            .allowsHitTesting(editingImageIndex != nil)    // ✅ 允许交互穿透
         }
         .sheet(isPresented: $showImagePicker) {
@@ -170,9 +171,9 @@ struct ContainerView<Content: View>: View {
 struct ImageInfo {
     var selectedImage: UIImage
     var position: CGSize = .zero
-    var lastPosition: CGSize = .zero
     var scale: CGFloat = 1.0
     var rotation: Angle = .zero
+    var lastPosition: CGSize = .zero
     var lastScale: CGFloat = 1.0
     var lastRotation: Angle = .zero
 }
@@ -215,7 +216,7 @@ struct ImagePicker: UIViewControllerRepresentable {
                     DispatchQueue.main.async {
                         if let image = image as? UIImage {
 //                            self.parent.selectedImages.append(image)
-                            var _info = ImageInfo(selectedImage: image)
+                            let _info = ImageInfo(selectedImage: image)
                             self.parent.imageTransforms.append(_info)
                         }
                     }
