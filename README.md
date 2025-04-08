@@ -81,7 +81,8 @@ A minimalist handwriting notes app exclusively designed for Apple Pencil. Featur
 - Integrated [Pages](https://github.com/nachonavarro/Pages) flip engine
 - Horizontal/Vertical flip modes
 - Customizable curl intensity (`pageCurlFactor` adjustable)
-
+- Other plugin：[SwiftUI_Demos](https://github.com/xiaofu666/SwiftUI_Demos/tree/master)
+  
 ## Technical Highlights
 - SwiftUI 4 declarative architecture
 - CoreData with AES-256 encryption
