@@ -27,7 +27,8 @@
 - 集成[Pages](https://github.com/nachonavarro/Pages)翻页组件
 - 支持左右横翻/上下竖翻模式
 - 自定义翻页动画曲率（`pageCurlFactor`参数可调）
-
+- 其他效果引用：[SwiftUI_Demos](https://github.com/xiaofu666/SwiftUI_Demos/tree/master)
+  
 ## 技术亮点
 - 基于SwiftUI 4.0声明式开发
 - CoreData本地加密存储
