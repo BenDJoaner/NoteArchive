@@ -45,35 +45,36 @@ struct BookPageView: View {
             hasControl: false
         ) { i, page in
             GeometryReader { geometry in
-                PhotoPanelView(
-                    showImagePicker: $showImagePicker // 使用绑定传递
+
+                CanvasView(
+                    canvasView: page.canvasView,
+                    toolPicker: toolPicker,
+                    backgroundStyle: $backgroundStyle,// 传递背景样式
+                    isToolPickerVisible: $isToolPickerVisible,
+                    gridSpacing: $gridSpacing, // 传递绑定
+                    onDrawingChange: saveCurrentPage
                 )
-                if !isEditingImage {
-                    CanvasView(
-                        canvasView: page.canvasView,
-                        toolPicker: toolPicker,
-                        backgroundStyle: $backgroundStyle,// 传递背景样式
-                        isToolPickerVisible: $isToolPickerVisible,
-                        gridSpacing: $gridSpacing, // 传递绑定
-                        onDrawingChange: saveCurrentPage
+//                .contentShape(Rectangle()) // ✅ 确保整个区域可触发手势
+//                .allowsHitTesting(true)    // ✅ 允许交互穿透
+                
+//                PhotoPanelView(
+//                    showImagePicker: $showImagePicker // 使用绑定传递
+//                )
+                
+                // 页码显示 - 添加在底部右侧
+                Text("-\(i+1)-")
+                    .font(.system(size: 14, weight: .regular))
+                    .foregroundColor(Color(.systemGray3))
+                    .padding(10)
+//                    .background(Color.white.opacity(0.8))
+//                    .cornerRadius(5)
+                    .frame(
+                        maxWidth: .infinity,
+                        maxHeight: .infinity,
+                        alignment: .bottom // 右下对齐
                     )
-    //                .contentShape(Rectangle()) // ✅ 确保整个区域可触发手势
-                    .allowsHitTesting(true)    // ✅ 允许交互穿透
-                    // 页码显示 - 添加在底部右侧
-                    Text("-\(i+1)-")
-                        .font(.system(size: 14, weight: .regular))
-                        .foregroundColor(Color(.systemGray3))
-                        .padding(10)
-    //                    .background(Color.white.opacity(0.8))
-    //                    .cornerRadius(5)
-                        .frame(
-                            maxWidth: .infinity,
-                            maxHeight: .infinity,
-                            alignment: .bottom // 右下对齐
-                        )
-                        .padding(.trailing, 20)
-                        .padding(.bottom, 5)
-                }
+                    .padding(.trailing, 20)
+                    .padding(.bottom, 5)
             }
             .background(backgroundColors) // 使用动态颜色
         }

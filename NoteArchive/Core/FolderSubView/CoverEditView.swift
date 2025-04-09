@@ -75,27 +75,27 @@ struct CoverEditView: View {
 
 
                 // 隐藏按钮（移动到隐私 Note）
-                Button(action: {
-                    moveCoverToPrivacy()
-                }) {
-                    if !isPrivacy {
-                        VStack {
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(Color.white) // 灰色背景
-                                    .frame(width: 50, height: 50)
-                                    .opacity(0.5)
-                                Image(systemName: "eye.slash.fill")
-                                    .font(.title)
-                                    .foregroundColor(.gray)
-                            }
-                            Text("Confidentiality")
-                                .font(.caption)
-                                .foregroundColor(.white)
-                                .shadow(color: .black, radius: 1, x: 1, y: 1) // 添加阴影
-                        }
-                    }
-                }
+//                Button(action: {
+//                    moveCoverToPrivacy()
+//                }) {
+//                    if !isPrivacy {
+//                        VStack {
+//                            ZStack {
+//                                RoundedRectangle(cornerRadius: 10)
+//                                    .fill(Color.white) // 灰色背景
+//                                    .frame(width: 50, height: 50)
+//                                    .opacity(0.5)
+//                                Image(systemName: "eye.slash.fill")
+//                                    .font(.title)
+//                                    .foregroundColor(.gray)
+//                            }
+//                            Text("Confidentiality")
+//                                .font(.caption)
+//                                .foregroundColor(.white)
+//                                .shadow(color: .black, radius: 1, x: 1, y: 1) // 添加阴影
+//                        }
+//                    }
+//                }
 
                 // 删除按钮（移动到回收站 Note）
                 Button(action: {

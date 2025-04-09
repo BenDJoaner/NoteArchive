@@ -34,9 +34,9 @@ struct CanvasView: UIViewRepresentable {
         canvasView.tool = inkTool
         canvasView.backgroundColor = .clear
         // 添加手势穿透
-        canvasView.subviews.forEach {
-            $0.isUserInteractionEnabled = false
-        }
+//        canvasView.subviews.forEach {
+//            $0.isUserInteractionEnabled = false
+//        }
 
         updateToolPickerVisibility()
         return canvasView
@@ -201,7 +201,7 @@ struct CanvasView: UIViewRepresentable {
             
             for x in stride(from: 0, to: rect.width, by: spacing) {
                 for y in stride(from: 0, to: rect.height, by: spacing) {
-                    let dotRect = CGRect(x: x-0.5, y: y-0.5, width: 3, height: 3)
+                    let dotRect = CGRect(x: x+15, y: y+15, width: 3, height: 3)
                     context.fillEllipse(in: dotRect)
                 }
             }
